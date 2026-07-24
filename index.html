@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>For You</title>
+
+<!--
+============================================================================
+  HI CODER 👋 — everything you'll want to edit lives in the CONFIG object
+  inside the <script> tag near the bottom of this file. Search for:
+
+      const CONFIG = {
+
+  Scroll down there first. Sections below (CSS) are for colors/spacing if
+  you want to go deeper, but you can personalize 90% of this site just by
+  editing CONFIG. Read the comment block right above CONFIG for exact
+  instructions on how to space the love letter.
+============================================================================
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ========================================================================
+     BASE / RESET
+  ======================================================================== */
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; overflow-x:hidden; }
+  body {
+    font-family:'Quicksand', sans-serif;
+    background:#22080e;
+    color:#2c1f2a;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection { background:#e8a7bb; color:#3a1220; }
+
+  button { font-family:inherit; border:none; background:none; cursor:pointer; }
+
+  /* ========================================================================
+     APP SHELL
+  ======================================================================== */
+  #app { position:relative; width:100%; min-height:100%; padding-bottom:calc(66px + env(safe-area-inset-bottom, 0px)); }
+
+  .view { display:none; }
+  .view.active { display:block; animation:fadeIn .25s ease; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ========================================================================
+     BOTTOM NAV
+  ======================================================================== */
+  #bottom-nav {
+    position:fixed; left:0; right:0; bottom:0; z-index:500;
+    display:flex; justify-content:space-around; align-items:center;
+    height:calc(66px + env(safe-area-inset-bottom, 0px));
+    padding-bottom:env(safe-area-inset-bottom, 0px);
+    background:rgba(30,8,14,0.94);
+    backdrop-filter:blur(10px);
+    border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .nav-btn {
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    color:rgba(255,255,255,0.5);
+    font-size:10px; font-weight:600; letter-spacing:.02em;
+    padding:6px 6px; border-radius:14px;
+    min-width:44px; min-height:44px;
+    flex:1 1 0;
+    transition:color .16s ease, transform .16s ease;
+  }
+  .nav-btn .ico { width:21px; height:21px; transition:transform .16s ease; }
+  .nav-btn .ico svg { width:100%; height:100%; display:block; }
+  .nav-btn.active { color:#ffc3d3; }
+  .nav-btn.active .ico { transform:translateY(-2px) scale(1.12); }
+  .nav-btn:active { transform:scale(0.92); }
+
+  /* ========================================================================
+     LOVE LETTER (scroll journey)
+  ======================================================================== */
+  /* background gradient is painted once across the whole scroll container
+     (set via JS from each section's colors) so the color blends smoothly
+     as you scroll, instead of cutting hard at each section boundary. */
+  #letter-scroll { position:relative; background-repeat:no-repeat; background-size:100% 100%; }
+
+  .letter-section {
+    position:relative;
+    min-height:100svh;
+    display:flex; align-items:center; justify-content:center;
+    padding:clamp(72px, 14vh, 110px) 16px clamp(64px, 12vh, 90px);
+    overflow:hidden;
+    contain:layout paint;
+  }
+
+  .particle-field {
+    position:absolute; inset:0; pointer-events:none; overflow:hidden;
+  }
+  .particle {
+    position:absolute; top:100%; will-change:transform, opacity;
+    animation-name:drift-up; animation-timing-function:linear; animation-iteration-count:1;
+    filter:drop-shadow(0 2px 4px rgba(40,0,10,0.3));
+  }
+  .particle svg { width:100%; height:100%; display:block; }
+  @keyframes drift-up {
+    0%   { transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    8%   { opacity:1; }
+    92%  { opacity:1; }
+    100% { transform:translateY(-115vh) translateX(var(--drift, 0px)) rotate(var(--spin, 20deg)); opacity:0; }
+  }
+
+  .paper {
+    position:relative; z-index:2;
+    max-width:520px; width:100%;
+    background:rgba(255,250,246,0.9);
+    border-radius:22px;
+    padding:clamp(26px, 5vw, 38px) clamp(20px, 6vw, 32px) clamp(24px, 5vw, 34px);
+    box-shadow:0 24px 60px rgba(0,0,0,0.28);
+    text-align:left;
+  }
+  .paper .eyebrow {
+    font-family:'Quicksand', sans-serif;
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    opacity:.55; margin-bottom:10px;
+  }
+  .paper p.line {
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:clamp(17px, 4.6vw, 22px); line-height:1.55;
+    margin-bottom:16px;
+    color:#2c1a22;
+  }
+  .paper p.line:last-child { margin-bottom:0; }
+
+  .scroll-hint {
+    position:absolute; bottom:26px; left:50%; transform:translateX(-50%);
+    z-index:2; color:rgba(255,255,255,0.85);
+    font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    animation:bob 1.3s ease-in-out infinite;
+  }
+  @keyframes bob { 0%,100%{transform:translate(-50%,0);} 50%{transform:translate(-50%,8px);} }
+
+  /* side progress dots for the letter */
+  #letter-progress {
+    position:fixed; right:14px; top:50%; transform:translateY(-50%);
+    z-index:400; display:flex; flex-direction:column; gap:10px;
+  }
+  #letter-progress .dot {
+    width:8px; height:8px; border-radius:50%;
+    background:rgba(255,255,255,0.35);
+    transition:all .3s ease;
+  }
+  #letter-progress .dot.active { background:#fff; transform:scale(1.5); }
+
+  /* signature block on final section */
+  .signature {
+    margin-top:22px; font-family:'Playfair Display', serif; font-style:italic;
+    font-size:20px; text-align:right; opacity:.85;
+  }
+
+  /* ========================================================================
+     GENERIC PAGE HEADER (used by the other tabs)
+  ======================================================================== */
+  .page {
+    max-width:640px; margin:0 auto; padding:clamp(40px, 8vh, 56px) 20px 40px;
+  }
+  .page-title {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:clamp(26px, 7vw, 34px); margin-bottom:6px; color:#fff;
+  }
+  .page-sub {
+    font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
+  }
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-someday {
+    min-height:100svh;
+    background:linear-gradient(180deg, #2c0910, #5c1a29 55%, #8a2e46);
+  }
+
+  /* ---- timeline ---- */
+  .tl-item {
+    position:relative; padding:0 0 30px 26px; border-left:2px solid rgba(255,255,255,0.18);
+  }
+  .tl-item:last-child { border-left:2px solid transparent; padding-bottom:0; }
+  .tl-item::before {
+    content:''; position:absolute; left:-7px; top:2px;
+    width:12px; height:12px; border-radius:50%;
+    background:#ffb6c9; box-shadow:0 0 0 4px rgba(255,182,201,0.2);
+  }
+  .tl-date { font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#ffb6c9; margin-bottom:4px; }
+  .tl-title { font-family:'Playfair Display', serif; font-size:19px; color:#fff; margin-bottom:4px; }
+  .tl-text { font-size:14px; color:rgba(255,255,255,0.72); line-height:1.55; }
+
+  /* ---- reasons ---- */
+  .reasons-wrap { display:flex; flex-direction:column; gap:12px; }
+  .reason-card {
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:16px; padding:16px 18px;
+    font-size:14.5px; color:rgba(255,255,255,0.88); line-height:1.5;
+    display:flex; gap:12px; align-items:flex-start;
+    opacity:0; transform:translateY(10px);
+    animation:reasonIn .32s ease forwards;
+  }
+  @keyframes reasonIn { to{opacity:1; transform:translateY(0);} }
+  .reason-num { font-family:'Playfair Display', serif; font-style:italic; color:#ffb6c9; font-size:16px; flex-shrink:0; }
+
+  /* ---- quiz ---- */
+  #quiz-card {
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.09);
+    border-radius:20px; padding:26px 22px;
+  }
+  #quiz-question { font-family:'Playfair Display', serif; font-size:19px; color:#fff; margin-bottom:18px; }
+  .quiz-opt {
+    display:block; width:100%; text-align:left;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+    color:#fff; padding:13px 16px; border-radius:12px; margin-bottom:10px;
+    font-size:14px; font-weight:600; transition:all .2s ease;
+  }
+  .quiz-opt:hover { background:rgba(255,182,201,0.18); }
+  .quiz-opt.correct { background:rgba(122,209,150,0.35); border-color:#7ad196; }
+  .quiz-opt.wrong { background:rgba(224,110,110,0.35); border-color:#e06e6e; }
+  #quiz-progress { font-size:12px; color:rgba(255,255,255,0.55); margin-bottom:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+  #quiz-result { text-align:center; padding:30px 10px; }
+  #quiz-result .score { font-family:'Playfair Display', serif; font-style:italic; font-size:40px; color:#ffb6c9; }
+  .btn-pink {
+    margin-top:18px; background:#ffb6c9; color:#3a1220; font-weight:700;
+    padding:12px 22px; border-radius:30px; font-size:14px;
+  }
+
+  /* ---- playlist ---- */
+  .song-row {
+    display:flex; align-items:center; gap:14px;
+    padding:12px 6px; border-bottom:1px solid rgba(255,255,255,0.08);
+    font-size:14px; color:rgba(255,255,255,0.85);
+  }
+  .song-row .note { color:#ffb6c9; }
+  .spotify-wrap { border-radius:16px; overflow:hidden; margin-bottom:24px; }
+
+  /* ---- someday / bucket list ---- */
+  .bucket-item {
+    display:flex; align-items:center; gap:14px;
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.09);
+    border-radius:14px; padding:14px 16px; margin-bottom:10px;
+    font-size:14.5px; color:rgba(255,255,255,0.9);
+    cursor:pointer; transition:all .25s ease;
+  }
+  .bucket-item.done { opacity:.55; text-decoration:line-through; }
+  .bucket-check {
+    width:22px; height:22px; border-radius:50%; flex-shrink:0;
+    border:2px solid rgba(255,255,255,0.4);
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; transition:all .2s ease;
+  }
+  .bucket-item.done .bucket-check { background:#ffb6c9; border-color:#ffb6c9; color:#3a1220; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .particle, .scroll-hint, .reason-card { animation:none !important; }
+  }
+
+  /* ========================================================================
+     ACCESS GATE — asks "are you her" before letting anyone into the site
+  ======================================================================== */
+  body.locked #app, body.locked #bottom-nav, body.locked #letter-progress { display:none; }
+
+  #gate {
+    position:fixed; inset:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:linear-gradient(160deg, var(--gate-from, #3a0510), var(--gate-to, #7a1830));
+  }
+  .gate-card {
+    max-width:380px; width:100%;
+    background:rgba(255,250,246,0.96);
+    border-radius:22px;
+    padding:clamp(30px, 7vw, 40px) clamp(24px, 6vw, 32px);
+    text-align:center;
+    box-shadow:0 24px 60px rgba(0,0,0,0.32);
+    animation:fadeIn .3s ease;
+  }
+  .gate-eyebrow {
+    font-family:'Quicksand', sans-serif;
+    font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    opacity:.55; margin-bottom:10px; color:#2c1a22;
+  }
+  .gate-title {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:clamp(24px, 7vw, 29px); color:#2c1a22; margin-bottom:8px;
+  }
+  .gate-sub {
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:16px; color:rgba(44,26,34,0.7); margin-bottom:26px; line-height:1.5;
+  }
+  .gate-btns { display:flex; flex-direction:column; gap:10px; }
+  .gate-btn {
+    padding:14px 18px; border-radius:14px;
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:14.5px; letter-spacing:.01em;
+    transition:transform .15s ease, opacity .15s ease;
+  }
+  .gate-btn:active { transform:scale(0.96); }
+  .gate-yes { background:#c8425a; color:#fff; }
+  .gate-no { background:transparent; border:1.5px solid rgba(44,26,34,0.25); color:#2c1a22; }
+
+  .gate-denied { background:rgba(20,4,8,0.94); }
+  .error-code {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:60px; line-height:1; color:#ffb6c9; margin-bottom:8px;
+  }
+  .error-title {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:.08em; text-transform:uppercase; color:#fff; margin-bottom:12px;
+  }
+  .error-sub {
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:15px; color:rgba(255,255,255,0.7); margin-bottom:26px; line-height:1.55;
+  }
+  .gate-back { background:transparent; border:1.5px solid rgba(255,255,255,0.3); color:#fff; }
+</style>
+</head>
+<body class="locked">
+
+<!-- ============================ ACCESS GATE ============================ -->
+<div id="gate">
+  <div class="gate-card" id="gate-question">
+    <div class="gate-eyebrow">private page</div>
+    <div class="gate-title" id="gate-title">Are you her?</div>
+    <div class="gate-sub">this page only opens for one person.</div>
+    <div class="gate-btns">
+      <button class="gate-btn gate-yes" id="gate-yes">Yes, that's me</button>
+      <button class="gate-btn gate-no" id="gate-no">No</button>
+    </div>
+  </div>
+  <div class="gate-card gate-denied" id="gate-denied" style="display:none;">
+    <div class="error-code">404</div>
+    <div class="error-title">Page Not Found</div>
+    <div class="error-sub">this address doesn't resolve for you — access is reserved for one person only.</div>
+    <button class="gate-btn gate-back" id="gate-back">Go back</button>
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- ============================ LOVE LETTER ============================ -->
+  <div class="view active" id="view-letter">
+    <div id="letter-scroll"></div>
+  </div>
+  <div id="letter-progress"></div>
+
+  <!-- ============================ OUR STORY ============================ -->
+  <div class="view" id="view-story">
+    <div class="page">
+      <div class="page-title">Our Story</div>
+      <div class="page-sub">every date on here is a day I'd relive on loop</div>
+      <div id="story-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ REASONS ============================ -->
+  <div class="view" id="view-reasons">
+    <div class="page">
+      <div class="page-title">Reasons I Love You</div>
+      <div class="page-sub">an incomplete list, because I keep finding more</div>
+      <div class="reasons-wrap" id="reasons-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ QUIZ ============================ -->
+  <div class="view" id="view-quiz">
+    <div class="page">
+      <div class="page-title">How Well Do You Know Us?</div>
+      <div class="page-sub">no pressure. you already have my whole heart either way</div>
+      <div id="quiz-card"></div>
+    </div>
+  </div>
+
+  <!-- ============================ PLAYLIST ============================ -->
+  <div class="view" id="view-playlist">
+    <div class="page">
+      <div class="page-title">Our Playlist</div>
+      <div class="page-sub" id="playlist-sub">songs that sound like you</div>
+      <div id="playlist-content"></div>
+    </div>
+  </div>
+
+  <!-- ============================ SOMEDAY ============================ -->
+  <div class="view" id="view-someday">
+    <div class="page">
+      <div class="page-title">Someday</div>
+      <div class="page-sub">a running list of the future I want with you — tap what we've already done</div>
+      <div id="someday-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<nav id="bottom-nav"></nav>
+
+<script>
+/* ============================================================================
+   CONFIG — EDIT EVERYTHING HERE
+   ============================================================================
+   This is the only part of the file you should need to touch for content.
+   Scroll through each block below. Colors are HEX values (e.g. "#ffb6c9") —
+   any hex color picker online will help you pick new ones.
+
+   ----------------------------------------------------------------------------
+   ✍️  HOW TO SPACE THE LOVE LETTER (read this before editing `loveLetter`)
+   ----------------------------------------------------------------------------
+   The letter is split into 4 parts — one per scroll section/color below.
+   Each part is an ARRAY OF STRINGS. Each string in the array becomes its
+   own paragraph, with proper spacing between paragraphs automatically.
+
+   ✅ DO   → put each paragraph as its own entry in the array:
+        [
+          "My love, I don't think you know how much your laugh does to me.",
+          "Every morning I wake up grateful it's you next to me."
+        ]
+      This renders as TWO separate, properly-spaced paragraphs.
+
+   ❌ DON'T → cram it all into one giant string. It'll render as one wall
+      of text with no breathing room:
+        [ "My love, I don't think you know... Every morning I wake up..." ]
+
+   Keep each of the 4 parts to roughly 2–4 short paragraphs (about 30–70
+   words total) so it fits nicely on one screen without a giant empty
+   scroll gap. Longer is fine too — she'll just scroll a bit more within
+   that color section before the background changes.
+============================================================================ */
+
+const CONFIG = {
+
+  // Shown in small corner labels / signature. Leave the brackets if you
+  // want to fill them in later, or replace now.
+  yourName: "Z",
+  herName: "Yjhyl",
+
+  // --------------------------------------------------------------------
+  // THE 4 SCROLL SECTIONS — background colors + motif + the letter text
+  // --------------------------------------------------------------------
+  // "particles" accepts any mix of: "rose", "bloom" (small blossom), "heart".
+  // These render as realistic layered SVG shapes (not emoji), auto-tinted
+  // to fit each section's color mood.
+  sections: [
+    {
+      label: "Deep Wine",                 // just an internal name, not shown
+      bgFrom: "#3a0510",
+      bgTo:   "#7a1830",
+      particles: ["rose", "bloom"],
+      eyebrow: "the beginning",
+      loveLetter: [
+        "My baby ku so sweet,",
+        "Alam kong minsan lang us magusap sa gabi kasi hindi natataunan ng tama, so I wanted to surprise you with this special gift, na sana ay magustuhan mo..."
+      ]
+    },
+    {
+      label: "Crimson Bloom",
+      bgFrom: "#8a1f38",
+      bgTo:   "#c8425a",
+      particles: ["rose", "heart"],
+      eyebrow: "the middle",
+      loveLetter: [
+        "Hindi ko man halos mapakita kung gaano kita kamahal, pero sana mapansin mo na ngayon kung gaano kita kamahal,",
+        "You made the best man I could ever be, and I'm so grateful for you, I love you so much sweetie ko!"
+      ]
+    },
+    {
+      label: "Rose",
+      bgFrom: "#d5546b",
+      bgTo:   "#f08fa0",
+      particles: ["heart", "bloom"],
+      eyebrow: "the quiet part",
+      loveLetter: [
+        "Oo, medyo maikli ung letter uhmmmm, kasi maikli ung nalagay ko here, pero you'll enjoy the rest!.",
+        "I love you so much baby, and happy 26th Monthsary (late)!"
+      ]
+    },
+    {
+      label: "Blush",
+      bgFrom: "#f6c3cf",
+      bgTo:   "#ffe6ec",
+      particles: ["heart", "bloom", "rose"],
+      eyebrow: "forever, if you'll have it",
+      loveLetter: [
+        "Thank you for being patient with me, and being always there for me, i love you so much sweetie i really do",
+        "I love you. I love how you always take care of me, and I know LDR na tayo, need na natin mag effort, so let this be an example, oki?"
+      ],
+      signature: true   // shows a signed "— [Your Name]" under the last section
+    }
+  ],
+
+  // --------------------------------------------------------------------
+  // BOTTOM NAV — reorder, rename, or remove tabs. "id" must match one of
+  // the view ids in the HTML (view-letter, view-story, view-reasons,
+  // view-quiz, view-playlist, view-someday).
+  // --------------------------------------------------------------------
+  // "icon" keys map to the SVG_ICONS set defined further down — swap in
+  // any key from that set, or add your own new one there.
+  nav: [
+    { id: "view-letter",   icon: "letter",   label: "Letter" },
+    { id: "view-story",    icon: "book",     label: "Story" },
+    { id: "view-reasons",  icon: "heart",    label: "Reasons" },
+    { id: "view-quiz",     icon: "puzzle",   label: "Us" },
+    { id: "view-playlist", icon: "music",    label: "Playlist" },
+    { id: "view-someday",  icon: "sunrise",  label: "Someday" }
+  ],
+
+  // --------------------------------------------------------------------
+  // OUR STORY — timeline. Add/remove as many entries as you want.
+  // --------------------------------------------------------------------
+  timeline: [
+    { date: "May 20 2024", title: "How we started", text: "WHAHHHWAHWHA TANDA KO MO PADIN BA'TO? uNG LETTER PLUS UNG BRACELET, AND NAG THANK YOUU AKU NAME PO NGA SA FB NUN AY Eiza Spidy HWHAHWAH TAPOS ANG COLD MO PAAA" },
+    { date: "May-June 2024", title: "Tuloy tuloy na usap", text: "PARANG ANG UNLI NG CONVOS NATIN DATIII, LIKE SOBRANG DAMI NATING USAPAN WHHWHWHAH KACUTE DIBAAAAA" },
+    { date: "August 2024", title: "M.U PHASE NA NGA", text: "WHAWHAHWHAH SOBRANG DI KA PANINIWALA NA CRUSH KITA NUN, THEN UMAMIN KA, NAKATULOG, (AKO DIN NAKATULOG), MAAGA AKO NAGISING, AT NAG CONFESS DIN AKU HWHAHWAHAHA KACUTE DIBAAA" },
+    { date: "MGA MONTHSARIES NATIN", title: "LAHAT NG MONTHSARIES", text: "MOST OF THE TIME CUTE US DITOO DIBAA LIKE SOBRANG CUTE NATIN US HEREEE IHHIHIHIHIHIHI" },
+    { date: "Today", title: "Right now", text: "ngayon, 26 months na us, and ngayon, mahal na mahal kita, and mahal padin natin nag isa't isa! and forever na'to!" }
+  ],
+
+  // --------------------------------------------------------------------
+  // REASONS I LOVE YOU — add as many as you want, one sentence each.
+  // --------------------------------------------------------------------
+  reasons: [
+    "super cute mo",
+    "lagi mo natatandaan sinasabi ko",
+    "binibaby moko",
+    "tinatawag mokong goodboy",
+    "mommy po kita!",
+    "sobrang comfortable ko sayo",
+    "hindi moko iniiwan",
+    "lagi moko tinutulugan",
+    "KINIKISS MO AKO KAHIT SA CALL",
+    "pag f2f us malapit ka sakin and maclingy din!", 
+    "lagi nangaasar",
+    "MADAMI PA'TO HA DAGDAGAN KO 'TO SOON DWWW"
+  ],
+
+  // --------------------------------------------------------------------
+  // QUIZ — "how well do you know us." correctIndex is which option (0-based)
+  // is right. Add/remove questions freely.
+  // --------------------------------------------------------------------
+  quiz: [
+    {
+      question: "Where was our first date?",
+      options: ["Bahay", "Jabi", "Potato Corner"],
+      correctIndex: 0
+    },
+    {
+      question: "What's my favorite thing you do?",
+      options: ["Magpacute(CUTE KA NAPALAGI)", "lambing", "bugbog and kagat"],
+      correctIndex: 2
+    },
+    {
+      question: "What song reminds me of you?",
+      options: ["Anutkin - Rico Blanco", "Mundo - IVOS", "Pasilyo - SunKissed Lola"],
+      correctIndex: 1
+    }
+  ],
+
+  // --------------------------------------------------------------------
+  // PLAYLIST — paste a Spotify (or Apple Music) EMBED url if you have one,
+  // it'll show a real player. Leave blank ("") to just show the song list
+  // below instead. To get a Spotify embed link: open the playlist in
+  // Spotify → Share → Embed playlist → copy the src="..." url.
+  // --------------------------------------------------------------------
+  playlist: {
+    embedUrl: "https://open.spotify.com/embed/playlist/60e1tnPOSSZQckZ3WpGdwl?utm_source=generator&si=6d67c7aa160d4cf8",
+    songs: [
+
+    ]
+  },
+
+  // --------------------------------------------------------------------
+  // SOMEDAY / BUCKET LIST — tappable, checked state is remembered
+  // (saved right in her browser via localStorage).
+  // --------------------------------------------------------------------
+  someday: [
+    "France tour 1 week",
+    "MAGLUTOOO",
+    "Adopt a pdog togethers",
+    "Go to a concert of a band we both love! ivos etc",
+    "Build legos more together!",
+    "MAGGAWA NG BACKYARD",
+    "nakatira sa isang bubong",
+    "magtekken",
+    'fc26 together!'
+  ]
+
+};
+
+/* ============================================================================
+   BELOW THIS LINE: rendering logic. You don't need to edit this to
+   personalize the site — but feel free to poke around if you're curious.
+============================================================================ */
+
+if (CONFIG.herName && CONFIG.herName !== "[Her Name]") {
+  document.title = 'For ' + CONFIG.herName;
+}
+
+// ---------- access gate: "are you her?" before letting anyone in ----------
+(function () {
+  const gateEl = document.getElementById('gate');
+  const gateQuestion = document.getElementById('gate-question');
+  const gateDenied = document.getElementById('gate-denied');
+  const gateTitle = document.getElementById('gate-title');
+
+  const askName = (CONFIG.herName && CONFIG.herName !== "[Her Name]") ? CONFIG.herName : "her";
+  gateTitle.textContent = `Are you ${askName}?`;
+
+  // reuse the letter's first-section colors so the gate matches the site
+  const firstSec = CONFIG.sections[0] || {};
+  gateEl.style.setProperty('--gate-from', firstSec.bgFrom || '#3a0510');
+  gateEl.style.setProperty('--gate-to', firstSec.bgTo || '#7a1830');
+
+  document.getElementById('gate-yes').addEventListener('click', () => {
+    document.body.classList.remove('locked');
+    gateEl.remove();
+  });
+  document.getElementById('gate-no').addEventListener('click', () => {
+    gateQuestion.style.display = 'none';
+    gateDenied.style.display = 'block';
+  });
+  document.getElementById('gate-back').addEventListener('click', () => {
+    gateDenied.style.display = 'none';
+    gateQuestion.style.display = 'block';
+  });
+})();
+
+// ---------- SVG icon set for the bottom nav (line icons, no emoji) ----------
+const SVG_ICONS = {
+  letter: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="M3.5 6.2 12 13l8.5-6.8"/></svg>`,
+  book: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.2c1.8-.9 4.4-.9 6.3 0 .6.3 1.1.7 1.4 1.1v13c-.3-.4-.8-.8-1.4-1.1-1.9-.9-4.5-.9-6.3 0V5.2Z"/><path d="M20 5.2c-1.8-.9-4.4-.9-6.3 0-.6.3-1.1.7-1.4 1.1v13c.3-.4.8-.8 1.4-1.1 1.9-.9 4.5-.9 6.3 0V5.2Z"/></svg>`,
+  heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.6-4.6-10-9.3C.4 7.6 2.4 4.4 5.7 4c2-.2 3.7.8 6.3 3.4C14.6 4.8 16.3 3.8 18.3 4c3.3.4 5.3 3.6 3.7 6.9-2.4 4.7-10 9.3-10 9.3Z"/></svg>`,
+  puzzle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3.2a1.6 1.6 0 0 0 1.6-2.6 2.1 2.1 0 1 1 3.4 0A1.6 1.6 0 0 0 13.8 8H17a1 1 0 0 1 1 1v3.2a1.6 1.6 0 0 0 2.6 1.6 2.1 2.1 0 1 1 0 3.4A1.6 1.6 0 0 0 18 18.8V20a1 1 0 0 1-1 1h-3.2a1.6 1.6 0 0 0-1.6 2.6M4 8v11a1 1 0 0 0 1 1h3.2M4 8a1 1 0 0 1 1-1h2.2"/></svg>`,
+  music: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/><path d="M20 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/><path d="M11.5 13.5V5.8L20 4v9.3"/><path d="M11.5 8.2 20 6.6"/></svg>`,
+  sunrise: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3.2"/><path d="M4.8 6.8l2.1 2.1"/><path d="M19.2 6.8l-2.1 2.1"/><path d="M4 17h16"/><path d="M6.5 13.5a5.5 5.5 0 0 1 11 0"/><path d="M2 21h20"/></svg>`
+};
+
+// ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
+function svgHeart(fill1, fill2) {
+  return `<svg viewBox="0 0 32 28" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="g${fill1.slice(1)}${fill2.slice(1)}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${fill1}"/><stop offset="100%" stop-color="${fill2}"/>
+    </linearGradient></defs>
+    <path d="M16 26S3 18 3 9.6C3 4.8 6.6 2 10.2 2c2.4 0 4.4 1.3 5.8 3.4C17.4 3.3 19.4 2 21.8 2c3.6 0 7.2 2.8 7.2 7.6 0 8.4-13 16.4-13 16.4Z"
+      fill="url(#g${fill1.slice(1)}${fill2.slice(1)})"/>
+    <path d="M9.5 8.6c1-1.4 2.3-2 3.6-1.8" stroke="rgba(255,255,255,0.5)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+function svgBloom(petal, center) {
+  const petals = [0,72,144,216,288].map(a =>
+    `<ellipse cx="16" cy="8.5" rx="5.4" ry="8" fill="${petal}" transform="rotate(${a} 16 16)"/>`
+  ).join('');
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    ${petals}
+    <circle cx="16" cy="16" r="4.2" fill="${center}"/>
+  </svg>`;
+}
+function svgRose(dark, mid, light) {
+  return `<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="16" cy="17" r="10.5" fill="${dark}"/>
+    <path d="M16 6.5c3.6 0 6.7 2 8.3 5-2-.8-4.3-.4-5.8 1.1 2.6.2 4.8 1.8 5.9 4.1-2.4-1.4-5.2-1.3-7.3.6 2.2.9 3.8 2.9 4.1 5.3-2-2-4.9-2.7-7.5-1.7 1.4 1.7 1.7 4 .9 6-1.5-2-3.9-3-6.3-2.5.6 2 .1 4.2-1.3 5.7C5.4 27 4.5 24 5.6 21.2c-1.9.9-4.2.6-5.8-.8C1.9 19 4.4 18 6.8 18.4c-1.1-1.7-1-4 .3-5.6-2 .2-3.9-.8-4.9-2.5 2.1-.5 4.3.2 5.6 1.9-.2-2.1.9-4.1 2.8-5.1-.6 2 .1 4.1 1.7 5.4.1-2.6 1.8-4.9 4.2-5.9-1.3 1.8-1.4 4.2-.3 6.1 1-2.4 3.2-4.1 5.8-4.4-2.2 1-3.7 3.1-3.9 5.5 1.8-1.5 4.2-1.9 6.4-1.1-2.3.6-4 2.5-4.5 4.8Z" fill="${mid}" opacity="0.001"/>
+    <path d="M16 8c2.3 1.1 3.6 3.5 3.4 6-2.6-.8-5.5.2-7 2.4.4-2.7 2.1-5 4.6-6.2-1.7-.3-3.5.3-4.7 1.6.8-2.2 2.4-3.8 4.5-4.6-2.4-.2-4.7 1-6 3 0-2.4 1.4-4.6 3.5-5.6-1.9.7-3.3 2.4-3.8 4.4-.7-2.1-.3-4.4 1.1-6.1-1.4 2-1.6 4.6-.6 6.8-1.8-1.4-2.8-3.7-2.6-6 1.9.7 3.3 2.3 3.7 4.3.2-2.4 1.7-4.5 3.9-5.5-1.6 1.4-2.4 3.5-2.2 5.6 1.3-2 3.6-3.2 6-3.1-2.1 1-3.5 3-3.6 5.3 1.9-1.7 4.5-2.2 6.9-1.4-2.4.5-4.2 2.4-4.6 4.8Z" fill="${mid}"/>
+    <path d="M12 14.4c1.4-1.8 3.6-2.7 5.8-2.4-1.6 1-2.6 2.8-2.5 4.7-1.4-1.1-3.3-1.4-5-.9 1.5.6 2.6 1.9 3 3.5-1.7-.4-3.4.1-4.6 1.3 1.7-.1 3.3.7 4.3 2.1-1.7.4-3.5-.1-4.8-1.3 1.5.1 2.9-.6 3.8-1.8-1.6.3-3.3-.2-4.4-1.4 1.6.4 3.3 0 4.5-1.1-1.7-.1-3.2-1-4-2.4 1.5.9 3.3 1.1 4.9.6-.8-1.6-.8-3.5.1-5 .3 1.7 1.3 3.1 2.9 3.9Z" fill="${light}" opacity="0.001"/>
+    <ellipse cx="15" cy="15.5" rx="6.2" ry="4.6" fill="${light}" opacity="0.55" transform="rotate(-18 15 15.5)"/>
+    <path d="M16 26v-9" stroke="#3a7a4a" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M16 20.5c-1.6.3-3.1 1.5-3.8 3" stroke="#3a7a4a" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  </svg>`;
+}
+
+// per-section color palette for the particles, derived from that
+// section's own background so blooms always feel like they belong.
+function particlePalette(sec) {
+  return {
+    rose:  svgRose(sec.bgFrom, sec.bgTo, '#ffe3ea'),
+    bloom: svgBloom(sec.bgTo, '#fff3ea'),
+    heart: svgHeart(sec.bgTo, '#fff0f4')
+  };
+}
+
+// ---------- render bottom nav ----------
+const navEl = document.getElementById('bottom-nav');
+CONFIG.nav.forEach((item, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'nav-btn' + (i === 0 ? ' active' : '');
+  btn.dataset.target = item.id;
+  btn.innerHTML = `<span class="ico">${SVG_ICONS[item.icon] || ''}</span><span>${item.label}</span>`;
+  btn.addEventListener('click', () => switchView(item.id, btn));
+  navEl.appendChild(btn);
+});
+
+function switchView(id, btnEl) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btnEl.classList.add('active');
+  document.getElementById('letter-progress').style.display = (id === 'view-letter') ? 'flex' : 'none';
+  window.scrollTo({ top: 0, behavior: 'instant' });
+}
+
+// ---------- render love letter sections ----------
+const scrollEl = document.getElementById('letter-scroll');
+const progressEl = document.getElementById('letter-progress');
+
+// build one continuous top-to-bottom gradient spanning every section's
+// colors, so the background blends smoothly as you scroll instead of
+// cutting hard at each section boundary.
+const gradientStops = [];
+CONFIG.sections.forEach(sec => gradientStops.push(sec.bgFrom, sec.bgTo));
+scrollEl.style.background = `linear-gradient(180deg, ${
+  gradientStops.map((c, i) => `${c} ${(i / (gradientStops.length - 1) * 100).toFixed(2)}%`).join(', ')
+})`;
+
+CONFIG.sections.forEach((sec, i) => {
+  const section = document.createElement('div');
+  section.className = 'letter-section';
+  section.dataset.index = i;
+
+  const field = document.createElement('div');
+  field.className = 'particle-field';
+  section.appendChild(field);
+
+  const paper = document.createElement('div');
+  paper.className = 'paper';
+  const paragraphs = sec.loveLetter.map(p => `<p class="line">${p}</p>`).join('');
+  const signature = sec.signature
+    ? `<div class="signature">— ${CONFIG.yourName}</div>`
+    : '';
+  const addressedTo = (i === 0 && CONFIG.herName && CONFIG.herName !== "[Her Name]")
+    ? `<div class="eyebrow" style="opacity:.8; margin-bottom:4px;">for ${CONFIG.herName}</div>`
+    : '';
+  paper.innerHTML = `${addressedTo}<div class="eyebrow">${sec.eyebrow || ''}</div>${paragraphs}${signature}`;
+  section.appendChild(paper);
+
+  if (i < CONFIG.sections.length - 1) {
+    const hint = document.createElement('div');
+    hint.className = 'scroll-hint';
+    hint.innerHTML = '<span>keep scrolling</span><span>↓</span>';
+    section.appendChild(hint);
+  }
+
+  scrollEl.appendChild(section);
+
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  progressEl.appendChild(dot);
+});
+
+// spawn floating particles while a section is on screen
+const MAX_PARTICLES_PER_FIELD = 14; // cap keeps DOM/paint cost bounded on long scrolls
+function spawnParticle(field, kinds, palette) {
+  if (field.childElementCount >= MAX_PARTICLES_PER_FIELD) return;
+  const p = document.createElement('span');
+  p.className = 'particle';
+  const kind = kinds[Math.floor(Math.random() * kinds.length)];
+  p.innerHTML = palette[kind];
+  const size = 14 + Math.random() * 16;
+  const left = Math.random() * 92;
+  const duration = 4.5 + Math.random() * 3.5; // faster drift (was 8-14s)
+  const driftAmt = (Math.random() * 140 - 70) + 'px';
+  const spinAmt = (Math.random() * 60 - 30) + 'deg';
+  p.style.left = left + '%';
+  p.style.fontSize = size + 'px';
+  p.style.animationDuration = duration + 's';
+  p.style.setProperty('--drift', driftAmt);
+  p.style.setProperty('--spin', spinAmt);
+  field.appendChild(p);
+  setTimeout(() => p.remove(), duration * 1000 + 200);
+}
+
+const sectionEls = document.querySelectorAll('.letter-section');
+const particleTimers = new Map();
+const sectionPalettes = CONFIG.sections.map(sec => particlePalette(sec));
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const idx = Number(entry.target.dataset.index);
+    const field = entry.target.querySelector('.particle-field');
+    const kinds = CONFIG.sections[idx].particles;
+    const palette = sectionPalettes[idx];
+
+    if (entry.isIntersecting) {
+      document.querySelectorAll('#letter-progress .dot').forEach((d, i) => {
+        d.classList.toggle('active', i === idx);
+      });
+      if (!particleTimers.has(idx)) {
+        const timer = setInterval(() => spawnParticle(field, kinds, palette), 380);
+        particleTimers.set(idx, timer);
+      }
+    } else {
+      if (particleTimers.has(idx)) {
+        clearInterval(particleTimers.get(idx));
+        particleTimers.delete(idx);
+      }
+    }
+  });
+}, { threshold: 0.4 });
+
+sectionEls.forEach(el => observer.observe(el));
+
+// ---------- our story ----------
+const storyList = document.getElementById('story-list');
+CONFIG.timeline.forEach(item => {
+  const el = document.createElement('div');
+  el.className = 'tl-item';
+  el.innerHTML = `
+    <div class="tl-date">${item.date}</div>
+    <div class="tl-title">${item.title}</div>
+    <div class="tl-text">${item.text}</div>`;
+  storyList.appendChild(el);
+});
+
+// ---------- reasons ----------
+const reasonsList = document.getElementById('reasons-list');
+CONFIG.reasons.forEach((reason, i) => {
+  const el = document.createElement('div');
+  el.className = 'reason-card';
+  el.style.animationDelay = (i * 0.04) + 's';
+  el.innerHTML = `<span class="reason-num">${String(i + 1).padStart(2, '0')}</span><span>${reason}</span>`;
+  reasonsList.appendChild(el);
+});
+
+// ---------- quiz ----------
+const quizCard = document.getElementById('quiz-card');
+let quizIndex = 0;
+let quizScore = 0;
+
+function renderQuiz() {
+  if (quizIndex >= CONFIG.quiz.length) {
+    const prevBest = Number(localStorage.getItem('lls_quiz_best') || 0);
+    const best = Math.max(quizScore, prevBest);
+    localStorage.setItem('lls_quiz_best', best);
+    quizCard.innerHTML = `
+      <div id="quiz-result">
+        <div style="font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,0.6);">your score</div>
+        <div class="score">${quizScore} / ${CONFIG.quiz.length}</div>
+        <div style="color:rgba(255,255,255,0.6); font-size:12.5px; margin-top:4px;">best so far: ${best} / ${CONFIG.quiz.length}</div>
+        <div style="color:rgba(255,255,255,0.75); font-size:14px; margin-top:10px;">whatever the number says, you already won — I chose you.</div>
+        <button class="btn-pink" onclick="restartQuiz()">Play again</button>
+      </div>`;
+    return;
+  }
+  const q = CONFIG.quiz[quizIndex];
+  quizCard.innerHTML = `
+    <div id="quiz-progress">Question ${quizIndex + 1} of ${CONFIG.quiz.length}</div>
+    <div id="quiz-question">${q.question}</div>
+    ${q.options.map((opt, i) => `<button class="quiz-opt" data-i="${i}">${opt}</button>`).join('')}
+  `;
+  quizCard.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', () => handleAnswer(Number(btn.dataset.i), q));
+  });
+}
+
+function handleAnswer(choice, q) {
+  const opts = quizCard.querySelectorAll('.quiz-opt');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correctIndex) btn.classList.add('correct');
+    else if (i === choice) btn.classList.add('wrong');
+  });
+  if (choice === q.correctIndex) quizScore++;
+  setTimeout(() => { quizIndex++; renderQuiz(); }, 800);
+}
+
+window.restartQuiz = function () {
+  quizIndex = 0; quizScore = 0; renderQuiz();
+};
+renderQuiz();
+
+// ---------- playlist ----------
+const playlistContent = document.getElementById('playlist-content');
+if (CONFIG.playlist.embedUrl) {
+  playlistContent.innerHTML = `
+    <div class="spotify-wrap">
+      <iframe src="${CONFIG.playlist.embedUrl}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+    </div>`;
+} else {
+  playlistContent.innerHTML = CONFIG.playlist.songs.map(s => `
+    <div class="song-row">🎶 <span>${s.title}</span> <span class="note">— ${s.note}</span></div>
+  `).join('');
+}
+
+// ---------- someday ----------
+const somedayList = document.getElementById('someday-list');
+const savedDone = JSON.parse(localStorage.getItem('lls_someday_done') || '[]');
+CONFIG.someday.forEach((item, i) => {
+  const el = document.createElement('div');
+  el.className = 'bucket-item' + (savedDone.includes(i) ? ' done' : '');
+  el.innerHTML = `<span class="bucket-check">${savedDone.includes(i) ? '✓' : ''}</span><span>${item}</span>`;
+  el.addEventListener('click', () => {
+    el.classList.toggle('done');
+    const check = el.querySelector('.bucket-check');
+    const done = el.classList.contains('done');
+    check.textContent = done ? '✓' : '';
+    let arr = JSON.parse(localStorage.getItem('lls_someday_done') || '[]');
+    arr = done ? [...new Set([...arr, i])] : arr.filter(x => x !== i);
+    localStorage.setItem('lls_someday_done', JSON.stringify(arr));
+  });
+  somedayList.appendChild(el);
+});
+</script>
+</body>
+</html>
