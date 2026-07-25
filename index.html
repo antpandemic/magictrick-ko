@@ -1719,7 +1719,11 @@
 
       <div class="surprise-card" id="song-add-card">
         <div class="surprise-label">Add today's song</div>
-        <input type="text" id="song-new-title" class="map-edit-input" placeholder="Song / artist (e.g. Lover - Taylor Swift)" />
+        <select id="song-playlist-picker" class="map-edit-input">
+          <option value="">Pick from the playlist…</option>
+        </select>
+        <div class="page-sub" style="margin:10px 0 0;">or type your own:</div>
+        <input type="text" id="song-new-title" class="map-edit-input" style="margin-top:10px;" placeholder="Song / artist (e.g. Lover - Taylor Swift)" />
         <input type="text" id="song-new-url" class="map-edit-input" style="margin-top:10px;" placeholder="Spotify / YouTube / Apple Music embed URL" />
         <button class="draw-btn" id="song-add-btn" style="width:100%; margin-top:12px;">Set today's song</button>
       </div>
@@ -2300,7 +2304,7 @@ const CONFIG = {
   // reference it by filename. Leave src empty to hide the toggle.
   // --------------------------------------------------------------------
   bgMusic: {
-    src: "music/song.mp3" // e.g. "music/our-song.mp3"
+    src: "music/our-song.mp3" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -4971,8 +4975,34 @@ async function loadTwoLocations() {
   const urlInput = document.getElementById('song-new-url');
   const addBtn = document.getElementById('song-add-btn');
   const archiveEl = document.getElementById('song-archive-list');
+  const playlistPicker = document.getElementById('song-playlist-picker');
   let songs = [];
   let songReactions = {}; // song_id -> [{reactor, emoji}]
+  let playlistTracks = []; // from playlist_entries
+
+  async function loadPlaylistPicker() {
+    if (!playlistPicker) return;
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('playlist_entries').select('*').order('position', { ascending: true }).order('id', { ascending: true });
+      if (error || !data) return;
+      playlistTracks = data;
+      const current = playlistPicker.value;
+      playlistPicker.innerHTML = '<option value="">Pick from the playlist…</option>' +
+        playlistTracks.map(p => `<option value="${p.id}">${(p.label || 'untitled').replace(/</g, '&lt;')}</option>`).join('');
+      playlistPicker.value = current || '';
+    } catch (err) { console.warn('playlist picker load failed:', err); }
+  }
+
+  if (playlistPicker) {
+    playlistPicker.addEventListener('change', () => {
+      const track = playlistTracks.find(p => String(p.id) === playlistPicker.value);
+      if (track) {
+        titleInput.value = track.label || '';
+        urlInput.value = track.embed_url || '';
+      }
+    });
+  }
 
   function todayStr() {
     const d = new Date();
@@ -5058,6 +5088,7 @@ async function loadTwoLocations() {
       if (sb) await sb.from('song_of_day').insert({ sender, title, embed_url, entry_date: todayStr() });
     } catch (err) { console.warn('song insert failed:', err); }
     titleInput.value = ''; urlInput.value = '';
+    if (playlistPicker) playlistPicker.value = '';
     addBtn.disabled = false;
     load();
   });
@@ -5075,6 +5106,7 @@ async function loadTwoLocations() {
       }
     }
     render();
+    loadPlaylistPicker();
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-song') load(); });
