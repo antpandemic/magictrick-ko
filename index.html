@@ -511,6 +511,7 @@
   /* ---- distance ---- */
   .distance-figure { font-family:'Playfair Display', serif; font-style:italic; font-size:38px; color:#fff; margin:6px 0; }
   .distance-cities { font-size:12.5px; color:rgba(255,255,255,0.55); }
+  .nowplaying-partner { font-size:14px; color:rgba(255,255,255,0.85); font-family:'Cormorant Garamond', serif; font-style:italic; }
 
   /* ---- song of the day ---- */
   .song-reactions { display:flex; gap:8px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
@@ -1034,6 +1035,14 @@
   .bgmusic-btn:active { transform:scale(0.9); }
   .bgmusic-btn.playing { animation:bgmusicPulse 1.6s ease-in-out infinite; }
   @keyframes bgmusicPulse { 0%,100%{ box-shadow:0 8px 20px rgba(0,0,0,0.3); } 50%{ box-shadow:0 8px 24px rgba(var(--accent-rgb), 0.5); } }
+  /* on Chat, the default bottom-right spot overlaps the send button, and
+     top-right would overlap the "you: name" pill in the chat header, so
+     it moves to the top-left instead */
+  .bgmusic-btn.bgmusic-top {
+    top:calc(14px + env(safe-area-inset-top, 0px)); bottom:auto;
+    left:calc(16px + env(safe-area-inset-left, 0px)); right:auto;
+    width:40px; height:40px; font-size:16px;
+  }
 
   /* ---- confetti burst ---- */
   .confetti-burst { position:fixed; inset:0; z-index:10000; pointer-events:none; overflow:hidden; }
@@ -1431,6 +1440,14 @@
         <div class="playlist-chips" id="playlist-chips"></div>
         <button class="playlist-manage-btn" id="playlist-manage-btn">Manage</button>
       </div>
+
+      <div class="surprise-card" id="nowplaying-card">
+        <div class="surprise-label">🎧 Now Playing</div>
+        <div class="nowplaying-partner" id="nowplaying-partner-text">nothing shared yet</div>
+        <input type="text" id="nowplaying-my-input" class="map-edit-input" style="margin-top:10px;" placeholder="What are you listening to?" maxlength="80" />
+        <button class="draw-btn" id="nowplaying-save-btn" style="width:100%; margin-top:10px;">Share what's playing</button>
+      </div>
+
       <div id="playlist-content"></div>
     </div>
   </div>
@@ -1800,6 +1817,55 @@
     </div>
   </div>
 
+  <!-- ============================ MOVIE NIGHT SYNC (subpage) ============================ -->
+  <div class="view" id="view-movienight">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Movie Night</div>
+          <div class="page-sub" style="margin-bottom:0;">schedule it, then press play together</div>
+        </div>
+      </div>
+
+      <!-- shown while a movie night is scheduled and hasn't started yet -->
+      <div class="surprise-card surprise-card-center" id="movienight-countdown-card" style="display:none;">
+        <div class="surprise-label" id="movienight-title-label">Coming up</div>
+        <div class="distance-figure" id="movienight-countdown-figure">—</div>
+        <div class="distance-cities" id="movienight-countdown-sub"></div>
+        <button class="repair-okay-btn" id="movienight-start-btn" style="margin-top:14px;">🍿 We're both ready — start!</button>
+        <button class="draw-btn" id="movienight-cancel-btn" style="margin-top:10px;">Cancel this plan</button>
+      </div>
+
+      <!-- shown during the synced 5-second countdown after either person hits start -->
+      <div class="surprise-card surprise-card-center" id="movienight-sync-card" style="display:none;">
+        <div class="surprise-label">Get ready</div>
+        <div class="distance-figure" id="movienight-sync-figure">5</div>
+        <div class="distance-cities">press play on the count of "now"</div>
+      </div>
+
+      <!-- shown briefly right after the synced countdown hits zero -->
+      <div class="surprise-card surprise-card-center" id="movienight-go-card" style="display:none;">
+        <div class="surprise-label">🎬 Now!</div>
+        <div class="distance-cities">enjoy the movie 💛</div>
+        <button class="draw-btn" id="movienight-done-btn" style="margin-top:14px;">Plan another movie night</button>
+      </div>
+
+      <!-- shown when nothing is scheduled -->
+      <div class="surprise-card" id="movienight-plan-card">
+        <div class="surprise-label">Plan a movie night</div>
+        <select id="movienight-watchlist-picker" class="map-edit-input">
+          <option value="">Pick from the watchlist…</option>
+        </select>
+        <input type="text" id="movienight-title-input" class="map-edit-input" style="margin-top:10px;" placeholder="What are you watching?" maxlength="80" />
+        <input type="datetime-local" id="movienight-time-input" class="map-edit-input" style="margin-top:10px;" />
+        <button class="draw-btn" id="movienight-plan-btn" style="width:100%; margin-top:12px;">Set movie night</button>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -2142,7 +2208,8 @@ const CONFIG = {
     { id: "view-song",      icon: "music",      label: "Song of the Day", sub: "one pick a day, react to each other's",            ready: true },
     { id: "view-milestones",icon: "sparkle",    label: "Milestones",      sub: "every month-aversary, counted automatically",      ready: true },
     { id: "view-theme",     icon: "palette",    label: "Theme",           sub: "reskin the whole app, for both of you",            ready: true },
-    { id: "view-currently", icon: "sunrise",    label: "Currently",       sub: "a one-line status, always visible to each other",  ready: true }
+    { id: "view-currently", icon: "sunrise",    label: "Currently",       sub: "a one-line status, always visible to each other",  ready: true },
+    { id: "view-movienight",icon: "film",       label: "Movie Night",     sub: "schedule it, then press play together",            ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -2409,7 +2476,8 @@ const SVG_ICONS = {
   cloud: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5a4.3 4.3 0 0 1-1-8.5 5.5 5.5 0 0 1 10.6-1.8A4.2 4.2 0 0 1 17.5 18.5H7Z"/></svg>`,
   watchlist: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="6.5" width="17.6" height="13" rx="2"/><path d="M3.2 10.5h17.6"/><path d="M7 6.5 9.3 3.5M13 6.5l2.3-3M17.8 6.5l1.6-2.2"/><path d="M10.3 13.2 14 15.4l-3.7 2.2v-4.4Z" fill="currentColor" stroke="none"/></svg>`,
   distance: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5c0-3.5 2.3-6 4-6s4 2.5 4 6"/><circle cx="8.5" cy="9.5" r="3"/><path d="M14.5 14.5c0-2.6 1.7-4.5 3-4.5s3 1.9 3 4.5"/><circle cx="17.5" cy="6.5" r="2.2"/></svg>`,
-  palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5A8.5 8.5 0 1 0 12 20.5c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8h1.8a4 4 0 0 0 4-4c0-4.4-4-7-8.4-7Z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="17" cy="11.5" r="1" fill="currentColor" stroke="none"/></svg>`
+  palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5A8.5 8.5 0 1 0 12 20.5c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8h1.8a4 4 0 0 0 4-4c0-4.4-4-7-8.4-7Z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="17" cy="11.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+  film: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 9.5h18M3 14.5h18M8 5.5v13M16 5.5v13"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -3759,6 +3827,12 @@ buildDeck();
       ico.textContent = '❚❚';
     }
     playing = !playing;
+  });
+
+  // the button's usual bottom-right spot sits right on top of the chat
+  // send button, so bump it up to the top-left only while on Chat
+  window.addEventListener('viewchange', (e) => {
+    btn.classList.toggle('bgmusic-top', e.detail && e.detail.id === 'view-chat');
   });
 })();
 
@@ -5236,6 +5310,223 @@ async function loadTwoLocations() {
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-currently') load(); });
   load();
   setInterval(load, 5 * 60 * 1000);
+})();
+
+// ---------- now playing ----------
+(function () {
+  const myInput = document.getElementById('nowplaying-my-input');
+  if (!myInput) return;
+  const saveBtn = document.getElementById('nowplaying-save-btn');
+  const partnerText = document.getElementById('nowplaying-partner-text');
+  const sb = getSb();
+  let channel = null;
+
+  function showPartnerRow(row) {
+    const mine = getSharedName();
+    if (!row || row.sender === mine) return;
+    partnerText.textContent = row.track
+      ? `${row.sender} is listening to: ${row.track}`
+      : `${row.sender} isn't sharing anything right now`;
+  }
+
+  async function load() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('now_playing').select('*');
+      if (error || !data) return;
+      const mine = getSharedName();
+      const mineRow = data.find(r => r.sender === mine);
+      const partnerRow = data.find(r => r.sender !== mine);
+      if (mineRow) myInput.value = mineRow.track || '';
+      if (partnerRow) showPartnerRow(partnerRow);
+      else partnerText.textContent = 'nothing shared yet';
+    } catch (err) { console.warn('now playing load failed:', err); }
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    const sender = getSharedName();
+    if (!sender) { partnerText.textContent = 'set your name in Chat first'; return; }
+    const track = (myInput.value || '').trim();
+    saveBtn.disabled = true;
+    try {
+      if (sb) await sb.from('now_playing').upsert({ sender, track, updated_at: new Date().toISOString() }, { onConflict: 'sender' });
+    } catch (err) { console.warn('now playing save failed:', err); }
+    saveBtn.disabled = false;
+    load();
+  });
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('now_playing_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'now_playing' }, (payload) => {
+        if (payload.new) showPartnerRow(payload.new);
+      })
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-playlist') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- movie night sync ----------
+(function () {
+  const planCard = document.getElementById('movienight-plan-card');
+  if (!planCard) return;
+  const countdownCard = document.getElementById('movienight-countdown-card');
+  const syncCard = document.getElementById('movienight-sync-card');
+  const goCard = document.getElementById('movienight-go-card');
+  const titleLabel = document.getElementById('movienight-title-label');
+  const countdownFigure = document.getElementById('movienight-countdown-figure');
+  const countdownSub = document.getElementById('movienight-countdown-sub');
+  const startBtn = document.getElementById('movienight-start-btn');
+  const cancelBtn = document.getElementById('movienight-cancel-btn');
+  const syncFigure = document.getElementById('movienight-sync-figure');
+  const doneBtn = document.getElementById('movienight-done-btn');
+  const watchlistPicker = document.getElementById('movienight-watchlist-picker');
+  const titleInput = document.getElementById('movienight-title-input');
+  const timeInput = document.getElementById('movienight-time-input');
+  const planBtn = document.getElementById('movienight-plan-btn');
+  const sb = getSb();
+
+  const SYNC_BUFFER_MS = 5000; // everyone targets "started_at + 5s" as the moment to press play
+  let current = null; // latest movie_nights row
+  let countdownTimer = null;
+  let syncTimer = null;
+  let channel = null;
+
+  function showOnly(card) {
+    [planCard, countdownCard, syncCard, goCard].forEach(c => { c.style.display = (c === card) ? '' : 'none'; });
+  }
+
+  function fmtCountdown(ms) {
+    if (ms <= 0) return 'any moment now';
+    const mins = Math.floor(ms / 60000);
+    const days = Math.floor(mins / 1440);
+    const hours = Math.floor((mins % 1440) / 60);
+    const remMins = mins % 60;
+    if (days > 0) return `${days}d ${hours}h`;
+    if (hours > 0) return `${hours}h ${remMins}m`;
+    return `${Math.max(remMins, 1)}m`;
+  }
+
+  async function loadWatchlistPicker() {
+    if (!watchlistPicker || !sb) return;
+    try {
+      const { data, error } = await sb.from('watchlist_items').select('*').order('id', { ascending: false }).limit(50);
+      if (error || !data) return;
+      watchlistPicker.innerHTML = '<option value="">Pick from the watchlist…</option>' +
+        data.map(w => `<option value="${w.title.replace(/"/g, '&quot;')}">${(w.title || 'untitled').replace(/</g, '&lt;')}</option>`).join('');
+    } catch (err) { console.warn('watchlist picker load failed:', err); }
+  }
+  if (watchlistPicker) {
+    watchlistPicker.addEventListener('change', () => {
+      if (watchlistPicker.value) titleInput.value = watchlistPicker.value;
+    });
+  }
+
+  function stopCountdownTimer() { if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; } }
+  function stopSyncTimer() { if (syncTimer) { clearInterval(syncTimer); syncTimer = null; } }
+
+  function renderScheduled(row) {
+    stopSyncTimer();
+    showOnly(countdownCard);
+    titleLabel.textContent = row.title ? `Coming up: ${row.title}` : 'Coming up';
+    stopCountdownTimer();
+    const tick = () => {
+      const ms = new Date(row.scheduled_at).getTime() - Date.now();
+      countdownFigure.textContent = fmtCountdown(ms);
+      countdownSub.textContent = new Date(row.scheduled_at).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+    tick();
+    countdownTimer = setInterval(tick, 30000);
+  }
+
+  function renderSyncing(row) {
+    stopCountdownTimer();
+    const target = new Date(row.started_at).getTime() + SYNC_BUFFER_MS;
+    const tick = () => {
+      const secsLeft = Math.ceil((target - Date.now()) / 1000);
+      if (secsLeft > 0) {
+        showOnly(syncCard);
+        syncFigure.textContent = String(secsLeft);
+      } else {
+        stopSyncTimer();
+        showOnly(goCard);
+      }
+    };
+    tick();
+    stopSyncTimer();
+    syncTimer = setInterval(tick, 250);
+  }
+
+  function render() {
+    if (!current) { showOnly(planCard); return; }
+    if (current.started_at) renderSyncing(current);
+    else renderScheduled(current);
+  }
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('movie_nights').select('*').order('created_at', { ascending: false }).limit(1);
+      if (!error && data) current = data[0] || null;
+    } catch (err) { console.warn('movie night load failed:', err); }
+    render();
+  }
+
+  planBtn.addEventListener('click', async () => {
+    const title = (titleInput.value || '').trim();
+    const when = timeInput.value;
+    if (!title || !when) return;
+    const sender = getSharedName() || 'someone';
+    planBtn.disabled = true;
+    try {
+      if (sb) await sb.from('movie_nights').insert({ title, scheduled_at: new Date(when).toISOString(), created_by: sender });
+    } catch (err) { console.warn('movie night plan failed:', err); }
+    titleInput.value = ''; timeInput.value = ''; if (watchlistPicker) watchlistPicker.value = '';
+    planBtn.disabled = false;
+    load();
+  });
+
+  startBtn.addEventListener('click', async () => {
+    if (!current) return;
+    startBtn.disabled = true;
+    try {
+      if (sb) await sb.from('movie_nights').update({ started_at: new Date().toISOString() }).eq('id', current.id);
+    } catch (err) { console.warn('movie night start failed:', err); }
+    startBtn.disabled = false;
+    load();
+  });
+
+  cancelBtn.addEventListener('click', async () => {
+    if (!current) return;
+    try {
+      if (sb) await sb.from('movie_nights').delete().eq('id', current.id);
+    } catch (err) { console.warn('movie night cancel failed:', err); }
+    current = null;
+    load();
+  });
+
+  doneBtn.addEventListener('click', async () => {
+    if (!current) { render(); return; }
+    try {
+      if (sb) await sb.from('movie_nights').delete().eq('id', current.id);
+    } catch (err) { console.warn('movie night cleanup failed:', err); }
+    current = null;
+    render();
+  });
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('movie_nights_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'movie_nights' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-movienight') { load(); loadWatchlistPicker(); } });
+  load();
+  subscribe();
 })();
 
 
