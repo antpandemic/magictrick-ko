@@ -24,6 +24,21 @@
 
 <style>
   /* ========================================================================
+     THEME VARIABLES — change these (or use the in-app "Theme" picker in
+     More hub, which edits these live and can save to Supabase so you
+     both see the same theme) to reskin the whole app.
+  ======================================================================== */
+  :root {
+    --accent: #ff4d6d;
+    --accent-rgb: 255,77,109;
+    --accent-light: #ffb6c9;
+    --accent-light-rgb: 255,182,201;
+    --bg-from: #2c0910;
+    --bg-mid: #5c1a29;
+    --bg-to: #8a2e46;
+  }
+
+  /* ========================================================================
      BASE / RESET
   ======================================================================== */
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -184,16 +199,16 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently {
     min-height:100svh;
-    background:linear-gradient(180deg, #2c0910, #5c1a29 55%, #8a2e46);
+    background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
   /* view-chat gets its own sizing rule below (via #view-chat.active) so it
      must NOT also get min-height:100svh here — that was overriding the
      intended height and pushing the message input down behind the fixed
      bottom nav bar, making it invisible and unusable. */
   #view-chat {
-    background:linear-gradient(180deg, #2c0910, #5c1a29 55%, #8a2e46);
+    background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
 
   /* ---- timeline ---- */
@@ -204,9 +219,9 @@
   .tl-item::before {
     content:''; position:absolute; left:-7px; top:2px;
     width:12px; height:12px; border-radius:50%;
-    background:#ffb6c9; box-shadow:0 0 0 4px rgba(255,182,201,0.2);
+    background:var(--accent-light); box-shadow:0 0 0 4px rgba(var(--accent-light-rgb), 0.2);
   }
-  .tl-date { font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#ffb6c9; margin-bottom:4px; }
+  .tl-date { font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent-light); margin-bottom:4px; }
   .tl-title { font-family:'Playfair Display', serif; font-size:19px; color:#fff; margin-bottom:4px; }
   .tl-text { font-size:14px; color:rgba(255,255,255,0.72); line-height:1.55; }
   .tl-item-actions { display:flex; gap:8px; margin-top:8px; }
@@ -239,7 +254,7 @@
     animation:reasonIn .32s ease forwards;
   }
   @keyframes reasonIn { to{opacity:1; transform:translateY(0);} }
-  .reason-num { font-family:'Playfair Display', serif; font-style:italic; color:#ffb6c9; font-size:16px; flex-shrink:0; }
+  .reason-num { font-family:'Playfair Display', serif; font-style:italic; color:var(--accent-light); font-size:16px; flex-shrink:0; }
 
   /* ---- gallery: tinder-style swipe deck ---- */
   .swipe-deck {
@@ -309,7 +324,7 @@
   }
   .swipe-btn:active { transform:scale(0.88); }
   .swipe-btn-nah { color:#ff5c72; }
-  .swipe-btn-love { color:#ff4d6d; }
+  .swipe-btn-love { color:var(--accent); }
 
   /* ---- hello kitty pat ---- */
   .kitty-wrap {
@@ -379,7 +394,7 @@
     color:rgba(255,255,255,0.65); letter-spacing:.02em;
   }
   .mood-btn:active { transform:scale(0.93); }
-  .mood-btn.active { background:rgba(255,77,109,0.22); border-color:rgba(255,77,109,0.4); }
+  .mood-btn.active { background:rgba(var(--accent-rgb), 0.22); border-color:rgba(var(--accent-rgb), 0.4); }
   .mood-msg {
     margin-top:14px; min-height:22px; text-align:center;
     font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px;
@@ -392,6 +407,228 @@
     min-height:16px; opacity:0; transition:opacity .3s ease;
   }
   .mood-partner.show { opacity:1; }
+
+  /* ---- more hub ---- */
+  .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .hub-card {
+    display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px; padding:16px 14px; text-align:left;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .hub-card:active { transform:scale(0.96); }
+  .hub-card .ico { width:24px; height:24px; color:var(--accent-light); }
+  .hub-card .ico svg { width:100%; height:100%; display:block; }
+  .hub-card-label {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:13.5px; color:#fff;
+  }
+  .hub-card-sub {
+    font-family:'Quicksand', sans-serif; font-size:11px; color:rgba(255,255,255,0.5);
+    line-height:1.4;
+  }
+  .hub-card.disabled { opacity:0.45; }
+  .hub-card.disabled:active { transform:none; }
+  .hub-card-soon {
+    font-size:9.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+    color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.08);
+    border-radius:8px; padding:2px 7px; margin-top:-2px;
+  }
+
+  /* ---- capsule / journal shared hint + list item ---- */
+  .capsule-hint { margin-top:10px; text-align:center; font-size:11.5px; color:rgba(255,255,255,0.45); }
+  .capsule-item, .journal-item, .voice-item, .watchlist-item {
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.09);
+    border-radius:16px; padding:14px 16px; margin-bottom:10px;
+  }
+  .capsule-item-top, .journal-item-top, .watchlist-item-top {
+    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px;
+  }
+  .capsule-item-sender, .journal-item-sender {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:11.5px; color:var(--accent-light);
+  }
+  .capsule-item-date, .journal-item-date {
+    font-family:'Quicksand', sans-serif; font-size:10.5px; color:rgba(255,255,255,0.45);
+  }
+  .capsule-item-text, .journal-item-text {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px;
+    color:rgba(255,255,255,0.85); line-height:1.5;
+  }
+  .capsule-item.locked { display:flex; align-items:center; gap:10px; opacity:.75; }
+  .capsule-item.locked .capsule-lock-ico { width:20px; height:20px; flex-shrink:0; color:var(--accent-light); }
+  .capsule-item.locked .capsule-item-text { font-style:normal; font-size:13px; }
+  .capsule-empty, .journal-empty, .voice-empty, .watchlist-empty {
+    text-align:center; font-size:13px; color:rgba(255,255,255,0.4); padding:14px 0;
+  }
+
+  /* ---- voice notes ---- */
+  .voice-record-btn {
+    width:64px; height:64px; border-radius:50%; margin:0 auto;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(var(--accent-rgb), 0.18); border:2px solid rgba(var(--accent-rgb), 0.5); color:#ff8fa3;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .voice-record-btn svg { width:24px; height:24px; }
+  .voice-record-btn.recording { background:var(--accent); border-color:var(--accent); color:#fff; animation:voicePulse 1.2s ease-in-out infinite; }
+  @keyframes voicePulse { 0%,100%{box-shadow:0 0 0 0 rgba(var(--accent-rgb), 0.45);} 50%{box-shadow:0 0 0 10px rgba(var(--accent-rgb), 0);} }
+  .voice-record-btn:active { transform:scale(0.93); }
+  .voice-record-status { margin-top:12px; font-size:12px; color:rgba(255,255,255,0.55); }
+  .voice-item { display:flex; align-items:center; gap:12px; }
+  .voice-item audio { flex:1; height:34px; }
+  .voice-item-meta { display:flex; flex-direction:column; gap:2px; min-width:64px; }
+  .voice-item-sender { font-family:'Quicksand', sans-serif; font-weight:700; font-size:11.5px; color:var(--accent-light); }
+  .voice-item-date { font-family:'Quicksand', sans-serif; font-size:10px; color:rgba(255,255,255,0.4); }
+
+  /* ---- weather together ---- */
+  .weather-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .weather-card {
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px; padding:20px 14px; text-align:center;
+  }
+  .weather-card-city { font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px; color:rgba(255,255,255,0.7); margin-bottom:2px; }
+  .weather-card-label { font-family:'Quicksand', sans-serif; font-size:10.5px; color:rgba(255,255,255,0.45); margin-bottom:10px; }
+  .weather-card-ico { width:38px; height:38px; margin:0 auto 8px; color:#ffd8a8; }
+  .weather-card-temp { font-family:'Playfair Display', serif; font-size:30px; color:#fff; }
+  .weather-card-desc { font-size:12px; color:rgba(255,255,255,0.6); margin-top:4px; }
+  .weather-card.loading, .weather-card.error { color:rgba(255,255,255,0.45); font-size:12.5px; padding:36px 14px; }
+
+  /* ---- watchlist ---- */
+  .watchlist-tabs { display:flex; gap:8px; margin-bottom:14px; }
+  .watchlist-tab {
+    flex:1; padding:9px 0; border-radius:14px; text-align:center;
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:12px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.6);
+  }
+  .watchlist-tab.active { background:rgba(var(--accent-rgb), 0.22); border-color:rgba(var(--accent-rgb), 0.4); color:#fff; }
+  .watchlist-item-title { font-family:'Quicksand', sans-serif; font-weight:700; font-size:14.5px; color:#fff; }
+  .watchlist-item-type { font-size:10.5px; color:rgba(255,255,255,0.45); text-transform:uppercase; letter-spacing:.05em; }
+  .watchlist-item-actions { display:flex; gap:8px; }
+  .watchlist-item-actions button {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:11px;
+    padding:5px 11px; border-radius:12px; border:1.5px solid rgba(255,255,255,0.25);
+    color:rgba(255,255,255,0.85); background:transparent; touch-action:manipulation;
+  }
+
+  /* ---- distance ---- */
+  .distance-figure { font-family:'Playfair Display', serif; font-style:italic; font-size:38px; color:#fff; margin:6px 0; }
+  .distance-cities { font-size:12.5px; color:rgba(255,255,255,0.55); }
+
+  /* ---- song of the day ---- */
+  .song-reactions { display:flex; gap:8px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+  .song-reaction-btn {
+    display:flex; align-items:center; gap:5px;
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.14);
+    border-radius:14px; padding:6px 12px; font-size:16px;
+    transition:transform .12s ease, background .12s ease;
+  }
+  .song-reaction-btn.mine { background:rgba(var(--accent-rgb),0.22); border-color:rgba(var(--accent-rgb),0.5); }
+  .song-reaction-btn:active { transform:scale(0.92); }
+  .song-reaction-count { font-family:'Quicksand', sans-serif; font-weight:700; font-size:11.5px; color:rgba(255,255,255,0.7); }
+  .song-embed-frame { width:100%; border:none; border-radius:14px; }
+  .song-archive-item {
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09);
+    border-radius:14px; padding:12px 14px; margin-bottom:10px;
+  }
+  .song-archive-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .song-archive-title { font-family:'Quicksand', sans-serif; font-weight:700; font-size:13.5px; color:#fff; }
+  .song-archive-date { font-size:10.5px; color:rgba(255,255,255,0.45); }
+  .song-archive-by { font-size:11px; color:rgba(255,255,255,0.5); margin-bottom:6px; }
+  .song-archive-reactions { font-size:13px; color:rgba(255,255,255,0.65); }
+
+  /* ---- milestones ---- */
+  .milestone-item {
+    display:flex; align-items:center; gap:12px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.09);
+    border-radius:14px; padding:13px 16px; margin-bottom:10px;
+  }
+  .milestone-item.past { opacity:.55; }
+  .milestone-dot { width:9px; height:9px; border-radius:50%; background:var(--accent-light); flex-shrink:0; box-shadow:0 0 0 3px rgba(var(--accent-light-rgb),0.2); }
+  .milestone-item.past .milestone-dot { background:rgba(255,255,255,0.3); box-shadow:none; }
+  .milestone-label { font-family:'Quicksand', sans-serif; font-weight:700; font-size:13.5px; color:#fff; }
+  .milestone-date { font-size:11px; color:rgba(255,255,255,0.5); }
+
+  /* ---- theme picker ---- */
+  .theme-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .theme-swatch {
+    border-radius:18px; padding:16px 14px; text-align:left;
+    border:2px solid rgba(255,255,255,0.12); position:relative; overflow:hidden;
+    transition:transform .15s ease;
+  }
+  .theme-swatch:active { transform:scale(0.96); }
+  .theme-swatch.active { border-color:#fff; }
+  .theme-swatch-dots { display:flex; gap:6px; margin-bottom:10px; }
+  .theme-swatch-dot { width:16px; height:16px; border-radius:50%; border:1px solid rgba(255,255,255,0.25); }
+  .theme-swatch-name { font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px; color:#fff; }
+
+  /* ---- currently status ---- */
+  .currently-partner-text {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:19px; color:#fff;
+  }
+  #currently-badge {
+    position:fixed; left:calc(16px + env(safe-area-inset-left, 0px));
+    top:calc(52px + env(safe-area-inset-top, 0px)); z-index:400;
+    font-family:'Quicksand', sans-serif; font-weight:600; font-size:10.5px;
+    color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18);
+    border-radius:14px; padding:5px 11px; backdrop-filter:blur(6px);
+    display:none; max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+
+  /* ---- chat: instagram-style double-tap-to-like heart overlay ---- */
+  .chat-bubble-row { position:relative; }
+  .chat-dtap-heart {
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(0.4);
+    font-size:44px; opacity:0; pointer-events:none; filter:drop-shadow(0 4px 10px rgba(0,0,0,0.35));
+  }
+  .chat-dtap-heart.pop { animation:chatHeartPop .7s ease forwards; }
+  @keyframes chatHeartPop {
+    0%   { opacity:0; transform:translate(-50%,-50%) scale(0.3); }
+    30%  { opacity:1; transform:translate(-50%,-50%) scale(1.15); }
+    55%  { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    100% { opacity:0; transform:translate(-50%,-50%) scale(1); }
+  }
+
+  /* ---- subpages reached via the More hub ---- */
+  .subpage-header { display:flex; align-items:center; gap:12px; margin-bottom:32px; }
+  .subpage-back {
+    flex-shrink:0; width:36px; height:36px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff;
+  }
+  .subpage-back:active { transform:scale(0.9); }
+  .subpage-back svg { width:18px; height:18px; }
+  #view-repair .page-title, #view-repair .page-sub { margin-bottom:0; }
+
+  /* ---- repair kit ---- */
+  .repair-ping-banner {
+    display:none; align-items:center; gap:8px;
+    background:rgba(255,209,102,0.14); border:1px solid rgba(255,209,102,0.35);
+    border-radius:14px; padding:11px 14px; margin-bottom:20px;
+    font-family:'Quicksand', sans-serif; font-size:12.5px; color:#ffe4a3;
+  }
+  .repair-ping-banner.show { display:flex; }
+  .repair-timer-display {
+    text-align:center; font-family:'Playfair Display', serif; font-style:italic;
+    font-size:26px; color:#fff; margin-bottom:14px;
+  }
+  .repair-timer-choices { display:flex; gap:8px; justify-content:center; }
+  .repair-timer-note {
+    text-align:center; font-size:11.5px; color:rgba(255,255,255,0.5); margin-top:10px;
+    font-family:'Quicksand', sans-serif;
+  }
+  .repair-prompt {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:16.5px;
+    line-height:1.5; color:rgba(255,255,255,0.9); text-align:center; min-height:50px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .repair-okay-btn {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:15px; color:#fff;
+    background:linear-gradient(135deg, #ffb84d, #ff7a4d);
+    border-radius:20px; padding:14px 26px; box-shadow:0 6px 18px rgba(255,122,77,0.3);
+  }
+  .repair-okay-btn:active { transform:scale(0.95); }
+  .repair-okay-note {
+    font-family:'Quicksand', sans-serif; font-size:11px; color:rgba(255,255,255,0.45);
+    margin-top:12px; text-align:center;
+  }
 
   /* ---- countdown ---- */
   .countdown-grid { display:flex; justify-content:center; gap:10px; }
@@ -413,15 +650,15 @@
   .love-meter-ico { font-size:18px; flex-shrink:0; }
   .love-slider {
     flex:1; -webkit-appearance:none; appearance:none; height:6px; border-radius:6px;
-    background:linear-gradient(90deg, rgba(255,255,255,0.15), #ff4d6d);
+    background:linear-gradient(90deg, rgba(255,255,255,0.15), var(--accent));
     outline:none;
   }
   .love-slider::-webkit-slider-thumb {
     -webkit-appearance:none; appearance:none; width:28px; height:28px; border-radius:50%;
-    background:#fff; border:3px solid #ff4d6d; cursor:pointer;
+    background:#fff; border:3px solid var(--accent); cursor:pointer;
   }
   .love-slider::-moz-range-thumb {
-    width:28px; height:28px; border-radius:50%; background:#fff; border:3px solid #ff4d6d; cursor:pointer;
+    width:28px; height:28px; border-radius:50%; background:#fff; border:3px solid var(--accent); cursor:pointer;
   }
   .love-meter-value {
     text-align:center; margin-top:10px;
@@ -552,7 +789,7 @@
     display:flex; align-items:center; justify-content:space-between; gap:10px;
     flex-shrink:0; padding:clamp(20px, 6vh, 32px) 20px 16px;
     position:sticky; top:0; z-index:5;
-    background:linear-gradient(180deg, #2c0910 55%, rgba(44,9,16,0));
+    background:linear-gradient(180deg, var(--bg-from) 55%, rgba(44,9,16,0));
     backdrop-filter:blur(6px);
   }
   .chat-subtitle { font-size:13px; color:rgba(255,255,255,0.55); margin-top:2px; }
@@ -567,7 +804,7 @@
   .chat-whoami:active { transform:scale(0.95); }
   .chat-whoami-dot {
     width:8px; height:8px; border-radius:50%; flex-shrink:0;
-    background:#ffb6c9; box-shadow:0 0 0 3px rgba(255,182,201,0.22);
+    background:var(--accent-light); box-shadow:0 0 0 3px rgba(var(--accent-light-rgb), 0.22);
   }
   .chat-messages {
     flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
@@ -597,7 +834,7 @@
     box-shadow:0 4px 14px rgba(0,0,0,0.18);
   }
   .chat-msg.mine .chat-bubble {
-    background:linear-gradient(135deg, #ff6f8a, #e63a5c);
+    background:linear-gradient(135deg, var(--accent), #e63a5c);
     color:#fff; border-bottom-right-radius:6px;
   }
   .chat-msg.theirs .chat-bubble {
@@ -607,7 +844,7 @@
   .chat-msg.grouped.mine .chat-bubble { border-top-right-radius:6px; }
   .chat-msg.grouped.theirs .chat-bubble { border-top-left-radius:6px; }
   .chat-msg-sender {
-    font-size:10.5px; font-weight:700; color:#ffb6c9; margin:0 6px 3px;
+    font-size:10.5px; font-weight:700; color:var(--accent-light); margin:0 6px 3px;
     letter-spacing:.02em;
   }
   .chat-msg-meta {
@@ -662,14 +899,14 @@
     gap:10px; text-align:center; color:rgba(255,255,255,0.45);
     font-size:13px; margin-top:16vh; flex:1;
   }
-  .chat-empty svg { width:34px; height:34px; opacity:.5; color:#ffb6c9; }
+  .chat-empty svg { width:34px; height:34px; opacity:.5; color:var(--accent-light); }
   .chat-input-row {
     flex-shrink:0; display:flex; align-items:center; gap:8px;
     margin:8px 20px 0; padding:6px 6px 6px 18px;
     background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.14);
     border-radius:28px; transition:border-color .15s ease, background .15s ease;
   }
-  .chat-input-row:focus-within { border-color:rgba(255,77,109,0.55); background:rgba(255,255,255,0.1); }
+  .chat-input-row:focus-within { border-color:rgba(var(--accent-rgb), 0.55); background:rgba(255,255,255,0.1); }
   .chat-input {
     flex:1; font-family:'Quicksand', sans-serif; font-size:14.5px;
     padding:10px 0; border:none; background:transparent; color:#fff;
@@ -679,7 +916,7 @@
   .chat-send-btn {
     display:flex; align-items:center; justify-content:center; flex-shrink:0;
     width:38px; height:38px; border-radius:50%;
-    background:linear-gradient(135deg, #ff6f8a, #e63a5c); color:#fff;
+    background:linear-gradient(135deg, var(--accent), #e63a5c); color:#fff;
     touch-action:manipulation; transition:transform .15s ease, opacity .15s ease;
   }
   .chat-send-btn svg { width:16px; height:16px; margin-left:1px; }
@@ -704,7 +941,7 @@
     cursor:pointer;
   }
   .map-pin-ico {
-    width:30px; height:30px; color:#ff4d6d;
+    width:30px; height:30px; color:var(--accent);
     filter:drop-shadow(0 4px 8px rgba(0,0,0,0.35));
     transition:transform .15s ease;
   }
@@ -739,14 +976,14 @@
     padding:11px 13px; border-radius:12px; border:1.5px solid rgba(44,26,34,0.18);
     background:#fff; color:#2c1a22; margin-bottom:10px; resize:vertical;
   }
-  .map-edit-input:focus, .map-edit-textarea:focus { outline:none; border-color:#ff4d6d; }
+  .map-edit-input:focus, .map-edit-textarea:focus { outline:none; border-color:var(--accent); }
   .map-add-btn {
     display:block; margin:10px 0 14px; padding:9px 16px; border-radius:20px;
     font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px;
     background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.3); color:#fff;
     touch-action:manipulation;
   }
-  .map-add-btn.active { background:#ff4d6d; border-color:#ff4d6d; }
+  .map-add-btn.active { background:var(--accent); border-color:var(--accent); }
   .us-map.placing { cursor:crosshair; }
   .us-map.placing::after {
     content:'tap the map to place a pin'; position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
@@ -796,7 +1033,7 @@
   }
   .bgmusic-btn:active { transform:scale(0.9); }
   .bgmusic-btn.playing { animation:bgmusicPulse 1.6s ease-in-out infinite; }
-  @keyframes bgmusicPulse { 0%,100%{ box-shadow:0 8px 20px rgba(0,0,0,0.3); } 50%{ box-shadow:0 8px 24px rgba(255,77,109,0.5); } }
+  @keyframes bgmusicPulse { 0%,100%{ box-shadow:0 8px 20px rgba(0,0,0,0.3); } 50%{ box-shadow:0 8px 24px rgba(var(--accent-rgb), 0.5); } }
 
   /* ---- confetti burst ---- */
   .confetti-burst { position:fixed; inset:0; z-index:10000; pointer-events:none; overflow:hidden; }
@@ -828,14 +1065,14 @@
     color:#fff; padding:13px 16px; border-radius:12px; margin-bottom:10px;
     font-size:14px; font-weight:600; transition:all .2s ease;
   }
-  .quiz-opt:hover { background:rgba(255,182,201,0.18); }
+  .quiz-opt:hover { background:rgba(var(--accent-light-rgb), 0.18); }
   .quiz-opt.correct { background:rgba(122,209,150,0.35); border-color:#7ad196; }
   .quiz-opt.wrong { background:rgba(224,110,110,0.35); border-color:#e06e6e; }
   #quiz-progress { font-size:12px; color:rgba(255,255,255,0.55); margin-bottom:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
   #quiz-result { text-align:center; padding:30px 10px; }
-  #quiz-result .score { font-family:'Playfair Display', serif; font-style:italic; font-size:40px; color:#ffb6c9; }
+  #quiz-result .score { font-family:'Playfair Display', serif; font-style:italic; font-size:40px; color:var(--accent-light); }
   .btn-pink {
-    margin-top:18px; background:#ffb6c9; color:#3a1220; font-weight:700;
+    margin-top:18px; background:var(--accent-light); color:#3a1220; font-weight:700;
     padding:12px 22px; border-radius:30px; font-size:14px;
   }
 
@@ -845,7 +1082,7 @@
     padding:12px 6px; border-bottom:1px solid rgba(255,255,255,0.08);
     font-size:14px; color:rgba(255,255,255,0.85);
   }
-  .song-row .note { color:#ffb6c9; }
+  .song-row .note { color:var(--accent-light); }
   .spotify-wrap { border-radius:16px; overflow:hidden; margin-bottom:24px; }
 
   /* ---- someday / bucket list ---- */
@@ -863,7 +1100,7 @@
     display:flex; align-items:center; justify-content:center;
     font-size:12px; transition:all .2s ease;
   }
-  .bucket-item.done .bucket-check { background:#ffb6c9; border-color:#ffb6c9; color:#3a1220; }
+  .bucket-item.done .bucket-check { background:var(--accent-light); border-color:var(--accent-light); color:#3a1220; }
 
   @media (prefers-reduced-motion: reduce) {
     .particle, .scroll-hint, .reason-card { animation:none !important; }
@@ -922,7 +1159,7 @@
   .gate-denied { background:rgba(20,4,8,0.94); }
   .error-code {
     font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
-    font-size:60px; line-height:1; color:#ffb6c9; margin-bottom:8px;
+    font-size:60px; line-height:1; color:var(--accent-light); margin-bottom:8px;
   }
   .error-title {
     font-family:'Quicksand', sans-serif; font-weight:700; font-size:15px;
@@ -964,6 +1201,7 @@
   </div>
   <div id="letter-progress"></div>
   <div id="days-badge"></div>
+  <div id="currently-badge"></div>
 
   <!-- ============================ OUR STORY ============================ -->
   <div class="view" id="view-story">
@@ -1253,6 +1491,311 @@
     </div>
   </div>
 
+  <!-- ============================ MORE (hub) ============================ -->
+  <div class="view" id="view-more">
+    <div class="page">
+      <div class="page-title">More</div>
+      <div class="page-sub">a few extra things, tucked in here so the tab bar doesn't get out of hand</div>
+      <div class="hub-grid" id="hub-grid"></div>
+    </div>
+  </div>
+
+  <!-- ============================ REPAIR KIT (subpage) ============================ -->
+  <div class="view" id="view-repair">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" id="repair-back" aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Repair Kit</div>
+          <div class="page-sub" style="margin-bottom:0;">not everything here has to be cute — this one's just for the hard days</div>
+        </div>
+      </div>
+
+      <div class="repair-ping-banner" id="repair-ping-banner"></div>
+
+      <!-- cooldown timer -->
+      <div class="surprise-card">
+        <div class="surprise-label">Need a minute first?</div>
+        <div class="repair-timer-display" id="repair-timer-display">Set a timer</div>
+        <div class="repair-timer-choices" id="repair-timer-choices">
+          <button class="draw-btn" data-mins="5">5 min</button>
+          <button class="draw-btn" data-mins="10">10 min</button>
+          <button class="draw-btn" data-mins="20">20 min</button>
+        </div>
+        <button class="draw-btn" id="repair-timer-cancel" style="display:none; margin-top:10px; width:100%;">Cancel timer</button>
+        <div class="repair-timer-note" id="repair-timer-note"></div>
+      </div>
+
+      <!-- conversation starter -->
+      <div class="surprise-card">
+        <div class="surprise-label">Something to say out loud</div>
+        <div class="repair-prompt" id="repair-prompt"></div>
+        <button class="draw-btn" id="repair-prompt-next" style="width:100%; margin-top:12px;">Another one</button>
+      </div>
+
+      <!-- send a "we're okay" ping -->
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label">When you're ready</div>
+        <button class="repair-okay-btn" id="repair-okay-btn">💛 We're okay</button>
+        <div class="repair-okay-note">sends a gentle ping to let her know, whenever you tap it</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ TIME CAPSULE (subpage) ============================ -->
+  <div class="view" id="view-capsule">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Time Capsule</div>
+          <div class="page-sub" style="margin-bottom:0;">write something now, pick a date, and it stays sealed until then</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="surprise-label">Seal a new one</div>
+        <textarea id="capsule-text" class="map-edit-textarea" rows="4" placeholder="Dear future us..."></textarea>
+        <input type="date" id="capsule-date" class="map-edit-input" style="margin-top:10px;" />
+        <button class="draw-btn" id="capsule-add-btn" style="width:100%; margin-top:12px;">Seal it 🔒</button>
+        <div class="capsule-hint" id="capsule-name-hint"></div>
+      </div>
+
+      <div id="capsule-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ SHARED JOURNAL (subpage) ============================ -->
+  <div class="view" id="view-journal">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Shared Journal</div>
+          <div class="page-sub" style="margin-bottom:0;">one entry each, every day</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="surprise-label" id="journal-prompt">Today's prompt</div>
+        <textarea id="journal-text" class="map-edit-textarea" rows="4" placeholder="Write today's entry..."></textarea>
+        <button class="draw-btn" id="journal-add-btn" style="width:100%; margin-top:12px;">Save today's entry</button>
+        <div class="capsule-hint" id="journal-name-hint"></div>
+      </div>
+
+      <div id="journal-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ VOICE NOTES (subpage) ============================ -->
+  <div class="view" id="view-voice">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Voice Notes</div>
+          <div class="page-sub" style="margin-bottom:0;">hear each other, not just read</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label">Record a note</div>
+        <button class="voice-record-btn" id="voice-record-btn" aria-label="Record">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21M9 21h6"/></svg>
+        </button>
+        <div class="voice-record-status" id="voice-record-status">tap to record, tap again to stop</div>
+        <div class="capsule-hint" id="voice-name-hint"></div>
+      </div>
+
+      <div id="voice-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ WEATHER TOGETHER (subpage) ============================ -->
+  <div class="view" id="view-weather">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Weather Together</div>
+          <div class="page-sub" style="margin-bottom:0;">both cities, side by side</div>
+        </div>
+      </div>
+
+      <div class="weather-grid" id="weather-grid"></div>
+
+      <button class="draw-btn location-btn" id="weather-locate-btn" style="width:100%; margin-top:14px;">📍 Update my location</button>
+      <div class="capsule-hint" id="weather-locate-status"></div>
+    </div>
+  </div>
+
+  <!-- ============================ WATCHLIST (subpage) ============================ -->
+  <div class="view" id="view-watchlist">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Watchlist</div>
+          <div class="page-sub" style="margin-bottom:0;">movies & shows to watch together</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="surprise-label">Add something</div>
+        <input type="text" id="watchlist-title-input" class="map-edit-input" placeholder="Title (e.g. Past Lives)" />
+        <select id="watchlist-type-input" class="map-edit-input" style="margin-top:10px;">
+          <option value="Movie">Movie</option>
+          <option value="Show">Show</option>
+        </select>
+        <button class="draw-btn" id="watchlist-add-btn" style="width:100%; margin-top:12px;">Add to list</button>
+      </div>
+
+      <div class="watchlist-tabs">
+        <button class="watchlist-tab active" data-tab="towatch">To watch</button>
+        <button class="watchlist-tab" data-tab="watched">Watched</button>
+      </div>
+      <div id="watchlist-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ DISTANCE (subpage) ============================ -->
+  <div class="view" id="view-distance">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Distance</div>
+          <div class="page-sub" style="margin-bottom:0;">how far apart we are right now</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center" id="distance-card">
+        <div class="surprise-label">Between us</div>
+        <div class="distance-figure" id="distance-figure">—</div>
+        <div class="distance-cities" id="distance-cities"></div>
+        <button class="draw-btn location-btn" id="distance-locate-btn" style="width:100%; margin-top:14px;">📍 Update my location</button>
+        <div class="capsule-hint" id="distance-locate-status"></div>
+      </div>
+
+      <div class="surprise-card surprise-card-center" id="distance-countdown-card" style="display:none;">
+        <div class="surprise-label">Until we're in the same place</div>
+        <div class="distance-figure" id="distance-countdown">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ SONG OF THE DAY (subpage) ============================ -->
+  <div class="view" id="view-song">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Song of the Day</div>
+          <div class="page-sub" style="margin-bottom:0;">one pick a day, react to each other's</div>
+        </div>
+      </div>
+
+      <div class="surprise-card" id="song-today-card">
+        <div class="surprise-label" id="song-today-label">Today's pick</div>
+        <div id="song-today-embed"></div>
+        <div class="song-reactions" id="song-today-reactions"></div>
+      </div>
+
+      <div class="surprise-card" id="song-add-card">
+        <div class="surprise-label">Add today's song</div>
+        <input type="text" id="song-new-title" class="map-edit-input" placeholder="Song / artist (e.g. Lover - Taylor Swift)" />
+        <input type="text" id="song-new-url" class="map-edit-input" style="margin-top:10px;" placeholder="Spotify / YouTube / Apple Music embed URL" />
+        <button class="draw-btn" id="song-add-btn" style="width:100%; margin-top:12px;">Set today's song</button>
+      </div>
+
+      <div class="page-sub" style="margin:22px 0 10px;">Past picks</div>
+      <div id="song-archive-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ MILESTONES (subpage) ============================ -->
+  <div class="view" id="view-milestones">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Milestones</div>
+          <div class="page-sub" style="margin-bottom:0;">every month-aversary, counted automatically</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center" id="milestone-next-card">
+        <div class="surprise-label">Coming up</div>
+        <div class="distance-figure" id="milestone-next-figure">—</div>
+        <div class="distance-cities" id="milestone-next-sub"></div>
+      </div>
+
+      <div id="milestone-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ THEME (subpage) ============================ -->
+  <div class="view" id="view-theme">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Theme</div>
+          <div class="page-sub" style="margin-bottom:0;">reskin the whole app — saves for both of you</div>
+        </div>
+      </div>
+
+      <div class="theme-grid" id="theme-grid"></div>
+      <div class="capsule-hint" id="theme-status"></div>
+    </div>
+  </div>
+
+  <!-- ============================ CURRENTLY (subpage) ============================ -->
+  <div class="view" id="view-currently">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Currently</div>
+          <div class="page-sub" style="margin-bottom:0;">a one-line status, always visible to each other</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="surprise-label">You, right now</div>
+        <input type="text" id="currently-my-input" class="map-edit-input" placeholder="currently: thinking about you" maxlength="60" />
+        <button class="draw-btn" id="currently-save-btn" style="width:100%; margin-top:12px;">Update status</button>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label" id="currently-partner-label">Them, right now</div>
+        <div class="currently-partner-text" id="currently-partner-text">—</div>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -1361,7 +1904,15 @@ const CONFIG = {
   // BOTTOM NAV — reorder, rename, or remove tabs. "id" must match one of
   // the view ids in the HTML (view-letter, view-story, view-reasons,
   // view-quiz, view-gallery, view-kitty, view-surprises, view-draw,
-  // view-map, view-playlist, view-someday).
+  // view-map, view-playlist, view-someday, view-more).
+  //
+  // "view-more" is a hub screen, not a regular tab — it's a grid of cards
+  // that open sub-pages (Repair Kit, Time Capsule, Journal, Voice Notes,
+  // Weather Together) without needing a bottom-nav slot each. This keeps
+  // the bar from getting overcrowded as more features get added. Those
+  // sub-page ids are view-repair, view-capsule, view-journal, view-voice,
+  // view-weather — edit their content further down in the HTML, and the
+  // card list itself in CONFIG.moreHub below.
   // --------------------------------------------------------------------
   // "icon" keys map to the SVG_ICONS set defined further down — swap in
   // any key from that set, or add your own new one there.
@@ -1377,7 +1928,8 @@ const CONFIG = {
     { id: "view-map",      icon: "map",      label: "Map" },
     { id: "view-playlist", icon: "music",    label: "Playlist" },
     { id: "view-chat",     icon: "chat",     label: "Chat" },
-    { id: "view-someday",  icon: "sunrise",  label: "Someday" }
+    { id: "view-someday",  icon: "sunrise",  label: "Someday" },
+    { id: "view-more",     icon: "more",     label: "More" }
   ],
 
   // --------------------------------------------------------------------
@@ -1569,6 +2121,122 @@ const CONFIG = {
   },
 
   // --------------------------------------------------------------------
+  // MORE HUB — the "More" tab is a grid of cards instead of its own row
+  // of bottom-nav icons, so the nav bar doesn't get overcrowded as more
+  // features get added. "id" must match a view id further down in the
+  // HTML. Set "ready:false" to show a card as greyed-out "coming soon"
+  // (not yet tappable) while a feature's still being built.
+  // --------------------------------------------------------------------
+  moreHub: [
+    { id: "view-repair",    icon: "repair",    label: "Repair Kit",       sub: "for the hard days — no pressure, just tools",     ready: true },
+    { id: "view-capsule",   icon: "capsule",   label: "Time Capsule",     sub: "write now, unlock later",                          ready: true },
+    { id: "view-journal",   icon: "journal",   label: "Shared Journal",   sub: "one entry each, every day",                        ready: true },
+    { id: "view-voice",     icon: "mic",       label: "Voice Notes",      sub: "hear each other, not just read",                   ready: true },
+    { id: "view-weather",   icon: "cloud",     label: "Weather Together", sub: "both cities, side by side",                        ready: true },
+    { id: "view-watchlist", icon: "watchlist", label: "Watchlist",        sub: "movies & shows to watch together",                 ready: true },
+    { id: "view-distance",  icon: "distance",  label: "Distance",        sub: "how far apart we are right now",                   ready: true },
+    { id: "view-song",      icon: "music",      label: "Song of the Day", sub: "one pick a day, react to each other's",            ready: true },
+    { id: "view-milestones",icon: "sparkle",    label: "Milestones",      sub: "every month-aversary, counted automatically",      ready: true },
+    { id: "view-theme",     icon: "palette",    label: "Theme",           sub: "reskin the whole app, for both of you",            ready: true },
+    { id: "view-currently", icon: "sunrise",    label: "Currently",       sub: "a one-line status, always visible to each other",  ready: true }
+  ],
+
+  // --------------------------------------------------------------------
+  // SONG OF THE DAY — paste a Spotify/YouTube/Apple Music embed URL the
+  // same way as the Playlist tab. Whoever adds one first for a given
+  // calendar day "wins" that day's pick.
+  // --------------------------------------------------------------------
+  songReactions: ["❤️", "🔥", "😍", "🥹"],
+
+  // --------------------------------------------------------------------
+  // MILESTONES — set the date you started dating; the app automatically
+  // surfaces month-aversaries, 100 days, 1 year, etc. You can also add
+  // one-off custom dates below (birthdays, first trip, engagement...).
+  // --------------------------------------------------------------------
+  milestones: {
+    startDate: "2024-05-20", // "YYYY-MM-DD" — leave blank to hide auto month-aversaries
+    custom: [
+      // { date: "2024-08-14", label: "Our first trip together" }
+    ]
+  },
+
+  // --------------------------------------------------------------------
+  // THEME PRESETS — shown as tappable swatches on the Theme page. Add
+  // your own by copying a block and changing the hex values. "accent"
+  // should be the more saturated of the two pinks/colors, "accentLight"
+  // the softer one used for highlights.
+  // --------------------------------------------------------------------
+  themePresets: [
+    { name: "Rose (default)", accent: "#ff4d6d", accentLight: "#ffb6c9", bgFrom: "#2c0910", bgMid: "#5c1a29", bgTo: "#8a2e46" },
+    { name: "Lavender",       accent: "#a78bfa", accentLight: "#e0d4ff", bgFrom: "#1a1030", bgMid: "#3a2560", bgTo: "#5e3f96" },
+    { name: "Ocean",          accent: "#38bdf8", accentLight: "#bae6fd", bgFrom: "#031321", bgMid: "#0b3a55", bgTo: "#146a94" },
+    { name: "Sunset",         accent: "#fb923c", accentLight: "#fed7aa", bgFrom: "#2a0f05", bgMid: "#6b2b0a", bgTo: "#c2500f" },
+    { name: "Midnight",       accent: "#818cf8", accentLight: "#c7d2fe", bgFrom: "#05050f", bgMid: "#161b3d", bgTo: "#2a2f6b" },
+    { name: "Sage",           accent: "#4ade80", accentLight: "#d1fae5", bgFrom: "#0a1a10", bgMid: "#1e3d28", bgTo: "#2f5c3d" }
+  ],
+
+  // --------------------------------------------------------------------
+  // TIME CAPSULE — placeholder prompts to nudge what to write.
+  // --------------------------------------------------------------------
+  capsulePrompts: [
+    "a hope I have for us in a year...",
+    "something I want you to remember about right now...",
+    "a promise for future us..."
+  ],
+
+  // --------------------------------------------------------------------
+  // SHARED JOURNAL — cycles through this list by day so you both
+  // answer roughly the same prompt on the same day.
+  // --------------------------------------------------------------------
+  journalPrompts: [
+    "What made you smile today?",
+    "What's something you're looking forward to?",
+    "What's a small thing I did that you appreciated?",
+    "What's on your mind right now?",
+    "What's something you're proud of this week?",
+    "Describe today in three words, then explain.",
+    "What do you need more of from me lately?"
+  ],
+
+  // --------------------------------------------------------------------
+  // WEATHER TOGETHER — the two cities shown side by side. Uses
+  // Open-Meteo (free, no API key) so this works with zero setup —
+  // just edit the city label/lat/lon below.
+  // --------------------------------------------------------------------
+  weatherCities: [
+    { label: "Me",  city: "Quezon City", lat: 14.676,  lon: 121.0437 },
+    { label: "Her", city: "[Her City]",  lat: 14.5995, lon: 120.9842 }
+  ],
+
+  // --------------------------------------------------------------------
+  // DISTANCE — same idea, used to show how far apart you currently
+  // are. Set nextVisitDate ("YYYY-MM-DD") to also show a countdown;
+  // leave it blank ("") to hide the countdown row entirely.
+  // --------------------------------------------------------------------
+  distance: {
+    cities: [
+      { label: "Me",  city: "Quezon City", lat: 14.676,  lon: 121.0437 },
+      { label: "Her", city: "[Her City]",  lat: 14.5995, lon: 120.9842 }
+    ],
+    nextVisitDate: ""
+  },
+
+  // --------------------------------------------------------------------
+  // REPAIR KIT — conversation-starter prompts shown one at a time (tap
+  // "another one" to shuffle) for talking through a hard moment calmly.
+  // Keep these gentle and non-accusatory. Add as many as you want.
+  // --------------------------------------------------------------------
+  repairPrompts: [
+    "What do you need from me right now — space, reassurance, or to just talk it out?",
+    "What's the actual thing bothering you, underneath the thing we're arguing about?",
+    "Is there something I did that landed differently than I meant it to?",
+    "What would make this feel resolved for you, even a little?",
+    "What's one thing about us you don't want to lose sight of right now?",
+    "Can we each say one thing we appreciated about the other today, before anything else?",
+    "Is this a talk-it-out-now moment, or a cool-down-first moment?"
+  ],
+
+  // --------------------------------------------------------------------
   // DRAW SOMETHING — one shared canvas you both draw on together, live,
   // synced through Supabase (a free realtime database). This is already
   // connected — no setup needed unless you want to swap it for your own
@@ -1598,8 +2266,15 @@ const CONFIG = {
   //     updated_at timestamptz not null default now()
   //   );
   //
-  // Until you run this, chat reactions and live mood sync will just fail
-  // quietly (nothing breaks) — everything else in the app works either way.
+  //   create table repair_pings (
+  //     id bigint generated always as identity primary key,
+  //     sender text not null,
+  //     created_at timestamptz not null default now()
+  //   );
+  //
+  // Until you run this, chat reactions, live mood sync, and the Repair Kit's
+  // "we're okay" ping will just fail quietly (nothing breaks) — everything
+  // else in the app works either way.
   // --------------------------------------------------------------------
   supabase: {
     url: "https://tivgpukrgbzyeskjnivb.supabase.co",
@@ -1625,7 +2300,7 @@ const CONFIG = {
   // reference it by filename. Leave src empty to hide the toggle.
   // --------------------------------------------------------------------
   bgMusic: {
-    src: "music/song.mp3" // e.g. "music/our-song.mp3"
+    src: "music/our-song.mp3" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -1721,7 +2396,16 @@ const SVG_ICONS = {
   sparkle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2c.5 3 1.9 5.3 4.4 6.6-2.5 1.3-3.9 3.6-4.4 6.6-.5-3-1.9-5.3-4.4-6.6 2.5-1.3 3.9-3.6 4.4-6.6Z"/><path d="M19 15c.3 1.5.9 2.6 2.2 3.3-1.3.7-1.9 1.8-2.2 3.3-.3-1.5-.9-2.6-2.2-3.3 1.3-.7 1.9-1.8 2.2-3.3Z"/></svg>`,
   draw: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.2L14.5 6.3a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L8.2 19 4 20Z"/><path d="M13 8l3 3"/></svg>`,
   map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.2-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>`,
-  chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v11H9l-4 3.5v-3.5H4v-11Z"/></svg>`
+  chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v11H9l-4 3.5v-3.5H4v-11Z"/></svg>`,
+  more: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="6.2" height="6.2" rx="1.4"/><rect x="13.8" y="4" width="6.2" height="6.2" rx="1.4"/><rect x="4" y="13.8" width="6.2" height="6.2" rx="1.4"/><rect x="13.8" y="13.8" width="6.2" height="6.2" rx="1.4"/></svg>`,
+  repair: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 3.3a4.5 4.5 0 0 0-5.9 5.9L3 15l1.7 1.7 1.1-1.1 1.4 1.4L8.6 15l-1.4-1.4 1.2-1.2 1.4 1.4 1.4-1.4-1.4-1.4 1.2-1.2a4.5 4.5 0 0 0 5.9-5.9l-2.6 2.6-1.8-.5-.5-1.8 2.7-2.6Z"/></svg>`,
+  capsule: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="9" width="16" height="10" rx="5"/><path d="M4 9a5 5 0 0 1 10 0"/><path d="M9 14h2"/></svg>`,
+  journal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4.5h12v15H6a1.8 1.8 0 0 1-1.8-1.8V6.3A1.8 1.8 0 0 1 6 4.5Z"/><path d="M8 8.5h7M8 12h7M8 15.5h4"/></svg>`,
+  mic: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21M9 21h6"/></svg>`,
+  cloud: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18.5a4.3 4.3 0 0 1-1-8.5 5.5 5.5 0 0 1 10.6-1.8A4.2 4.2 0 0 1 17.5 18.5H7Z"/></svg>`,
+  watchlist: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="6.5" width="17.6" height="13" rx="2"/><path d="M3.2 10.5h17.6"/><path d="M7 6.5 9.3 3.5M13 6.5l2.3-3M17.8 6.5l1.6-2.2"/><path d="M10.3 13.2 14 15.4l-3.7 2.2v-4.4Z" fill="currentColor" stroke="none"/></svg>`,
+  distance: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5c0-3.5 2.3-6 4-6s4 2.5 4 6"/><circle cx="8.5" cy="9.5" r="3"/><path d="M14.5 14.5c0-2.6 1.7-4.5 3-4.5s3 1.9 3 4.5"/><circle cx="17.5" cy="6.5" r="2.2"/></svg>`,
+  palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5A8.5 8.5 0 1 0 12 20.5c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8h1.8a4 4 0 0 0 4-4c0-4.4-4-7-8.4-7Z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="17" cy="11.5" r="1" fill="currentColor" stroke="none"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -1778,16 +2462,41 @@ CONFIG.nav.forEach((item, i) => {
 });
 
 function switchView(id, btnEl) {
+  if (!btnEl) {
+    // subpages opened from the More hub (e.g. Repair Kit) don't have their
+    // own bottom-nav button — fall back to highlighting "More" itself
+    const fallbackId = CONFIG.nav.some(n => n.id === id) ? id : 'view-more';
+    btnEl = document.querySelector(`.nav-btn[data-target="${fallbackId}"]`);
+  }
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  btnEl.classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
   document.getElementById('letter-progress').style.display = (id === 'view-letter') ? 'flex' : 'none';
   const daysBadgeEl = document.getElementById('days-badge');
   if (daysBadgeEl) daysBadgeEl.style.display = (id === 'view-letter') ? 'block' : 'none';
+  const currentlyBadgeEl = document.getElementById('currently-badge');
+  if (currentlyBadgeEl && currentlyBadgeEl.textContent) currentlyBadgeEl.style.display = (id === 'view-letter') ? 'block' : 'none';
   window.scrollTo({ top: 0, behavior: 'instant' });
   window.dispatchEvent(new CustomEvent('viewchange', { detail: { id } }));
 }
+
+// ---------- more hub ----------
+(function () {
+  const grid = document.getElementById('hub-grid');
+  if (!grid) return;
+  (CONFIG.moreHub || []).forEach(item => {
+    const card = document.createElement('button');
+    card.className = 'hub-card' + (item.ready ? '' : ' disabled');
+    card.innerHTML = `
+      <span class="ico">${SVG_ICONS[item.icon] || ''}</span>
+      <span class="hub-card-label">${item.label}</span>
+      <span class="hub-card-sub">${item.sub || ''}</span>
+      ${item.ready ? '' : '<span class="hub-card-soon">Coming soon</span>'}`;
+    if (item.ready) card.addEventListener('click', () => switchView(item.id));
+    grid.appendChild(card);
+  });
+})();
 
 // ---------- days-together counter (Letter view) ----------
 (function () {
@@ -3287,7 +3996,14 @@ buildDeck();
         badge.textContent = msgReactions[0].emoji;
         bubbleEl.appendChild(badge);
       }
-      if (m.id != null) wireReactionGesture(bubbleEl, m.id);
+      if (m.id != null) {
+        const heartEl = document.createElement('span');
+        heartEl.className = 'chat-dtap-heart';
+        heartEl.textContent = '❤️';
+        wrap.style.position = 'relative';
+        wrap.appendChild(heartEl);
+        wireReactionGesture(bubbleEl, m.id, heartEl);
+      }
 
       // "Seen" — shown only under the very last message I sent, once her
       // last-read timestamp catches up to when I sent it
@@ -3304,14 +4020,22 @@ buildDeck();
   }
 
   // long-press (touch) or double-tap/double-click to drop a ❤️ on a bubble
-  function wireReactionGesture(bubbleEl, messageId) {
+  function wireReactionGesture(bubbleEl, messageId, heartEl) {
     let pressTimer = null;
-    const start = () => { pressTimer = setTimeout(() => toggleReaction(messageId), 480); };
+    const fire = () => {
+      toggleReaction(messageId);
+      if (heartEl) {
+        heartEl.classList.remove('pop');
+        void heartEl.offsetWidth; // restart animation
+        heartEl.classList.add('pop');
+      }
+    };
+    const start = () => { pressTimer = setTimeout(fire, 480); };
     const cancel = () => { if (pressTimer) clearTimeout(pressTimer); };
     bubbleEl.addEventListener('touchstart', start, { passive: true });
     bubbleEl.addEventListener('touchend', cancel);
     bubbleEl.addEventListener('touchmove', cancel);
-    bubbleEl.addEventListener('dblclick', () => toggleReaction(messageId));
+    bubbleEl.addEventListener('dblclick', fire);
   }
 
   async function toggleReaction(messageId) {
@@ -3520,6 +4244,969 @@ CONFIG.someday.forEach((item, i) => {
   });
   somedayList.appendChild(el);
 });
+
+// ---------- repair kit (More hub subpage) ----------
+(function () {
+  const backBtn = document.getElementById('repair-back');
+  if (!backBtn) return;
+  backBtn.addEventListener('click', () => switchView('view-more'));
+
+  const NAME_KEY = 'lls_chat_name'; // reuses the name set in Chat
+  const getName = () => localStorage.getItem(NAME_KEY) || '';
+
+  const sbCfg = CONFIG.supabase || {};
+  const sb = (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+
+  // ---- cooldown timer (local to this device, not synced — it's a
+  // personal "give me a minute" tool, not something to broadcast) ----
+  const displayEl = document.getElementById('repair-timer-display');
+  const choicesEl = document.getElementById('repair-timer-choices');
+  const cancelBtn = document.getElementById('repair-timer-cancel');
+  const noteEl = document.getElementById('repair-timer-note');
+  let timerEnd = null, timerInterval = null;
+
+  function tickTimer() {
+    const msLeft = timerEnd - Date.now();
+    if (msLeft <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      timerEnd = null;
+      displayEl.textContent = "Time's up 💛";
+      cancelBtn.style.display = 'none';
+      choicesEl.style.display = 'flex';
+      noteEl.textContent = "whenever you're both ready";
+      return;
+    }
+    const mins = Math.floor(msLeft / 60000);
+    const secs = Math.floor((msLeft % 60000) / 1000);
+    displayEl.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+  }
+
+  choicesEl.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mins = parseInt(btn.dataset.mins, 10);
+      timerEnd = Date.now() + mins * 60000;
+      choicesEl.style.display = 'none';
+      cancelBtn.style.display = 'block';
+      noteEl.textContent = 'take the time you need — this ones just for you';
+      tickTimer();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(tickTimer, 1000);
+    });
+  });
+  cancelBtn.addEventListener('click', () => {
+    clearInterval(timerInterval);
+    timerInterval = null; timerEnd = null;
+    displayEl.textContent = 'Set a timer';
+    choicesEl.style.display = 'flex';
+    cancelBtn.style.display = 'none';
+    noteEl.textContent = '';
+  });
+
+  // ---- conversation-starter prompts ----
+  const promptEl = document.getElementById('repair-prompt');
+  const nextBtn = document.getElementById('repair-prompt-next');
+  function showRandomPrompt() {
+    const pool = CONFIG.repairPrompts || [];
+    if (!pool.length) { promptEl.textContent = ''; return; }
+    promptEl.textContent = pool[Math.floor(Math.random() * pool.length)];
+  }
+  nextBtn.addEventListener('click', showRandomPrompt);
+  showRandomPrompt();
+
+  // ---- "we're okay" ping, synced live to whoever's on the other end ----
+  const okayBtn = document.getElementById('repair-okay-btn');
+  const bannerEl = document.getElementById('repair-ping-banner');
+
+  function showBanner(row) {
+    if (!row || row.sender === getName()) return; // don't echo my own ping back to me
+    bannerEl.textContent = `💛 ${row.sender} sent you a "we're okay" — whenever you're ready`;
+    bannerEl.classList.add('show');
+  }
+
+  async function loadLatestPing() {
+    if (!sb) return;
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const { data, error } = await sb.from('repair_pings')
+      .select('*').gte('created_at', since).order('created_at', { ascending: false }).limit(3);
+    if (error || !data) return;
+    const partnerRow = data.find(r => r.sender !== getName());
+    if (partnerRow) showBanner(partnerRow);
+  }
+
+  okayBtn.addEventListener('click', async () => {
+    if (navigator.vibrate) navigator.vibrate(20);
+    const name = getName();
+    if (!sb || !name) {
+      bannerEl.textContent = "sent 💛 (set your name in Chat first so she knows it's from you)";
+      bannerEl.classList.add('show');
+      return;
+    }
+    okayBtn.disabled = true;
+    okayBtn.textContent = 'Sent 💛';
+    try {
+      await sb.from('repair_pings').insert({ sender: name });
+    } catch (err) {
+      console.warn('repair ping failed:', err);
+    }
+    setTimeout(() => { okayBtn.disabled = false; okayBtn.textContent = "💛 We're okay"; }, 4000);
+  });
+
+  function subscribePings() {
+    if (!sb) return;
+    sb.channel('repair_pings_live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'repair_pings' }, (payload) => showBanner(payload.new))
+      .subscribe();
+  }
+
+  loadLatestPing();
+  subscribePings();
+})();
+
+// ---------- shared back buttons for all "More" subpages ----------
+document.querySelectorAll('[data-back]').forEach(btn => {
+  btn.addEventListener('click', () => switchView('view-more'));
+});
+
+// ---------- shared helper: the name typed in Chat, reused everywhere ----------
+function getSharedName() { return localStorage.getItem('lls_chat_name') || ''; }
+
+function getSb() {
+  const sbCfg = CONFIG.supabase || {};
+  return (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+}
+
+function fmtShortDate(d) {
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// ---------- time capsule ----------
+(function () {
+  const listEl = document.getElementById('capsule-list');
+  if (!listEl) return;
+  const sb = getSb();
+  const textEl = document.getElementById('capsule-text');
+  const dateEl = document.getElementById('capsule-date');
+  const addBtn = document.getElementById('capsule-add-btn');
+  const hintEl = document.getElementById('capsule-name-hint');
+
+  const placeholder = (CONFIG.capsulePrompts || [])[Math.floor(Math.random() * ((CONFIG.capsulePrompts || []).length || 1))];
+  if (placeholder && textEl) textEl.placeholder = placeholder;
+
+  function renderHint() {
+    const name = getSharedName();
+    hintEl.textContent = name ? '' : "set your name in Chat first so entries are signed";
+  }
+  renderHint();
+
+  function render(entries) {
+    listEl.innerHTML = '';
+    if (!entries.length) {
+      listEl.innerHTML = '<div class="capsule-empty">no capsules yet — write the first one above</div>';
+      return;
+    }
+    const now = Date.now();
+    entries.forEach(item => {
+      const unlockAt = new Date(item.unlock_at).getTime();
+      const locked = unlockAt > now;
+      const el = document.createElement('div');
+      el.className = 'capsule-item' + (locked ? ' locked' : '');
+      if (locked) {
+        el.innerHTML = `
+          <svg class="capsule-lock-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <div class="capsule-item-text">sealed by ${item.sender || 'someone'} — opens ${fmtShortDate(new Date(item.unlock_at))}</div>`;
+      } else {
+        el.innerHTML = `
+          <div class="capsule-item-top">
+            <span class="capsule-item-sender">${item.sender || 'someone'}</span>
+            <span class="capsule-item-date">unlocked ${fmtShortDate(new Date(item.unlock_at))}</span>
+          </div>
+          <div class="capsule-item-text">${item.text}</div>`;
+      }
+      listEl.appendChild(el);
+    });
+  }
+
+  async function load() {
+    if (!sb) { render([]); return; }
+    const { data, error } = await sb.from('capsule_entries').select('*').order('unlock_at', { ascending: true });
+    if (!error && data) render(data);
+  }
+
+  addBtn.addEventListener('click', async () => {
+    const text = (textEl.value || '').trim();
+    const dateVal = dateEl.value;
+    if (!text || !dateVal) return;
+    const unlockAt = new Date(dateVal + 'T00:00:00').toISOString();
+    const sender = getSharedName() || 'someone';
+    addBtn.disabled = true;
+    try {
+      if (sb) await sb.from('capsule_entries').insert({ sender, text, unlock_at: unlockAt });
+    } catch (err) { console.warn('capsule insert failed:', err); }
+    textEl.value = ''; dateEl.value = '';
+    addBtn.disabled = false;
+    load();
+  });
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-capsule') { renderHint(); load(); } });
+  load();
+})();
+
+// ---------- shared journal ----------
+(function () {
+  const listEl = document.getElementById('journal-list');
+  if (!listEl) return;
+  const sb = getSb();
+  const promptEl = document.getElementById('journal-prompt');
+  const textEl = document.getElementById('journal-text');
+  const addBtn = document.getElementById('journal-add-btn');
+  const hintEl = document.getElementById('journal-name-hint');
+
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  function todaysPrompt() {
+    const pool = CONFIG.journalPrompts || [];
+    if (!pool.length) return '';
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    return pool[dayIndex % pool.length];
+  }
+  if (promptEl) promptEl.textContent = todaysPrompt();
+
+  function renderHint() {
+    hintEl.textContent = getSharedName() ? '' : "set your name in Chat first so entries are signed";
+  }
+  renderHint();
+
+  function render(entries) {
+    listEl.innerHTML = '';
+    if (!entries.length) {
+      listEl.innerHTML = '<div class="journal-empty">no entries yet — be the first to write today</div>';
+      return;
+    }
+    entries.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'journal-item';
+      el.innerHTML = `
+        <div class="journal-item-top">
+          <span class="journal-item-sender">${item.sender || 'someone'}</span>
+          <span class="journal-item-date">${item.entry_date}</span>
+        </div>
+        <div class="journal-item-text">${item.text}</div>`;
+      listEl.appendChild(el);
+    });
+  }
+
+  async function load() {
+    if (!sb) { render([]); return; }
+    const { data, error } = await sb.from('journal_entries').select('*').order('created_at', { ascending: false }).limit(60);
+    if (!error && data) render(data);
+  }
+
+  addBtn.addEventListener('click', async () => {
+    const text = (textEl.value || '').trim();
+    if (!text) return;
+    const sender = getSharedName() || 'someone';
+    addBtn.disabled = true;
+    try {
+      if (sb) await sb.from('journal_entries').insert({ sender, text, entry_date: todayStr() });
+    } catch (err) { console.warn('journal insert failed:', err); }
+    textEl.value = '';
+    addBtn.disabled = false;
+    load();
+  });
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-journal') { renderHint(); load(); } });
+  load();
+})();
+
+// ---------- voice notes ----------
+(function () {
+  const listEl = document.getElementById('voice-list');
+  if (!listEl) return;
+  const sb = getSb();
+  const recordBtn = document.getElementById('voice-record-btn');
+  const statusEl = document.getElementById('voice-record-status');
+  const hintEl = document.getElementById('voice-name-hint');
+  let mediaRecorder = null, chunks = [], recording = false;
+
+  hintEl.textContent = getSharedName() ? '' : "set your name in Chat first so notes are signed";
+  window.addEventListener('viewchange', (e) => {
+    if (e.detail.id === 'view-voice') { hintEl.textContent = getSharedName() ? '' : "set your name in Chat first so notes are signed"; load(); }
+  });
+
+  function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r.result); // data: URL, keep as-is for <audio src>
+      r.onerror = reject;
+      r.readAsDataURL(blob);
+    });
+  }
+
+  recordBtn.addEventListener('click', async () => {
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      statusEl.textContent = "voice recording isn't supported in this browser";
+      return;
+    }
+    if (!recording) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        chunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+        mediaRecorder.onstop = async () => {
+          stream.getTracks().forEach(t => t.stop());
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          const dataUrl = await blobToBase64(blob);
+          statusEl.textContent = 'saving...';
+          const sender = getSharedName() || 'someone';
+          try {
+            if (sb) await sb.from('voice_notes').insert({ sender, audio_data: dataUrl });
+          } catch (err) { console.warn('voice insert failed:', err); }
+          statusEl.textContent = 'tap to record, tap again to stop';
+          load();
+        };
+        mediaRecorder.start();
+        recording = true;
+        recordBtn.classList.add('recording');
+        statusEl.textContent = 'recording... tap to stop';
+      } catch (err) {
+        statusEl.textContent = "couldn't access the microphone";
+      }
+    } else {
+      mediaRecorder.stop();
+      recording = false;
+      recordBtn.classList.remove('recording');
+    }
+  });
+
+  function render(notes) {
+    listEl.innerHTML = '';
+    if (!notes.length) {
+      listEl.innerHTML = '<div class="voice-empty">no voice notes yet — record the first one above</div>';
+      return;
+    }
+    notes.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'voice-item';
+      el.innerHTML = `
+        <div class="voice-item-meta">
+          <span class="voice-item-sender">${item.sender || 'someone'}</span>
+          <span class="voice-item-date">${fmtShortDate(new Date(item.created_at))}</span>
+        </div>
+        <audio controls src="${item.audio_data}"></audio>`;
+      listEl.appendChild(el);
+    });
+  }
+
+  async function load() {
+    if (!sb) { render([]); return; }
+    const { data, error } = await sb.from('voice_notes').select('id,sender,created_at,audio_data').order('created_at', { ascending: false }).limit(30);
+    if (!error && data) render(data);
+  }
+
+  load();
+})();
+
+// ----------------------------------------------------------------------
+// LIVE LOCATIONS — shared by Weather and Distance. Each person taps
+// "Update my location" once; it uses the phone/browser's own GPS (native
+// location permission prompt, nothing to configure), reverse-geocodes it
+// to a city name (BigDataCloud's free reverse-geocode API, no key
+// needed), and saves it to Supabase keyed by the name set in Chat. The
+// other person's tab then just reads both rows — no manual lat/lon
+// editing in CONFIG needed anymore. Falls back to CONFIG.weatherCities /
+// CONFIG.distance.cities for anyone who hasn't set a location yet.
+//
+// Needs one more Supabase table (same as the others — SQL Editor → New
+// query → paste → Run, then give it the same public RLS policy):
+//
+//   create table locations (
+//     sender text primary key,
+//     city text not null,
+//     lat double precision not null,
+//     lon double precision not null,
+//     updated_at timestamptz not null default now()
+//   );
+// ----------------------------------------------------------------------
+function getMyLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) { reject(new Error('Geolocation not supported')); return; }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      (err) => reject(err),
+      { enableHighAccuracy: false, timeout: 12000, maximumAge: 300000 }
+    );
+  });
+}
+
+async function reverseGeocode(lat, lon) {
+  try {
+    const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+    const data = await res.json();
+    return data.city || data.locality || data.principalSubdivision || 'Unknown location';
+  } catch (err) {
+    return 'Unknown location';
+  }
+}
+
+async function updateMyLocation(statusEl) {
+  const sender = getSharedName();
+  if (!sender) {
+    if (statusEl) statusEl.textContent = "set your name in Chat first so it's saved under you";
+    return;
+  }
+  if (statusEl) statusEl.textContent = 'getting your location...';
+  try {
+    const { lat, lon } = await getMyLocation();
+    if (statusEl) statusEl.textContent = 'looking up city name...';
+    const city = await reverseGeocode(lat, lon);
+    const row = { sender, city, lat, lon, updated_at: new Date().toISOString() };
+    localStorage.setItem('lls_my_location', JSON.stringify(row));
+    const sb = getSb();
+    try { if (sb) await sb.from('locations').upsert(row, { onConflict: 'sender' }); } catch (err) { console.warn('location upsert failed:', err); }
+    if (statusEl) statusEl.textContent = `saved: ${city}`;
+    window.dispatchEvent(new CustomEvent('locationupdated'));
+  } catch (err) {
+    if (statusEl) statusEl.textContent = "couldn't get your location — check location permission for this browser";
+  }
+}
+
+// returns [{label, city, lat, lon}, {label, city, lat, lon}] — "You" first
+// (real saved location if set, else CONFIG fallback), partner second.
+async function loadTwoLocations() {
+  const sender = getSharedName();
+  const fallback = (CONFIG.weatherCities && CONFIG.weatherCities.length === 2) ? CONFIG.weatherCities : (CONFIG.distance && CONFIG.distance.cities) || [];
+  const sb = getSb();
+  let rows = [];
+  if (sb) {
+    try {
+      const { data, error } = await sb.from('locations').select('*');
+      if (!error && data) rows = data;
+    } catch (err) {}
+  }
+  const mine = rows.find(r => r.sender === sender);
+  const partnerRow = rows.find(r => r.sender !== sender);
+  const you = mine
+    ? { label: 'You', city: mine.city, lat: mine.lat, lon: mine.lon }
+    : { label: 'You', city: (fallback[0] || {}).city || 'Set your location', lat: (fallback[0] || {}).lat, lon: (fallback[0] || {}).lon };
+  const partner = partnerRow
+    ? { label: partnerRow.sender, city: partnerRow.city, lat: partnerRow.lat, lon: partnerRow.lon }
+    : { label: 'Partner', city: (fallback[1] || {}).city || 'Not set yet', lat: (fallback[1] || {}).lat, lon: (fallback[1] || {}).lon };
+  return [you, partner];
+}
+
+// ---------- weather together ----------
+(function () {
+  const gridEl = document.getElementById('weather-grid');
+  if (!gridEl) return;
+  const locateBtn = document.getElementById('weather-locate-btn');
+  const statusEl = document.getElementById('weather-locate-status');
+
+  const WMO_ICONS = {
+    0: { d: 'sunrise', t: 'Clear' }, 1: { d: 'sunrise', t: 'Mostly clear' }, 2: { d: 'cloud', t: 'Partly cloudy' },
+    3: { d: 'cloud', t: 'Overcast' }, 45: { d: 'cloud', t: 'Foggy' }, 48: { d: 'cloud', t: 'Foggy' },
+    51: { d: 'cloud', t: 'Light drizzle' }, 61: { d: 'cloud', t: 'Rain' }, 63: { d: 'cloud', t: 'Rain' },
+    65: { d: 'cloud', t: 'Heavy rain' }, 80: { d: 'cloud', t: 'Showers' }, 95: { d: 'cloud', t: 'Storms' }
+  };
+  function describe(code) { return (WMO_ICONS[code] || { d: 'cloud', t: 'Weather' }); }
+
+  async function load() {
+    const cities = await loadTwoLocations();
+    gridEl.innerHTML = cities.map(() => '<div class="weather-card loading">loading...</div>').join('');
+    const cards = Array.from(gridEl.children);
+    await Promise.all(cities.map(async (c, i) => {
+      if (c.lat == null || c.lon == null) {
+        cards[i].className = 'weather-card error';
+        cards[i].textContent = `${c.label}: ${c.city}`;
+        return;
+      }
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${c.lat}&longitude=${c.lon}&current=temperature_2m,weather_code`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const temp = Math.round(data.current.temperature_2m);
+        const info = describe(data.current.weather_code);
+        cards[i].className = 'weather-card';
+        cards[i].innerHTML = `
+          <div class="weather-card-label">${c.label}</div>
+          <div class="weather-card-city">${c.city}</div>
+          <span class="weather-card-ico">${SVG_ICONS[info.d] || ''}</span>
+          <div class="weather-card-temp">${temp}°C</div>
+          <div class="weather-card-desc">${info.t}</div>`;
+      } catch (err) {
+        cards[i].className = 'weather-card error';
+        cards[i].textContent = "couldn't load weather for " + c.city;
+      }
+    }));
+  }
+  if (locateBtn) locateBtn.addEventListener('click', () => updateMyLocation(statusEl));
+  window.addEventListener('locationupdated', load);
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-weather') load(); });
+})();
+
+// ---------- watchlist ----------
+(function () {
+  const listEl = document.getElementById('watchlist-list');
+  if (!listEl) return;
+  const sb = getSb();
+  const titleInput = document.getElementById('watchlist-title-input');
+  const typeInput = document.getElementById('watchlist-type-input');
+  const addBtn = document.getElementById('watchlist-add-btn');
+  const tabs = document.querySelectorAll('.watchlist-tab');
+  let activeTab = 'towatch';
+  let items = [];
+
+  function render() {
+    listEl.innerHTML = '';
+    const filtered = items.filter(i => (activeTab === 'watched') === (i.status === 'watched'));
+    if (!filtered.length) {
+      listEl.innerHTML = `<div class="watchlist-empty">${activeTab === 'watched' ? "nothing watched yet" : "nothing on the list yet — add something above"}</div>`;
+      return;
+    }
+    filtered.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'watchlist-item';
+      el.innerHTML = `
+        <div class="watchlist-item-top">
+          <div>
+            <div class="watchlist-item-title">${item.title}</div>
+            <div class="watchlist-item-type">${item.type}${item.added_by ? ' · added by ' + item.added_by : ''}</div>
+          </div>
+        </div>
+        <div class="watchlist-item-actions">
+          <button data-act="toggle">${item.status === 'watched' ? 'Mark unwatched' : 'Mark watched'}</button>
+          <button data-act="remove">Remove</button>
+        </div>`;
+      el.querySelector('[data-act="toggle"]').addEventListener('click', async () => {
+        const newStatus = item.status === 'watched' ? 'towatch' : 'watched';
+        item.status = newStatus;
+        render();
+        try { if (sb) await sb.from('watchlist_items').update({ status: newStatus }).eq('id', item.id); } catch (err) {}
+      });
+      el.querySelector('[data-act="remove"]').addEventListener('click', async () => {
+        items = items.filter(i => i.id !== item.id);
+        render();
+        try { if (sb) await sb.from('watchlist_items').delete().eq('id', item.id); } catch (err) {}
+      });
+      listEl.appendChild(el);
+    });
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeTab = tab.dataset.tab;
+      render();
+    });
+  });
+
+  addBtn.addEventListener('click', async () => {
+    const title = (titleInput.value || '').trim();
+    if (!title) return;
+    const type = typeInput.value;
+    const added_by = getSharedName() || 'someone';
+    addBtn.disabled = true;
+    let newItem = { id: 'local-' + Date.now(), title, type, status: 'towatch', added_by };
+    try {
+      if (sb) {
+        const { data } = await sb.from('watchlist_items').insert({ title, type, status: 'towatch', added_by }).select();
+        if (data && data[0]) newItem = data[0];
+      }
+    } catch (err) { console.warn('watchlist insert failed:', err); }
+    items.unshift(newItem);
+    titleInput.value = '';
+    addBtn.disabled = false;
+    activeTab = 'towatch';
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === 'towatch'));
+    render();
+  });
+
+  async function load() {
+    if (!sb) { render(); return; }
+    const { data, error } = await sb.from('watchlist_items').select('*').order('created_at', { ascending: false });
+    if (!error && data) { items = data; render(); }
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-watchlist') load(); });
+  load();
+})();
+
+// ---------- distance ----------
+(function () {
+  const figureEl = document.getElementById('distance-figure');
+  if (!figureEl) return;
+  const citiesEl = document.getElementById('distance-cities');
+  const locateBtn = document.getElementById('distance-locate-btn');
+  const statusEl = document.getElementById('distance-locate-status');
+
+  function haversineKm(a, b) {
+    const R = 6371;
+    const dLat = (b.lat - a.lat) * Math.PI / 180;
+    const dLon = (b.lon - a.lon) * Math.PI / 180;
+    const la1 = a.lat * Math.PI / 180, la2 = b.lat * Math.PI / 180;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLon / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
+  }
+
+  async function load() {
+    const [you, partner] = await loadTwoLocations();
+    if (you.lat != null && you.lon != null && partner.lat != null && partner.lon != null) {
+      const km = Math.round(haversineKm(you, partner));
+      figureEl.textContent = km.toLocaleString() + ' km';
+    } else {
+      figureEl.textContent = '—';
+    }
+    citiesEl.textContent = `${you.city} ↔ ${partner.city}`;
+  }
+
+  const cfg = CONFIG.distance || {};
+  const countdownCard = document.getElementById('distance-countdown-card');
+  const countdownEl = document.getElementById('distance-countdown');
+  if (cfg.nextVisitDate) {
+    const target = new Date(cfg.nextVisitDate + 'T00:00:00');
+    if (!isNaN(target.getTime())) {
+      countdownCard.style.display = 'block';
+      function renderCountdown() {
+        const days = Math.ceil((target - new Date()) / 86400000);
+        countdownEl.textContent = days > 0 ? `${days} day${days === 1 ? '' : 's'}` : "today 🎉";
+      }
+      renderCountdown();
+      setInterval(renderCountdown, 60 * 60 * 1000);
+    }
+  }
+
+  if (locateBtn) locateBtn.addEventListener('click', () => updateMyLocation(statusEl));
+  window.addEventListener('locationupdated', load);
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-distance') load(); });
+})();
+
+// ---------- theme (applied immediately on load, editable from More hub) ----------
+(function () {
+  const VARS = ['accent', 'accentLight', 'bgFrom', 'bgMid', 'bgTo'];
+  const CSS_VAR_MAP = { accent: '--accent', accentLight: '--accent-light', bgFrom: '--bg-from', bgMid: '--bg-mid', bgTo: '--bg-to' };
+
+  function hexToRgb(hex) {
+    const m = hex.replace('#', '').match(/.{1,2}/g);
+    return m ? m.map(h => parseInt(h, 16)).join(',') : '255,77,109';
+  }
+
+  function applyTheme(theme) {
+    if (!theme) return;
+    const root = document.documentElement;
+    VARS.forEach(k => { if (theme[k]) root.style.setProperty(CSS_VAR_MAP[k], theme[k]); });
+    if (theme.accent) root.style.setProperty('--accent-rgb', hexToRgb(theme.accent));
+    if (theme.accentLight) root.style.setProperty('--accent-light-rgb', hexToRgb(theme.accentLight));
+  }
+
+  // apply cached theme immediately so there's no flash of the default palette
+  try {
+    const cached = JSON.parse(localStorage.getItem('lls_theme') || 'null');
+    if (cached) applyTheme(cached);
+  } catch (err) {}
+
+  async function saveTheme(theme, statusEl) {
+    localStorage.setItem('lls_theme', JSON.stringify(theme));
+    applyTheme(theme);
+    const sb = getSb();
+    try {
+      if (sb) await sb.from('app_theme').upsert({ id: 1, ...theme, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+      if (statusEl) statusEl.textContent = `saved "${theme.name || 'theme'}" for both of you`;
+    } catch (err) {
+      if (statusEl) statusEl.textContent = 'saved on this device (sync needs the app_theme table — see comments in CONFIG)';
+    }
+  }
+
+  async function loadSharedTheme() {
+    const sb = getSb();
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('app_theme').select('*').eq('id', 1).maybeSingle();
+      if (!error && data) {
+        const theme = { name: data.name, accent: data.accent, accentLight: data.accentLight, bgFrom: data.bgFrom, bgMid: data.bgMid, bgTo: data.bgTo };
+        localStorage.setItem('lls_theme', JSON.stringify(theme));
+        applyTheme(theme);
+        renderGrid();
+      }
+    } catch (err) {}
+  }
+
+  const gridEl = document.getElementById('theme-grid');
+  const statusEl = document.getElementById('theme-status');
+  function renderGrid() {
+    if (!gridEl) return;
+    const current = JSON.parse(localStorage.getItem('lls_theme') || 'null');
+    gridEl.innerHTML = '';
+    (CONFIG.themePresets || []).forEach(preset => {
+      const isActive = current && current.name === preset.name;
+      const card = document.createElement('button');
+      card.className = 'theme-swatch' + (isActive ? ' active' : '');
+      card.style.background = `linear-gradient(135deg, ${preset.bgFrom}, ${preset.bgTo})`;
+      card.innerHTML = `
+        <div class="theme-swatch-dots">
+          <span class="theme-swatch-dot" style="background:${preset.accent}"></span>
+          <span class="theme-swatch-dot" style="background:${preset.accentLight}"></span>
+        </div>
+        <div class="theme-swatch-name">${preset.name}</div>`;
+      card.addEventListener('click', () => { saveTheme(preset, statusEl); renderGrid(); });
+      gridEl.appendChild(card);
+    });
+  }
+  renderGrid();
+  loadSharedTheme();
+})();
+
+// ---------- song of the day ----------
+(function () {
+  const embedEl = document.getElementById('song-today-embed');
+  if (!embedEl) return;
+  const sb = getSb();
+  const labelEl = document.getElementById('song-today-label');
+  const reactionsEl = document.getElementById('song-today-reactions');
+  const addCard = document.getElementById('song-add-card');
+  const titleInput = document.getElementById('song-new-title');
+  const urlInput = document.getElementById('song-new-url');
+  const addBtn = document.getElementById('song-add-btn');
+  const archiveEl = document.getElementById('song-archive-list');
+  let songs = [];
+  let songReactions = {}; // song_id -> [{reactor, emoji}]
+
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  function toEmbedSrc(url) {
+    if (!url) return '';
+    if (url.includes('open.spotify.com') && !url.includes('/embed/')) return url.replace('open.spotify.com/', 'open.spotify.com/embed/');
+    return url;
+  }
+
+  function renderReactions(container, song) {
+    container.innerHTML = '';
+    const pool = CONFIG.songReactions || ['❤️'];
+    const mine = getSharedName();
+    const rows = (song.id != null && songReactions[song.id]) || [];
+    pool.forEach(emoji => {
+      const count = rows.filter(r => r.emoji === emoji).length;
+      const mineReacted = rows.some(r => r.emoji === emoji && r.reactor === mine);
+      const btn = document.createElement('button');
+      btn.className = 'song-reaction-btn' + (mineReacted ? ' mine' : '');
+      btn.innerHTML = `${emoji}${count ? `<span class="song-reaction-count">${count}</span>` : ''}`;
+      btn.addEventListener('click', async () => {
+        if (!mine) return;
+        try {
+          if (mineReacted) {
+            await sb.from('song_reactions').delete().eq('song_id', song.id).eq('reactor', mine).eq('emoji', emoji);
+          } else {
+            await sb.from('song_reactions').upsert({ song_id: song.id, reactor: mine, emoji }, { onConflict: 'song_id,reactor,emoji' });
+          }
+        } catch (err) { console.warn('song reaction failed:', err); }
+        load();
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function render() {
+    const today = todayStr();
+    const todays = songs.find(s => s.entry_date === today);
+    if (todays) {
+      labelEl.textContent = `Today's pick — ${todays.title || 'untitled'} · by ${todays.sender}`;
+      const src = toEmbedSrc(todays.embed_url);
+      embedEl.innerHTML = src ? `<iframe class="song-embed-frame" src="${src}" height="152" allow="encrypted-media"></iframe>` : '';
+      renderReactions(reactionsEl, todays);
+      addCard.style.display = 'none';
+    } else {
+      labelEl.textContent = "No pick for today yet";
+      embedEl.innerHTML = '';
+      reactionsEl.innerHTML = '';
+      addCard.style.display = 'block';
+    }
+
+    archiveEl.innerHTML = '';
+    const past = songs.filter(s => s.entry_date !== today).slice(0, 20);
+    if (!past.length) {
+      archiveEl.innerHTML = '<div class="capsule-empty">nothing here yet</div>';
+    } else {
+      past.forEach(s => {
+        const el = document.createElement('div');
+        el.className = 'song-archive-item';
+        const rows = (s.id != null && songReactions[s.id]) || [];
+        const reactSummary = rows.length ? rows.map(r => r.emoji).join(' ') : 'no reactions yet';
+        el.innerHTML = `
+          <div class="song-archive-top">
+            <span class="song-archive-title">${s.title || 'untitled'}</span>
+            <span class="song-archive-date">${s.entry_date}</span>
+          </div>
+          <div class="song-archive-by">picked by ${s.sender}</div>
+          <div class="song-archive-reactions">${reactSummary}</div>`;
+        archiveEl.appendChild(el);
+      });
+    }
+  }
+
+  addBtn.addEventListener('click', async () => {
+    const title = (titleInput.value || '').trim();
+    const embed_url = (urlInput.value || '').trim();
+    if (!title || !embed_url) return;
+    const sender = getSharedName() || 'someone';
+    addBtn.disabled = true;
+    try {
+      if (sb) await sb.from('song_of_day').insert({ sender, title, embed_url, entry_date: todayStr() });
+    } catch (err) { console.warn('song insert failed:', err); }
+    titleInput.value = ''; urlInput.value = '';
+    addBtn.disabled = false;
+    load();
+  });
+
+  async function load() {
+    if (!sb) { render(); return; }
+    const { data, error } = await sb.from('song_of_day').select('*').order('entry_date', { ascending: false }).limit(40);
+    if (!error && data) songs = data;
+    const ids = songs.map(s => s.id).filter(id => id != null);
+    if (ids.length) {
+      const { data: rData, error: rErr } = await sb.from('song_reactions').select('*').in('song_id', ids);
+      if (!rErr && rData) {
+        songReactions = {};
+        rData.forEach(r => { (songReactions[r.song_id] = songReactions[r.song_id] || []).push(r); });
+      }
+    }
+    render();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-song') load(); });
+  load();
+})();
+
+// ---------- milestones ----------
+(function () {
+  const listEl = document.getElementById('milestone-list');
+  if (!listEl) return;
+  const nextFigureEl = document.getElementById('milestone-next-figure');
+  const nextSubEl = document.getElementById('milestone-next-sub');
+  const cfg = CONFIG.milestones || {};
+
+  function buildMilestones() {
+    const items = [];
+    if (cfg.startDate) {
+      const start = new Date(cfg.startDate + 'T00:00:00');
+      if (!isNaN(start.getTime())) {
+        items.push({ date: start, label: 'The day it all started' });
+        // month-aversaries out to 5 years, plus notable day-counts
+        for (let m = 1; m <= 60; m++) {
+          const d = new Date(start);
+          d.setMonth(d.getMonth() + m);
+          const label = (m % 12 === 0) ? `${m / 12} year${m / 12 === 1 ? '' : 's'} together` : `${m} month${m === 1 ? '' : 's'} together`;
+          items.push({ date: d, label });
+        }
+        [100, 500, 1000].forEach(days => {
+          const d = new Date(start);
+          d.setDate(d.getDate() + days);
+          items.push({ date: d, label: `${days} days together` });
+        });
+      }
+    }
+    (cfg.custom || []).forEach(c => {
+      const d = new Date(c.date + 'T00:00:00');
+      if (!isNaN(d.getTime())) items.push({ date: d, label: c.label });
+    });
+    items.sort((a, b) => a.date - b.date);
+    return items;
+  }
+
+  function render() {
+    const items = buildMilestones();
+    const now = new Date();
+    listEl.innerHTML = '';
+    if (!items.length) {
+      listEl.innerHTML = '<div class="capsule-empty">set CONFIG.milestones.startDate to see these</div>';
+      nextFigureEl.textContent = '—';
+      nextSubEl.textContent = '';
+      return;
+    }
+    const upcoming = items.find(it => it.date >= now);
+    if (upcoming) {
+      const days = Math.ceil((upcoming.date - now) / 86400000);
+      nextFigureEl.textContent = days === 0 ? 'Today 🎉' : `${days} day${days === 1 ? '' : 's'}`;
+      nextSubEl.textContent = upcoming.label;
+    } else {
+      nextFigureEl.textContent = '—';
+      nextSubEl.textContent = '';
+    }
+    items.slice().reverse().forEach(it => {
+      const isPast = it.date < now;
+      const el = document.createElement('div');
+      el.className = 'milestone-item' + (isPast ? ' past' : '');
+      el.innerHTML = `
+        <span class="milestone-dot"></span>
+        <div>
+          <div class="milestone-label">${it.label}</div>
+          <div class="milestone-date">${fmtShortDate(it.date)}</div>
+        </div>`;
+      listEl.appendChild(el);
+    });
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-milestones') render(); });
+  render();
+})();
+
+// ---------- currently status ----------
+(function () {
+  const myInput = document.getElementById('currently-my-input');
+  if (!myInput) return;
+  const saveBtn = document.getElementById('currently-save-btn');
+  const partnerLabel = document.getElementById('currently-partner-label');
+  const partnerText = document.getElementById('currently-partner-text');
+  const badgeEl = document.getElementById('currently-badge');
+  const sb = getSb();
+
+  async function load() {
+    const sender = getSharedName();
+    const sb2 = getSb();
+    if (!sb2) return;
+    try {
+      const { data, error } = await sb2.from('statuses').select('*');
+      if (error || !data) return;
+      const mine = data.find(r => r.sender === sender);
+      const partnerRow = data.find(r => r.sender !== sender);
+      if (mine) myInput.value = mine.status;
+      if (partnerRow) {
+        partnerLabel.textContent = `${partnerRow.sender}, right now`;
+        partnerText.textContent = partnerRow.status;
+        if (badgeEl) {
+          badgeEl.textContent = `💭 ${partnerRow.sender}: ${partnerRow.status}`;
+          const onLetter = document.getElementById('view-letter').classList.contains('active');
+          badgeEl.style.display = onLetter ? 'block' : 'none';
+        }
+      } else {
+        partnerText.textContent = 'not set yet';
+      }
+    } catch (err) {}
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    const sender = getSharedName();
+    if (!sender) { partnerText.textContent = ''; return; }
+    const status = (myInput.value || '').trim();
+    if (!status) return;
+    saveBtn.disabled = true;
+    try {
+      if (sb) await sb.from('statuses').upsert({ sender, status, updated_at: new Date().toISOString() }, { onConflict: 'sender' });
+    } catch (err) { console.warn('status save failed:', err); }
+    saveBtn.disabled = false;
+    load();
+  });
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-currently') load(); });
+  load();
+  setInterval(load, 5 * 60 * 1000);
+})();
+
+
 </script>
 </body>
 </html>
