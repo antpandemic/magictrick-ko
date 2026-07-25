@@ -52,20 +52,23 @@
   ======================================================================== */
   #bottom-nav {
     position:fixed; left:0; right:0; bottom:0; z-index:500;
-    display:flex; justify-content:space-around; align-items:center;
+    display:flex; align-items:center;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
     height:calc(66px + env(safe-area-inset-bottom, 0px));
     padding-bottom:env(safe-area-inset-bottom, 0px);
+    padding-left:6px; padding-right:6px;
     background:rgba(30,8,14,0.94);
     backdrop-filter:blur(10px);
     border-top:1px solid rgba(255,255,255,0.08);
   }
+  #bottom-nav::-webkit-scrollbar { display:none; }
   .nav-btn {
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
     color:rgba(255,255,255,0.5);
     font-size:10px; font-weight:600; letter-spacing:.02em;
     padding:6px 6px; border-radius:14px;
-    min-width:44px; min-height:44px;
-    flex:1 1 0;
+    min-width:60px; min-height:44px;
+    flex:0 0 auto;
     transition:color .16s ease, transform .16s ease;
   }
   .nav-btn .ico { width:21px; height:21px; transition:transform .16s ease; }
@@ -170,7 +173,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-someday {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday {
     min-height:100svh;
     background:linear-gradient(180deg, #2c0910, #5c1a29 55%, #8a2e46);
   }
@@ -202,6 +205,380 @@
   }
   @keyframes reasonIn { to{opacity:1; transform:translateY(0);} }
   .reason-num { font-family:'Playfair Display', serif; font-style:italic; color:#ffb6c9; font-size:16px; flex-shrink:0; }
+
+  /* ---- gallery: tinder-style swipe deck ---- */
+  .swipe-deck {
+    position:relative;
+    width:100%;
+    max-width:340px;
+    aspect-ratio:3 / 4;
+    margin:6px auto 0;
+  }
+  .swipe-card {
+    position:absolute; inset:0;
+    border-radius:22px; overflow:hidden;
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.12);
+    box-shadow:0 18px 40px rgba(0,0,0,0.35);
+    touch-action:none;
+    cursor:grab;
+    user-select:none;
+    will-change:transform;
+    transition:transform .35s cubic-bezier(.2,.7,.3,1), opacity .3s ease;
+  }
+  .swipe-card:active { cursor:grabbing; }
+  .swipe-card.dragging { transition:none; }
+  .swipe-card img {
+    width:100%; height:100%; object-fit:cover; display:block;
+    pointer-events:none; -webkit-user-drag:none;
+  }
+  .swipe-card.placeholder {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:10px; text-align:center; padding:20px;
+  }
+  .swipe-card.placeholder .g-ico { width:30px; height:30px; opacity:.45; color:#ffdfe6; }
+  .swipe-caption {
+    position:absolute; left:0; right:0; bottom:0;
+    padding:34px 16px 14px;
+    background:linear-gradient(0deg, rgba(0,0,0,0.6), rgba(0,0,0,0));
+    color:#fff; font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:15px; line-height:1.3; pointer-events:none;
+  }
+  .swipe-card.placeholder .swipe-caption {
+    position:static; background:none; padding:0; color:rgba(255,255,255,0.6);
+  }
+  .stamp {
+    position:absolute; top:22px; padding:6px 14px; border-radius:8px;
+    font-family:'Quicksand', sans-serif; font-weight:800; font-size:18px; letter-spacing:.06em;
+    border:3px solid; text-transform:uppercase; opacity:0; pointer-events:none;
+  }
+  .stamp-love { right:18px; color:#4ee08a; border-color:#4ee08a; transform:rotate(12deg); }
+  .stamp-nah  { left:18px; color:#ff5c72; border-color:#ff5c72; transform:rotate(-12deg); }
+
+  .swipe-deck.empty-state {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:14px; text-align:center; color:rgba(255,255,255,0.75);
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+    border-radius:22px; padding:24px;
+  }
+  .swipe-deck.empty-state .g-ico { width:30px; height:30px; opacity:.5; color:#ffdfe6; }
+
+  .swipe-controls {
+    display:flex; justify-content:center; gap:26px; margin-top:22px;
+  }
+  .swipe-btn {
+    width:56px; height:56px; border-radius:50%;
+    background:rgba(255,255,255,0.09); border:1px solid rgba(255,255,255,0.15);
+    font-size:22px; display:flex; align-items:center; justify-content:center;
+    transition:transform .15s ease;
+  }
+  .swipe-btn:active { transform:scale(0.88); }
+  .swipe-btn-nah { color:#ff5c72; }
+  .swipe-btn-love { color:#ff4d6d; }
+
+  /* ---- hello kitty pat ---- */
+  .kitty-wrap {
+    position:relative;
+    width:min(62vw, 230px);
+    margin:14px auto 0;
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .kitty-svg { width:100%; display:block; transition:transform .12s ease; filter:drop-shadow(0 10px 22px rgba(0,0,0,0.25)); }
+  .kitty-wrap:active .kitty-svg { transform:scale(0.93) rotate(-2deg); }
+  .kitty-cheek { opacity:0; transform-origin:center; }
+  .kitty-cheek.show { animation:cheekPulse .5s ease; opacity:1; }
+  @keyframes cheekPulse {
+    0%   { opacity:0; transform:scale(.5); }
+    55%  { opacity:1; transform:scale(1.2); }
+    100% { opacity:1; transform:scale(1); }
+  }
+  .kitty-hearts { position:absolute; inset:0; overflow:visible; pointer-events:none; }
+  .kitty-heart {
+    position:absolute; top:38%; font-size:20px;
+    opacity:0; animation:kittyHeartFloat 1.1s ease forwards;
+  }
+  @keyframes kittyHeartFloat {
+    0%   { opacity:0; transform:translateY(0) scale(.5) rotate(0deg); }
+    15%  { opacity:1; }
+    100% { opacity:0; transform:translateY(-95px) scale(1.15) rotate(14deg); }
+  }
+  .kitty-msg {
+    margin-top:20px; min-height:44px; text-align:center; padding:0 12px;
+    font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:17px; color:#fff; opacity:0; transition:opacity .3s ease;
+  }
+  .kitty-msg.show { opacity:1; }
+  .kitty-hint {
+    text-align:center; font-size:12px; letter-spacing:.05em;
+    color:rgba(255,255,255,0.5); margin-top:6px;
+  }
+  .kitty-tapcount {
+    text-align:center; font-size:11.5px; color:rgba(255,255,255,0.35); margin-top:4px;
+  }
+
+  /* ---- surprises: shared card shell ---- */
+  .surprise-card {
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+    border-radius:18px; padding:20px 18px; margin-bottom:16px;
+  }
+  .surprise-card-center { text-align:center; }
+  .surprise-label {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px;
+    letter-spacing:.04em; color:rgba(255,255,255,0.75); margin-bottom:14px; text-align:center;
+  }
+
+  /* ---- mood check-in ---- */
+  .mood-grid {
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;
+  }
+  .mood-btn {
+    display:flex; flex-direction:column; align-items:center; gap:5px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px; padding:10px 4px; font-size:22px;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .mood-btn span {
+    font-family:'Quicksand', sans-serif; font-size:10.5px; font-weight:600;
+    color:rgba(255,255,255,0.65); letter-spacing:.02em;
+  }
+  .mood-btn:active { transform:scale(0.93); }
+  .mood-btn.active { background:rgba(255,77,109,0.22); border-color:rgba(255,77,109,0.4); }
+  .mood-msg {
+    margin-top:14px; min-height:22px; text-align:center;
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px;
+    color:rgba(255,255,255,0.8); opacity:0; transition:opacity .3s ease;
+  }
+  .mood-msg.show { opacity:1; }
+
+  /* ---- countdown ---- */
+  .countdown-grid { display:flex; justify-content:center; gap:10px; }
+  .countdown-unit {
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.08); border-radius:12px; padding:10px 6px; min-width:58px;
+  }
+  .countdown-num {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:26px; color:#ffe3ea; line-height:1;
+  }
+  .countdown-word {
+    font-family:'Quicksand', sans-serif; font-size:10px; letter-spacing:.06em;
+    text-transform:uppercase; color:rgba(255,255,255,0.5); margin-top:4px;
+  }
+
+  /* ---- love meter ---- */
+  .love-meter-row { display:flex; align-items:center; gap:10px; }
+  .love-meter-ico { font-size:18px; flex-shrink:0; }
+  .love-slider {
+    flex:1; -webkit-appearance:none; appearance:none; height:6px; border-radius:6px;
+    background:linear-gradient(90deg, rgba(255,255,255,0.15), #ff4d6d);
+    outline:none;
+  }
+  .love-slider::-webkit-slider-thumb {
+    -webkit-appearance:none; appearance:none; width:22px; height:22px; border-radius:50%;
+    background:#fff; border:3px solid #ff4d6d; cursor:pointer;
+  }
+  .love-slider::-moz-range-thumb {
+    width:22px; height:22px; border-radius:50%; background:#fff; border:3px solid #ff4d6d; cursor:pointer;
+  }
+  .love-meter-value {
+    text-align:center; margin-top:10px;
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:20px; color:#ffe3ea;
+  }
+  .love-meter-msg {
+    text-align:center; margin-top:6px; min-height:22px;
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15px;
+    color:rgba(255,255,255,0.75);
+  }
+
+  /* ---- scratch card ---- */
+  .scratch-wrap {
+    position:relative; width:100%; height:130px; border-radius:14px; overflow:hidden;
+    touch-action:none;
+  }
+  .scratch-reveal {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:16px;
+    background:linear-gradient(135deg, #7a1830, #c8425a);
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:16px; color:#fff;
+    line-height:1.4;
+  }
+  .scratch-canvas { position:absolute; inset:0; width:100%; height:100%; cursor:grab; }
+  .scratch-canvas.done { pointer-events:none; }
+
+  /* ---- daily affection ---- */
+  .affection-box { text-align:center; min-height:70px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; }
+  .affection-date {
+    font-family:'Quicksand', sans-serif; font-size:11px; letter-spacing:.06em;
+    text-transform:uppercase; color:rgba(255,255,255,0.4);
+  }
+  .affection-msg {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:17px;
+    color:#ffe3ea; line-height:1.5; animation:fadeIn .3s ease;
+  }
+
+  /* ---- virtual hug ---- */
+  .hug-btn {
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    margin:4px auto 0; padding:18px 26px; border-radius:20px;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+    transition:transform .15s ease;
+  }
+  .hug-btn:active { transform:scale(0.94); }
+  .hug-btn span:first-child { font-size:34px; }
+  .hug-btn span:last-child {
+    font-family:'Quicksand', sans-serif; font-size:12px; letter-spacing:.04em;
+    color:rgba(255,255,255,0.7);
+  }
+  .hug-overlay {
+    position:fixed; inset:0; z-index:8500; display:none;
+    align-items:center; justify-content:center; flex-direction:column;
+    background:radial-gradient(circle at center, rgba(200,66,90,0.94), rgba(58,5,16,0.97));
+    text-align:center; padding:30px;
+  }
+  .hug-overlay.open { display:flex; animation:fadeIn .25s ease; }
+  .hug-overlay-content { position:relative; z-index:2; }
+  .hug-overlay-emoji { font-size:64px; animation:hugPulse 1.1s ease-in-out infinite; }
+  @keyframes hugPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+  .hug-overlay-msg {
+    margin-top:18px; font-family:'Cormorant Garamond', serif; font-style:italic;
+    font-size:19px; color:#fff; max-width:320px;
+  }
+  .hug-hearts { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+  .hug-heart {
+    position:absolute; bottom:-10%; font-size:22px; opacity:0;
+    animation:hugHeartRise linear forwards;
+  }
+  @keyframes hugHeartRise {
+    0%   { opacity:0; transform:translateY(0) scale(.6); }
+    12%  { opacity:1; }
+    100% { opacity:0; transform:translateY(-110vh) scale(1.1); }
+  }
+
+  /* ---- draw something ---- */
+  .draw-status {
+    font-family:'Quicksand', sans-serif; font-weight:600; font-size:11px;
+    color:rgba(255,255,255,0.4); margin-left:6px; letter-spacing:.02em;
+  }
+  .draw-block { margin-bottom:26px; }
+  .draw-canvas-wrap {
+    position:relative; width:100%; aspect-ratio:4 / 3;
+    border-radius:16px; overflow:hidden;
+    background:#fffaf7; border:1px solid rgba(255,255,255,0.15);
+  }
+  .draw-canvas-wrap canvas { width:100%; height:100%; display:block; touch-action:none; cursor:crosshair; }
+  .draw-canvas-static {
+    background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center;
+  }
+  .draw-placeholder {
+    text-align:center; padding:20px;
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:14.5px;
+    color:rgba(255,255,255,0.55);
+  }
+  .draw-canvas-static img { width:100%; height:100%; object-fit:contain; }
+  .draw-controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+  .draw-colors { display:flex; gap:7px; }
+  .draw-color {
+    width:22px; height:22px; border-radius:50%;
+    border:2px solid rgba(255,255,255,0.3); transition:transform .12s ease;
+  }
+  .draw-color.active { border-color:#fff; transform:scale(1.18); }
+  .draw-btn {
+    padding:8px 16px; border-radius:12px; font-family:'Quicksand', sans-serif;
+    font-weight:700; font-size:12.5px;
+    background:transparent; border:1.5px solid rgba(255,255,255,0.3); color:#fff;
+  }
+  .draw-btn:active { transform:scale(0.94); }
+
+  /* ---- map of us ---- */
+  .us-map {
+    position:relative; width:100%; aspect-ratio:1 / 1.15;
+    border-radius:20px; overflow:hidden;
+    background:
+      radial-gradient(circle at 20% 25%, rgba(255,255,255,0.10), transparent 40%),
+      radial-gradient(circle at 78% 65%, rgba(255,255,255,0.08), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 34px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 34px),
+      linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border:1px solid rgba(255,255,255,0.12);
+  }
+  .map-pin {
+    position:absolute; transform:translate(-50%, -100%);
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    cursor:pointer;
+  }
+  .map-pin-ico {
+    width:30px; height:30px; color:#ff4d6d;
+    filter:drop-shadow(0 4px 8px rgba(0,0,0,0.35));
+    transition:transform .15s ease;
+  }
+  .map-pin:active .map-pin-ico { transform:scale(0.88); }
+  .map-pin-label {
+    font-family:'Quicksand', sans-serif; font-size:9.5px; font-weight:700;
+    color:#fff; background:rgba(20,4,8,0.65); padding:2px 7px; border-radius:8px;
+    white-space:nowrap; letter-spacing:.01em;
+  }
+  .map-panel {
+    position:fixed; inset:0; z-index:8200; display:none;
+    align-items:center; justify-content:center; padding:24px;
+    background:rgba(10,2,5,0.85);
+  }
+  .map-panel.open { display:flex; animation:fadeIn .2s ease; }
+  .map-panel-card {
+    max-width:340px; width:100%; background:rgba(255,250,246,0.97);
+    border-radius:20px; padding:28px 24px; text-align:center;
+  }
+  .map-panel-label {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:19px; color:#2c1a22; margin-bottom:10px;
+  }
+  .map-panel-story {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15px;
+    color:rgba(44,26,34,0.75); line-height:1.55; margin-bottom:20px;
+  }
+
+  /* ---- playlist chips ---- */
+  .playlist-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .playlist-chip {
+    padding:8px 15px; border-radius:20px; font-family:'Quicksand', sans-serif;
+    font-weight:700; font-size:12.5px;
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.7);
+  }
+  .playlist-chip.active { background:#c8425a; border-color:#c8425a; color:#fff; }
+
+  /* ---- background music toggle (floats above bottom nav) ---- */
+  .bgmusic-btn {
+    position:fixed; right:16px; bottom:calc(82px + env(safe-area-inset-bottom, 0px)); z-index:600;
+    width:46px; height:46px; border-radius:50%;
+    background:rgba(30,8,14,0.85); border:1px solid rgba(255,255,255,0.18);
+    color:#ffc3d3; font-size:18px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+    transition:transform .15s ease;
+  }
+  .bgmusic-btn:active { transform:scale(0.9); }
+  .bgmusic-btn.playing { animation:bgmusicPulse 1.6s ease-in-out infinite; }
+  @keyframes bgmusicPulse { 0%,100%{ box-shadow:0 8px 20px rgba(0,0,0,0.3); } 50%{ box-shadow:0 8px 24px rgba(255,77,109,0.5); } }
+
+  /* ---- confetti burst ---- */
+  .confetti-burst { position:fixed; inset:0; z-index:10000; pointer-events:none; overflow:hidden; }
+  .confetti-piece {
+    position:absolute; top:-12px; border-radius:2px; opacity:0.95;
+    animation:confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    0%   { transform:translateY(0) translateX(0) rotate(0deg); opacity:1; }
+    100% { transform:translateY(108vh) translateX(var(--drift)) rotate(var(--rot)); opacity:0; }
+  }
+
+  /* ---- typewriter cursor for the opening line ---- */
+  .typing-cursor::after {
+    content:'|'; display:inline-block; margin-left:2px;
+    animation:typingBlink .8s steps(1) infinite;
+  }
+  @keyframes typingBlink { 50% { opacity:0; } }
 
   /* ---- quiz ---- */
   #quiz-card {
@@ -254,6 +631,13 @@
 
   @media (prefers-reduced-motion: reduce) {
     .particle, .scroll-hint, .reason-card { animation:none !important; }
+    .swipe-card { transition:none !important; }
+    .kitty-cheek.show { animation:none !important; opacity:1 !important; }
+    .kitty-heart { animation:none !important; display:none !important; }
+    .hug-overlay-emoji { animation:none !important; }
+    .hug-heart { animation:none !important; display:none !important; }
+    .confetti-piece { animation:none !important; display:none !important; }
+    .bgmusic-btn.playing { animation:none !important; }
   }
 
   /* ========================================================================
@@ -371,11 +755,187 @@
     </div>
   </div>
 
+  <!-- ============================ GALLERY ============================ -->
+  <div class="view" id="view-gallery">
+    <div class="page">
+      <div class="page-title">Us, In Pictures</div>
+      <div class="page-sub">swipe through a few of my favorite moments with you</div>
+      <div class="swipe-deck" id="swipe-deck"></div>
+      <div class="swipe-controls">
+        <button class="swipe-btn swipe-btn-nah" id="swipe-nah" aria-label="Swipe left">✕</button>
+        <button class="swipe-btn swipe-btn-love" id="swipe-love" aria-label="Swipe right">♥</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ HELLO KITTY PAT ============================ -->
+  <div class="view" id="view-kitty">
+    <div class="page">
+      <div class="page-title">A Little Hello Kitty Break</div>
+      <div class="page-sub">she's just here for pats. go ahead.</div>
+
+      <div class="kitty-wrap" id="kitty-wrap">
+        <div class="kitty-hearts" id="kitty-hearts"></div>
+        <svg class="kitty-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 70 C35 30 60 15 88 42 C78 55 62 65 50 70 Z" fill="#fff" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M150 70 C165 30 140 15 112 42 C122 55 138 65 150 70 Z" fill="#fff" stroke="#1a1a1a" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M58 62 C50 40 62 30 78 45" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+          <path d="M142 62 C150 40 138 30 122 45" fill="none" stroke="#1a1a1a" stroke-width="3.5" stroke-linecap="round"/>
+          <ellipse cx="100" cy="115" rx="76" ry="70" fill="#fff" stroke="#1a1a1a" stroke-width="6"/>
+          <path d="M25 104 L3 101" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <path d="M24 120 L2 120" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <path d="M28 136 L6 139" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <path d="M175 104 L197 101" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <path d="M176 120 L198 120" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <path d="M172 136 L194 139" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/>
+          <ellipse cx="76" cy="110" rx="6" ry="9" fill="#1a1a1a"/>
+          <ellipse cx="124" cy="110" rx="6" ry="9" fill="#1a1a1a"/>
+          <ellipse cx="100" cy="124" rx="7" ry="5" fill="#ff9f43"/>
+          <ellipse id="kitty-cheek-l" class="kitty-cheek" cx="62" cy="128" rx="13" ry="9" fill="#ff8fa3"/>
+          <ellipse id="kitty-cheek-r" class="kitty-cheek" cx="138" cy="128" rx="13" ry="9" fill="#ff8fa3"/>
+          <g transform="translate(148,45) rotate(-10)">
+            <path d="M0 0 C-10 -26 -34 -22 -34 0 C-34 22 -10 26 0 0 Z" fill="#ff2d6b" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+            <path d="M0 0 C10 -26 34 -22 34 0 C34 22 10 26 0 0 Z" fill="#ff2d6b" stroke="#1a1a1a" stroke-width="5" stroke-linejoin="round"/>
+            <circle cx="0" cy="0" r="10" fill="#ff2d6b" stroke="#1a1a1a" stroke-width="5"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="kitty-msg" id="kitty-msg"></div>
+      <div class="kitty-hint" id="kitty-hint">tap her for a pat 🎀</div>
+      <div class="kitty-tapcount" id="kitty-tapcount"></div>
+    </div>
+  </div>
+
+  <!-- ============================ SURPRISES ============================ -->
+  <div class="view" id="view-surprises">
+    <div class="page">
+      <div class="page-title">A Few Little Surprises</div>
+      <div class="page-sub">some things just for you to play with</div>
+
+      <!-- countdown -->
+      <div class="surprise-card">
+        <div class="surprise-label" id="countdown-label">Counting down</div>
+        <div class="countdown-grid" id="countdown-grid">
+          <div class="countdown-unit"><span class="countdown-num" id="cd-days">00</span><span class="countdown-word">days</span></div>
+          <div class="countdown-unit"><span class="countdown-num" id="cd-hours">00</span><span class="countdown-word">hrs</span></div>
+          <div class="countdown-unit"><span class="countdown-num" id="cd-mins">00</span><span class="countdown-word">min</span></div>
+          <div class="countdown-unit"><span class="countdown-num" id="cd-secs">00</span><span class="countdown-word">sec</span></div>
+        </div>
+      </div>
+
+      <!-- mood check-in -->
+      <div class="surprise-card">
+        <div class="surprise-label">How are you feeling today?</div>
+        <div class="mood-grid" id="mood-grid">
+          <button class="mood-btn" data-mood="happy">🙂<span>Happy</span></button>
+          <button class="mood-btn" data-mood="loved">🥰<span>Loved</span></button>
+          <button class="mood-btn" data-mood="tired">😴<span>Tired</span></button>
+          <button class="mood-btn" data-mood="sad">🥺<span>Down</span></button>
+          <button class="mood-btn" data-mood="stressed">😩<span>Stressed</span></button>
+          <button class="mood-btn" data-mood="missing">🥹<span>Missing you</span></button>
+        </div>
+        <div class="mood-msg" id="mood-msg"></div>
+      </div>
+
+      <!-- love meter -->
+      <div class="surprise-card">
+        <div class="surprise-label">How much do you love me? be honest</div>
+        <div class="love-meter-row">
+          <span class="love-meter-ico">💔</span>
+          <input type="range" min="0" max="100" value="50" id="love-slider" class="love-slider" />
+          <span class="love-meter-ico">💗</span>
+        </div>
+        <div class="love-meter-value" id="love-value">50%</div>
+        <div class="love-meter-msg" id="love-msg"></div>
+      </div>
+
+      <!-- scratch card -->
+      <div class="surprise-card">
+        <div class="surprise-label">Scratch this off</div>
+        <div class="scratch-wrap" id="scratch-wrap">
+          <div class="scratch-reveal" id="scratch-reveal"></div>
+          <canvas class="scratch-canvas" id="scratch-canvas"></canvas>
+        </div>
+      </div>
+
+      <!-- daily affection -->
+      <div class="surprise-card">
+        <div class="surprise-label">Today's Affection</div>
+        <div class="affection-box" id="affection-box">
+          <div class="affection-locked" id="affection-locked">
+            <div class="affection-date" id="affection-date"></div>
+            <button class="btn-pink" id="affection-reveal-btn">Reveal today's message</button>
+          </div>
+          <div class="affection-msg" id="affection-msg" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- virtual hug -->
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label">Need a hug?</div>
+        <button class="hug-btn" id="hug-btn">
+          <span id="hug-btn-emoji">🤗</span>
+          <span id="hug-btn-text">tap for a hug</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- full-screen hug overlay -->
+  <div class="hug-overlay" id="hug-overlay">
+    <div class="hug-overlay-content">
+      <div class="hug-overlay-emoji">🤗</div>
+      <div class="hug-overlay-msg" id="hug-overlay-msg"></div>
+    </div>
+    <div class="hug-hearts" id="hug-hearts"></div>
+  </div>
+
+  <!-- ============================ DRAW SOMETHING ============================ -->
+  <div class="view" id="view-draw">
+    <div class="page">
+      <div class="page-title">Draw Something, Together</div>
+      <div class="page-sub">one shared canvas — whatever either of you draws shows up live for both</div>
+
+      <div class="draw-block">
+        <div class="surprise-label">
+          Our Doodle <span class="draw-status" id="draw-status">○ connecting...</span>
+        </div>
+        <div class="draw-canvas-wrap">
+          <canvas id="draw-canvas-hers"></canvas>
+        </div>
+        <div class="draw-controls">
+          <div class="draw-colors" id="draw-colors"></div>
+          <button class="draw-btn" id="draw-clear">Clear for both</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ MAP OF US ============================ -->
+  <div class="view" id="view-map">
+    <div class="page">
+      <div class="page-title">Map Of Us</div>
+      <div class="page-sub">tap a pin for the story behind it</div>
+      <div class="us-map" id="us-map"></div>
+    </div>
+  </div>
+
+  <!-- map pin story panel -->
+  <div class="map-panel" id="map-panel">
+    <div class="map-panel-card">
+      <div class="map-panel-label" id="map-panel-label"></div>
+      <div class="map-panel-story" id="map-panel-story"></div>
+      <button class="gate-btn gate-yes" id="map-panel-close">Close</button>
+    </div>
+  </div>
+
   <!-- ============================ PLAYLIST ============================ -->
   <div class="view" id="view-playlist">
     <div class="page">
       <div class="page-title">Our Playlist</div>
       <div class="page-sub" id="playlist-sub">songs that sound like you</div>
+      <div class="playlist-chips" id="playlist-chips"></div>
       <div id="playlist-content"></div>
     </div>
   </div>
@@ -389,10 +949,17 @@
     </div>
   </div>
 
+  <!-- floating background music toggle (separate from the Playlist tab) -->
+  <audio id="bg-music" loop></audio>
+  <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
+    <span id="bgmusic-ico">♪</span>
+  </button>
+
 </div>
 
 <nav id="bottom-nav"></nav>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 /* ============================================================================
    CONFIG — EDIT EVERYTHING HERE
@@ -489,7 +1056,8 @@ const CONFIG = {
   // --------------------------------------------------------------------
   // BOTTOM NAV — reorder, rename, or remove tabs. "id" must match one of
   // the view ids in the HTML (view-letter, view-story, view-reasons,
-  // view-quiz, view-playlist, view-someday).
+  // view-quiz, view-gallery, view-kitty, view-surprises, view-draw,
+  // view-map, view-playlist, view-someday).
   // --------------------------------------------------------------------
   // "icon" keys map to the SVG_ICONS set defined further down — swap in
   // any key from that set, or add your own new one there.
@@ -498,6 +1066,11 @@ const CONFIG = {
     { id: "view-story",    icon: "book",     label: "Story" },
     { id: "view-reasons",  icon: "heart",    label: "Reasons" },
     { id: "view-quiz",     icon: "puzzle",   label: "Us" },
+    { id: "view-gallery",  icon: "gallery",  label: "Photos" },
+    { id: "view-kitty",    icon: "kitty",    label: "Kitty" },
+    { id: "view-surprises",icon: "sparkle",  label: "Surprises" },
+    { id: "view-draw",     icon: "draw",     label: "Draw" },
+    { id: "view-map",      icon: "map",      label: "Map" },
     { id: "view-playlist", icon: "music",    label: "Playlist" },
     { id: "view-someday",  icon: "sunrise",  label: "Someday" }
   ],
@@ -554,16 +1127,158 @@ const CONFIG = {
   ],
 
   // --------------------------------------------------------------------
-  // PLAYLIST — paste a Spotify (or Apple Music) EMBED url if you have one,
-  // it'll show a real player. Leave blank ("") to just show the song list
-  // below instead. To get a Spotify embed link: open the playlist in
-  // Spotify → Share → Embed playlist → copy the src="..." url.
+  // PLAYLIST(S) — add one entry per playlist (e.g. one per month). Paste
+  // a Spotify (or Apple Music) EMBED url for each — it'll show a real
+  // player, and if there's more than one, little chips let her switch
+  // between them. Leave embedUrl blank ("") on an entry to fall back to
+  // the plain song list below instead. To get a Spotify embed link:
+  // open the playlist in Spotify → Share → Embed playlist → copy the
+  // src="..." url.
   // --------------------------------------------------------------------
-  playlist: {
-    embedUrl: "https://open.spotify.com/embed/playlist/60e1tnPOSSZQckZ3WpGdwl?utm_source=generator&si=6d67c7aa160d4cf8",
-    songs: [
+  playlists: [
+    { label: "This Month", embedUrl: "https://open.spotify.com/embed/playlist/60e1tnPOSSZQckZ3WpGdwl?utm_source=generator&si=6d67c7aa160d4cf8" }
+    // add more months like this:
+    // , { label: "August", embedUrl: "" }
+  ],
+  playlistSongs: [
+    // fallback list shown only if a playlist above has no embedUrl, e.g.:
+    // "Song Name — Artist"
+  ],
 
-    ]
+  // --------------------------------------------------------------------
+  // PHOTO GALLERY — this works great with GitHub. Create a folder named
+  // "photos" in the same place as this HTML file, drop your images in
+  // there (e.g. photo1.jpg, photo2.jpg...), then just reference them by
+  // filename below — no link needed. Leave "src" empty ("") to show a
+  // placeholder card so you can fill it in later without breaking the
+  // layout.
+  //
+  // Folder structure on GitHub should look like:
+  //   your-repo/
+  //     LAB_LETTER.html
+  //     photos/
+  //       photo1.jpg
+  //       photo2.jpg
+  // --------------------------------------------------------------------
+  gallery: [
+    { src: "photos/photo1.jpg", caption: "our first photo together" },
+    { src: "photos/photo2.jpg", caption: "that one trip" },
+    { src: "photos/photo3.jpg", caption: "your favorite silly face" },
+    { src: "photos/photo4.jpg", caption: "the day you said yes" },
+    { src: "photos/photo5.jpg", caption: "just us, being us" },
+    { src: "", caption: "add more anytime <3" }
+  ],
+
+  // --------------------------------------------------------------------
+  // HELLO KITTY PAT — messages that pop up when she taps/pats the kitty.
+  // Add or edit as many as you want, one is picked at random each pat.
+  // --------------------------------------------------------------------
+  kittyMessages: [
+    "aww hehe~ thank you for the pat",
+    "*purrs* okay do that again",
+    "you're so cute I can't handle it",
+    "pat me forever pls",
+    "cuteness overload!! 🎀",
+    "hehe stop it you're making me blush fr",
+    "one more pat and I might just melt",
+    "this is my favorite part of the day now"
+  ],
+
+  // --------------------------------------------------------------------
+  // COUNTDOWN — set targetDate to whatever you're counting down to
+  // (a date, a trip, an anniversary). Format: "YYYY-MM-DDTHH:MM:SS".
+  // --------------------------------------------------------------------
+  countdown: {
+    label: "until I see you again",
+    targetDate: "2026-12-25T00:00:00"
+  },
+
+  // --------------------------------------------------------------------
+  // LOVE METER — she drags the slider from 0-100 and gets a reaction.
+  // "max" is the top of that tier's range; keep them in ascending order
+  // and the last one should end at 100.
+  // --------------------------------------------------------------------
+  loveMeter: [
+    { max: 20,  msg: "hey now, be nice to yourself 🥺" },
+    { max: 45,  msg: "aw, at least it's something!" },
+    { max: 65,  msg: "okay that's actually sweet" },
+    { max: 85,  msg: "wait that's really sweet omg" },
+    { max: 99,  msg: "okay you clearly adore me, noted" },
+    { max: 100, msg: "maximum love achieved. as it should be. 💗" }
+  ],
+
+  // --------------------------------------------------------------------
+  // SCRATCH CARD — hidden message revealed once she scratches the
+  // surface off. Keep it short so it fits nicely on the card.
+  // --------------------------------------------------------------------
+  scratchCard: {
+    coverText: "scratch me",
+    message: "you're the best thing that's happened to me this year."
+  },
+
+  // --------------------------------------------------------------------
+  // DAILY AFFECTION — one is picked automatically based on today's date,
+  // so it's the same all day and changes again tomorrow. Add as many
+  // as you want.
+  // --------------------------------------------------------------------
+  dailyAffection: [
+    "your laugh is my favorite sound, no competition",
+    "you make ordinary days feel like something worth remembering",
+    "I like you in a very inconvenient, thinking-about-you-mid-task kind of way",
+    "you're the softest place I know",
+    "I'm so lucky someone like you exists, let alone puts up with me",
+    "you make hard days feel a lot more survivable",
+    "I think about random little things you've said and just smile",
+    "you're it for me, easily",
+    "being near you is my favorite kind of quiet",
+    "you're proof good things happen to normal people like me"
+  ],
+
+  // --------------------------------------------------------------------
+  // MOOD CHECK-IN — she taps how she's feeling, gets back a message
+  // picked at random from that mood's list. Edit freely, add moods too
+  // (just also add a matching button in the HTML if you add a new key).
+  // --------------------------------------------------------------------
+  moodMessages: {
+    happy:   ["I love this energy on you", "keep that smile, it's doing things to me", "this is my favorite version of you"],
+    loved:   ["good, because you are, so much", "that's the correct feeling to have honestly", "I'll take full credit for this one"],
+    tired:   ["go rest, I'll still be here", "sleepy you is still my favorite person", "drink some water and lie down, seriously"],
+    sad:     ["hey, I've got you, okay?", "you don't have to be okay right now", "tell me what's wrong, I'm listening"],
+    stressed:["breathe. one thing at a time.", "you're doing better than you think", "I believe in you, for what it's worth"],
+    missing: ["I miss you too, more than you know", "come here (virtually). I mean it.", "not long now, promise"]
+  },
+
+  // --------------------------------------------------------------------
+  // DRAW SOMETHING — one shared canvas you both draw on together, live,
+  // synced through Supabase (a free realtime database). This is already
+  // connected — no setup needed unless you want to swap it for your own
+  // Supabase project later.
+  // --------------------------------------------------------------------
+  supabase: {
+    url: "https://tivgpukrgbzyeskjnivb.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpdmdwdWtyZ2J6eWVza2puaXZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTUwMDksImV4cCI6MjEwMDUzMTAwOX0.kzcbq1kphGITJNsyl3XYQsfgofLaxnuhpEAQ7IEta5Q"
+  },
+
+  // --------------------------------------------------------------------
+  // MAP OF US — pins on a stylized (non-literal) map. x/y are percentage
+  // positions (0-100) on the map card, so they work on any screen size.
+  // Tap a pin to read its story.
+  // --------------------------------------------------------------------
+  mapPins: [
+    { x: 28, y: 34, label: "Where we met", story: "Add the story of how it all started here." },
+    { x: 62, y: 22, label: "First date", story: "Add what made that day so memorable." },
+    { x: 45, y: 58, label: "First trip together", story: "Add a favorite memory from that trip." },
+    { x: 74, y: 66, label: "That one place we love", story: "Add why this spot means something to you both." }
+  ],
+
+  // --------------------------------------------------------------------
+  // BACKGROUND MUSIC — a quiet track that can loop the whole time she's
+  // browsing (separate from the Playlist tab). Add an mp3 the same way
+  // as photos: put it in a "music" folder next to this file and
+  // reference it by filename. Leave src empty to hide the toggle.
+  // --------------------------------------------------------------------
+  bgMusic: {
+    src: "" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -571,15 +1286,11 @@ const CONFIG = {
   // (saved right in her browser via localStorage).
   // --------------------------------------------------------------------
   someday: [
-    "France tour 1 week",
-    "MAGLUTOOO",
-    "Adopt a pdog togethers",
-    "Go to a concert of a band we both love! ivos etc",
-    "Build legos more together!",
-    "MAGGAWA NG BACKYARD",
-    "nakatira sa isang bubong",
-    "magtekken",
-    'fc26 together!'
+    "Take a trip somewhere neither of us has been",
+    "Cook a whole meal together, start to finish",
+    "Adopt a pet together",
+    "Go to a concert of a band we both love",
+    "Build something together (a home, a shelf, a garden — you decide)"
   ]
 
 };
@@ -591,6 +1302,29 @@ const CONFIG = {
 
 if (CONFIG.herName && CONFIG.herName !== "[Her Name]") {
   document.title = 'For ' + CONFIG.herName;
+}
+
+// ---------- confetti burst ----------
+function fireConfetti() {
+  const colors = ['#ff4d6d', '#ffb6c9', '#ffe3ea', '#ff8fa3', '#ffffff'];
+  const container = document.createElement('div');
+  container.className = 'confetti-burst';
+  document.body.appendChild(container);
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('span');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random() * 100 + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (2.2 + Math.random() * 1.6) + 's';
+    piece.style.animationDelay = (Math.random() * 0.4) + 's';
+    const size = 6 + Math.random() * 6;
+    piece.style.width = size + 'px';
+    piece.style.height = (size * 0.4) + 'px';
+    piece.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg');
+    piece.style.setProperty('--drift', (Math.random() * 160 - 80) + 'px');
+    container.appendChild(piece);
+  }
+  setTimeout(() => container.remove(), 4200);
 }
 
 // ---------- access gate: "are you her?" before letting anyone in ----------
@@ -609,6 +1343,7 @@ if (CONFIG.herName && CONFIG.herName !== "[Her Name]") {
   gateEl.style.setProperty('--gate-to', firstSec.bgTo || '#7a1830');
 
   document.getElementById('gate-yes').addEventListener('click', () => {
+    fireConfetti();
     document.body.classList.remove('locked');
     gateEl.remove();
   });
@@ -629,7 +1364,12 @@ const SVG_ICONS = {
   heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2s-7.6-4.6-10-9.3C.4 7.6 2.4 4.4 5.7 4c2-.2 3.7.8 6.3 3.4C14.6 4.8 16.3 3.8 18.3 4c3.3.4 5.3 3.6 3.7 6.9-2.4 4.7-10 9.3-10 9.3Z"/></svg>`,
   puzzle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3.2a1.6 1.6 0 0 0 1.6-2.6 2.1 2.1 0 1 1 3.4 0A1.6 1.6 0 0 0 13.8 8H17a1 1 0 0 1 1 1v3.2a1.6 1.6 0 0 0 2.6 1.6 2.1 2.1 0 1 1 0 3.4A1.6 1.6 0 0 0 18 18.8V20a1 1 0 0 1-1 1h-3.2a1.6 1.6 0 0 0-1.6 2.6M4 8v11a1 1 0 0 0 1 1h3.2M4 8a1 1 0 0 1 1-1h2.2"/></svg>`,
   music: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5Z"/><path d="M20 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"/><path d="M11.5 13.5V5.8L20 4v9.3"/><path d="M11.5 8.2 20 6.6"/></svg>`,
-  sunrise: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3.2"/><path d="M4.8 6.8l2.1 2.1"/><path d="M19.2 6.8l-2.1 2.1"/><path d="M4 17h16"/><path d="M6.5 13.5a5.5 5.5 0 0 1 11 0"/><path d="M2 21h20"/></svg>`
+  sunrise: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3.2"/><path d="M4.8 6.8l2.1 2.1"/><path d="M19.2 6.8l-2.1 2.1"/><path d="M4 17h16"/><path d="M6.5 13.5a5.5 5.5 0 0 1 11 0"/><path d="M2 21h20"/></svg>`,
+  gallery: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.2"/><path d="M3 16.5l5-5 4 4 3.5-3.5L21 15"/><circle cx="8" cy="9" r="1.6"/></svg>`,
+  kitty: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6.5 4 3l3 1.4"/><path d="M18 6.5 20 3l-3 1.4"/><circle cx="12" cy="13" r="7.2"/><circle cx="9.1" cy="12.4" r=".4" fill="currentColor" stroke="none"/><circle cx="14.9" cy="12.4" r=".4" fill="currentColor" stroke="none"/><path d="M11.4 14.6h1.2"/><path d="M4.6 16.2h2.4M4.9 17.6h2.1M16.9 16.2h2.5M17.2 17.6h2.1"/><path d="M9.4 9.6c1.6-1 3.6-1 5.2 0" stroke-width="1.4"/></svg>`,
+  sparkle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2c.5 3 1.9 5.3 4.4 6.6-2.5 1.3-3.9 3.6-4.4 6.6-.5-3-1.9-5.3-4.4-6.6 2.5-1.3 3.9-3.6 4.4-6.6Z"/><path d="M19 15c.3 1.5.9 2.6 2.2 3.3-1.3.7-1.9 1.8-2.2 3.3-.3-1.5-.9-2.6-2.2-3.3 1.3-.7 1.9-1.8 2.2-3.3Z"/></svg>`,
+  draw: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.2L14.5 6.3a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L8.2 19 4 20Z"/><path d="M13 8l3 3"/></svg>`,
+  map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.2-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -741,6 +1481,26 @@ CONFIG.sections.forEach((sec, i) => {
   dot.className = 'dot' + (i === 0 ? ' active' : '');
   progressEl.appendChild(dot);
 });
+
+// ---------- typewriter effect on the opening line ----------
+(function () {
+  const firstLine = scrollEl.querySelector('.letter-section .paper .line');
+  if (!firstLine) return;
+  const fullText = firstLine.textContent;
+  firstLine.textContent = '';
+  firstLine.classList.add('typing-cursor');
+  let i = 0;
+  function typeNext() {
+    if (i <= fullText.length) {
+      firstLine.textContent = fullText.slice(0, i);
+      i++;
+      setTimeout(typeNext, 26 + Math.random() * 22);
+    } else {
+      firstLine.classList.remove('typing-cursor');
+    }
+  }
+  setTimeout(typeNext, 500);
+})();
 
 // spawn floating particles while a section is on screen
 const MAX_PARTICLES_PER_FIELD = 14; // cap keeps DOM/paint cost bounded on long scrolls
@@ -863,18 +1623,663 @@ window.restartQuiz = function () {
 };
 renderQuiz();
 
-// ---------- playlist ----------
-const playlistContent = document.getElementById('playlist-content');
-if (CONFIG.playlist.embedUrl) {
-  playlistContent.innerHTML = `
-    <div class="spotify-wrap">
-      <iframe src="${CONFIG.playlist.embedUrl}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
-    </div>`;
-} else {
-  playlistContent.innerHTML = CONFIG.playlist.songs.map(s => `
-    <div class="song-row">🎶 <span>${s.title}</span> <span class="note">— ${s.note}</span></div>
-  `).join('');
+// ---------- gallery: tinder-style swipe deck ----------
+const swipeDeck = document.getElementById('swipe-deck');
+const swipeNahBtn = document.getElementById('swipe-nah');
+const swipeLoveBtn = document.getElementById('swipe-love');
+const galleryIcon = `<svg class="g-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="15" rx="2.2"/><path d="M3 16.5l5-5 4 4 3.5-3.5L21 15"/><circle cx="8" cy="9" r="1.6"/></svg>`;
+
+let activeCards = [];
+
+function cardMarkup(photo) {
+  return `<img src="${photo.src}" alt="${photo.caption || ''}" draggable="false" />
+    <div class="stamp stamp-love">LIKE</div><div class="stamp stamp-nah">NOPE</div>
+    <div class="swipe-caption">${photo.caption || ''}</div>`;
 }
+function placeholderMarkup(photo) {
+  return `${galleryIcon}<div class="stamp stamp-love">LIKE</div><div class="stamp stamp-nah">NOPE</div><div class="swipe-caption">${photo.caption || 'add a photo'}</div>`;
+}
+
+function buildDeck() {
+  const photos = CONFIG.gallery || [];
+  swipeDeck.classList.remove('empty-state');
+  swipeDeck.innerHTML = '';
+  activeCards = photos.map((photo, i) => {
+    const el = document.createElement('div');
+    el.className = photo.src ? 'swipe-card' : 'swipe-card placeholder';
+    el.innerHTML = photo.src ? cardMarkup(photo) : placeholderMarkup(photo);
+    el.style.zIndex = photos.length - i;
+    if (photo.src) {
+      // photo file not found yet (e.g. not uploaded to the repo) — fall
+      // back to the placeholder look instead of a broken image icon
+      el.querySelector('img').addEventListener('error', () => {
+        el.classList.add('placeholder');
+        el.innerHTML = placeholderMarkup(photo);
+      }, { once: true });
+    }
+    bindDrag(el);
+    swipeDeck.appendChild(el);
+    return el;
+  });
+  layoutStack();
+}
+
+function restackRemaining() {
+  activeCards.forEach((el, pos) => {
+    el.classList.remove('dragging');
+    el.style.transition = 'transform .3s cubic-bezier(.2,.7,.3,1), opacity .3s ease';
+    if (pos > 2) {
+      el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
+    } else {
+      el.style.opacity = '1';
+      el.style.pointerEvents = pos === 0 ? 'auto' : 'none';
+      el.style.transform = `translateY(${pos * 10}px) scale(${1 - pos * 0.045})`;
+    }
+  });
+}
+
+function layoutStack() {
+  if (activeCards.length === 0) { showEmptyState(); return; }
+  restackRemaining();
+}
+
+function showEmptyState() {
+  swipeDeck.classList.add('empty-state');
+  swipeDeck.innerHTML = `${galleryIcon}
+    <div style="font-family:'Cormorant Garamond',serif; font-style:italic; font-size:15px;">that's all of them for now</div>
+    <button class="btn-pink" id="swipe-restart">Start over</button>`;
+  document.getElementById('swipe-restart').addEventListener('click', buildDeck);
+}
+
+function removeTopCard(direction) {
+  const el = activeCards[0];
+  if (!el) return;
+  const flyX = direction === 'right' ? window.innerWidth : -window.innerWidth;
+  el.classList.remove('dragging');
+  el.style.transition = 'transform .4s ease, opacity .4s ease';
+  el.style.transform = `translate(${flyX}px, -40px) rotate(${direction === 'right' ? 30 : -30}deg)`;
+  el.style.opacity = '0';
+  el.style.pointerEvents = 'none';
+  activeCards.shift();
+  restackRemaining();
+  setTimeout(() => {
+    el.remove();
+    if (activeCards.length === 0) showEmptyState();
+  }, 380);
+}
+
+function bindDrag(el) {
+  let sx = 0, sy = 0, dx = 0, dy = 0, dragging = false;
+
+  el.addEventListener('pointerdown', (e) => {
+    if (activeCards[0] !== el) return;
+    dragging = true;
+    sx = e.clientX; sy = e.clientY;
+    el.classList.add('dragging');
+    el.setPointerCapture(e.pointerId);
+  });
+
+  el.addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    dx = e.clientX - sx; dy = e.clientY - sy;
+    const rot = dx / 14;
+    el.style.transform = `translate(${dx}px, ${dy}px) rotate(${rot}deg)`;
+    const loveStamp = el.querySelector('.stamp-love');
+    const nahStamp = el.querySelector('.stamp-nah');
+    if (loveStamp) loveStamp.style.opacity = Math.min(Math.max(dx / 90, 0), 1);
+    if (nahStamp) nahStamp.style.opacity = Math.min(Math.max(-dx / 90, 0), 1);
+  });
+
+  function endDrag() {
+    if (!dragging) return;
+    dragging = false;
+    const threshold = 90;
+    if (dx > threshold) {
+      removeTopCard('right');
+    } else if (dx < -threshold) {
+      removeTopCard('left');
+    } else {
+      el.classList.remove('dragging');
+      el.style.transition = 'transform .3s cubic-bezier(.2,.7,.3,1), opacity .3s ease';
+      el.style.transform = 'translateY(0) scale(1)';
+      const loveStamp = el.querySelector('.stamp-love');
+      const nahStamp = el.querySelector('.stamp-nah');
+      if (loveStamp) loveStamp.style.opacity = 0;
+      if (nahStamp) nahStamp.style.opacity = 0;
+    }
+    dx = 0; dy = 0;
+  }
+  el.addEventListener('pointerup', endDrag);
+  el.addEventListener('pointercancel', endDrag);
+}
+
+swipeNahBtn.addEventListener('click', () => removeTopCard('left'));
+swipeLoveBtn.addEventListener('click', () => removeTopCard('right'));
+
+buildDeck();
+
+// ---------- hello kitty pat ----------
+(function () {
+  const kittyWrap = document.getElementById('kitty-wrap');
+  const heartsLayer = document.getElementById('kitty-hearts');
+  const cheekL = document.getElementById('kitty-cheek-l');
+  const cheekR = document.getElementById('kitty-cheek-r');
+  const msgEl = document.getElementById('kitty-msg');
+  const hintEl = document.getElementById('kitty-hint');
+  const countEl = document.getElementById('kitty-tapcount');
+  if (!kittyWrap) return;
+
+  const heartEmojis = ['💗', '💕', '💖', '🎀'];
+  let lastMsg = '';
+  let pats = Number(localStorage.getItem('lls_kitty_pats') || 0);
+  updateCount();
+
+  function updateCount() {
+    if (!countEl) return;
+    countEl.textContent = pats > 0 ? `you've patted her ${pats} time${pats === 1 ? '' : 's'}` : '';
+  }
+
+  function pickMessage() {
+    const pool = CONFIG.kittyMessages && CONFIG.kittyMessages.length
+      ? CONFIG.kittyMessages
+      : ["hehe~"];
+    if (pool.length === 1) return pool[0];
+    let msg;
+    do { msg = pool[Math.floor(Math.random() * pool.length)]; } while (msg === lastMsg);
+    lastMsg = msg;
+    return msg;
+  }
+
+  function spawnHearts() {
+    const count = 3 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < count; i++) {
+      const h = document.createElement('span');
+      h.className = 'kitty-heart';
+      h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      h.style.left = (30 + Math.random() * 40) + '%';
+      h.style.animationDelay = (i * 90) + 'ms';
+      h.style.animationDuration = (0.9 + Math.random() * 0.5) + 's';
+      heartsLayer.appendChild(h);
+      setTimeout(() => h.remove(), 1600);
+    }
+  }
+
+  function pat() {
+    pats++;
+    localStorage.setItem('lls_kitty_pats', pats);
+    updateCount();
+    if (hintEl) hintEl.style.opacity = '0.001'; // fades hint out after first pat via CSS transition inherited
+
+    // retrigger the blush pulse even on rapid repeat taps
+    [cheekL, cheekR].forEach(c => {
+      if (!c) return;
+      c.classList.remove('show');
+      void c.getBoundingClientRect(); // force reflow so the animation restarts
+      c.classList.add('show');
+    });
+
+    spawnHearts();
+
+    msgEl.classList.remove('show');
+    void msgEl.getBoundingClientRect();
+    msgEl.textContent = pickMessage();
+    msgEl.classList.add('show');
+  }
+
+  kittyWrap.addEventListener('click', pat);
+})();
+
+// ---------- surprises: countdown ----------
+(function () {
+  const grid = document.getElementById('countdown-grid');
+  const labelEl = document.getElementById('countdown-label');
+  if (!grid || !CONFIG.countdown || !CONFIG.countdown.targetDate) return;
+
+  labelEl.textContent = CONFIG.countdown.label || 'Counting down';
+  const target = new Date(CONFIG.countdown.targetDate).getTime();
+  const dEl = document.getElementById('cd-days');
+  const hEl = document.getElementById('cd-hours');
+  const mEl = document.getElementById('cd-mins');
+  const sEl = document.getElementById('cd-secs');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const diff = target - Date.now();
+    if (isNaN(target)) { grid.style.display = 'none'; return; }
+    if (diff <= 0) {
+      dEl.textContent = hEl.textContent = mEl.textContent = sEl.textContent = '00';
+      labelEl.textContent = "it's here! 🎉";
+      clearInterval(timer);
+      return;
+    }
+    const days = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins = Math.floor((diff % 3600000) / 60000);
+    const secs = Math.floor((diff % 60000) / 1000);
+    dEl.textContent = pad(days);
+    hEl.textContent = pad(hours);
+    mEl.textContent = pad(mins);
+    sEl.textContent = pad(secs);
+  }
+  tick();
+  const timer = setInterval(tick, 1000);
+})();
+
+// ---------- surprises: love meter ----------
+(function () {
+  const slider = document.getElementById('love-slider');
+  const valueEl = document.getElementById('love-value');
+  const msgEl = document.getElementById('love-msg');
+  if (!slider) return;
+
+  function update() {
+    const v = Number(slider.value);
+    valueEl.textContent = v + '%';
+    const tiers = CONFIG.loveMeter || [];
+    const tier = tiers.find(t => v <= t.max) || tiers[tiers.length - 1];
+    msgEl.textContent = tier ? tier.msg : '';
+  }
+  slider.addEventListener('input', update);
+  update();
+})();
+
+// ---------- surprises: scratch card ----------
+(function () {
+  const wrap = document.getElementById('scratch-wrap');
+  const canvas = document.getElementById('scratch-canvas');
+  const reveal = document.getElementById('scratch-reveal');
+  if (!wrap || !canvas) return;
+
+  reveal.textContent = (CONFIG.scratchCard && CONFIG.scratchCard.message) || '';
+  const ctx = canvas.getContext('2d');
+  let scratching = false;
+  let clearedPct = 0;
+  let doneChecked = false;
+
+  function sizeCanvas() {
+    const rect = wrap.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    ctx.fillStyle = '#d8899b';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = '700 15px Quicksand, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const label = (CONFIG.scratchCard && CONFIG.scratchCard.coverText) || 'scratch me';
+    ctx.fillText(label.toUpperCase(), canvas.width / 2, canvas.height / 2);
+    canvas.classList.remove('done');
+    clearedPct = 0; doneChecked = false;
+  }
+  // build once the layout has settled
+  requestAnimationFrame(sizeCanvas);
+
+  function scratchAt(x, y) {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, 22, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const point = e.touches ? e.touches[0] : e;
+    return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+  }
+
+  function checkCleared() {
+    if (doneChecked) return;
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let transparent = 0;
+    for (let i = 3; i < data.length; i += 40) { if (data[i] === 0) transparent++; }
+    const total = data.length / 40;
+    clearedPct = transparent / total;
+    if (clearedPct > 0.55) {
+      doneChecked = true;
+      canvas.classList.add('done');
+      canvas.style.transition = 'opacity .4s ease';
+      canvas.style.opacity = '0';
+    }
+  }
+
+  function start(e) { scratching = true; const p = getPos(e); scratchAt(p.x, p.y); }
+  function move(e) {
+    if (!scratching) return;
+    e.preventDefault();
+    const p = getPos(e);
+    scratchAt(p.x, p.y);
+    checkCleared();
+  }
+  function end() { scratching = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, { passive: true });
+  canvas.addEventListener('touchmove', move, { passive: false });
+  canvas.addEventListener('touchend', end);
+})();
+
+// ---------- surprises: daily affection ----------
+(function () {
+  const dateEl = document.getElementById('affection-date');
+  const lockedEl = document.getElementById('affection-locked');
+  const msgEl = document.getElementById('affection-msg');
+  const btn = document.getElementById('affection-reveal-btn');
+  if (!btn) return;
+
+  const today = new Date();
+  const dayKey = today.toISOString().slice(0, 10); // YYYY-MM-DD
+  dateEl.textContent = today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' });
+
+  const pool = CONFIG.dailyAffection && CONFIG.dailyAffection.length ? CONFIG.dailyAffection : ["you're wonderful."];
+  // deterministic pick based on the date, so it's the same message all day
+  let seed = 0;
+  for (let i = 0; i < dayKey.length; i++) seed = (seed * 31 + dayKey.charCodeAt(i)) >>> 0;
+  const todaysMsg = pool[seed % pool.length];
+
+  const alreadySeenKey = 'lls_affection_seen_' + dayKey;
+  function reveal() {
+    lockedEl.style.display = 'none';
+    msgEl.style.display = 'block';
+    msgEl.textContent = todaysMsg;
+    localStorage.setItem(alreadySeenKey, '1');
+  }
+  if (localStorage.getItem(alreadySeenKey)) reveal();
+  btn.addEventListener('click', reveal);
+})();
+
+// ---------- surprises: virtual hug ----------
+(function () {
+  const btn = document.getElementById('hug-btn');
+  const overlay = document.getElementById('hug-overlay');
+  const overlayMsg = document.getElementById('hug-overlay-msg');
+  const heartsLayer = document.getElementById('hug-hearts');
+  if (!btn) return;
+
+  const hugMessages = [
+    "sending you the biggest, warmest hug right now",
+    "wrap this around you whenever you need it",
+    "here, take this — you deserve to feel held today",
+    "consider yourself hugged. tightly. no takebacks"
+  ];
+
+  function spawnHugHearts() {
+    const emojis = ['💗', '💕', '💖'];
+    for (let i = 0; i < 16; i++) {
+      const h = document.createElement('span');
+      h.className = 'hug-heart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.left = Math.random() * 100 + '%';
+      h.style.animationDuration = (2.2 + Math.random() * 1.6) + 's';
+      h.style.animationDelay = (Math.random() * 0.6) + 's';
+      h.style.fontSize = (16 + Math.random() * 14) + 'px';
+      heartsLayer.appendChild(h);
+      setTimeout(() => h.remove(), 4200);
+    }
+  }
+
+  function openHug() {
+    overlayMsg.textContent = hugMessages[Math.floor(Math.random() * hugMessages.length)];
+    overlay.classList.add('open');
+    spawnHugHearts();
+  }
+  function closeHug() { overlay.classList.remove('open'); }
+
+  btn.addEventListener('click', openHug);
+  overlay.addEventListener('click', closeHug);
+})();
+
+// ---------- surprises: mood check-in ----------
+(function () {
+  const grid = document.getElementById('mood-grid');
+  const msgEl = document.getElementById('mood-msg');
+  if (!grid) return;
+
+  grid.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      grid.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const mood = btn.dataset.mood;
+      const pool = (CONFIG.moodMessages && CONFIG.moodMessages[mood]) || ["thanks for sharing that with me"];
+      const msg = pool[Math.floor(Math.random() * pool.length)];
+      msgEl.classList.remove('show');
+      void msgEl.getBoundingClientRect();
+      msgEl.textContent = msg;
+      msgEl.classList.add('show');
+    });
+  });
+})();
+
+// ---------- draw something (shared, live, via Supabase) ----------
+(function () {
+  const canvas = document.getElementById('draw-canvas-hers');
+  const colorsEl = document.getElementById('draw-colors');
+  const clearBtn = document.getElementById('draw-clear');
+  const statusEl = document.getElementById('draw-status');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  const palette = ['#2c1a22', '#ff4d6d', '#ff9fb3', '#ffd166', '#5aa9e6', '#6fcf97'];
+  let currentColor = palette[0];
+  let drawing = false;
+  let lastX = 0, lastY = 0;
+
+  function sizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 4;
+  }
+
+  // strokes are stored as fractions (0-1) of the canvas size so they line
+  // up correctly no matter what size screen either of you is on
+  function drawSegment(x0f, y0f, x1f, y1f, color) {
+    const rect = canvas.getBoundingClientRect();
+    ctx.strokeStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x0f * rect.width, y0f * rect.height);
+    ctx.lineTo(x1f * rect.width, y1f * rect.height);
+    ctx.stroke();
+  }
+
+  const sbCfg = CONFIG.supabase || {};
+  let sb = null;
+  if (sbCfg.url && sbCfg.anonKey && window.supabase) {
+    sb = window.supabase.createClient(sbCfg.url, sbCfg.anonKey);
+  }
+
+  function setStatus(text) { if (statusEl) statusEl.textContent = text; }
+
+  async function loadHistory() {
+    if (!sb) { setStatus('○ offline (no sync configured)'); return; }
+    const { data, error } = await sb
+      .from('drawing_strokes')
+      .select('x0,y0,x1,y1,color')
+      .order('id', { ascending: true });
+    if (error) { setStatus('○ connection error'); return; }
+    (data || []).forEach(s => drawSegment(s.x0, s.y0, s.x1, s.y1, s.color));
+  }
+
+  function subscribeRealtime() {
+    if (!sb) return;
+    sb.channel('drawing_strokes_live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'drawing_strokes' }, (payload) => {
+        const s = payload.new;
+        drawSegment(s.x0, s.y0, s.x1, s.y1, s.color);
+      })
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'drawing_strokes' }, () => {
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, rect.width, rect.height);
+      })
+      .subscribe((status) => {
+        setStatus(status === 'SUBSCRIBED' ? '● live' : '○ connecting...');
+      });
+  }
+
+  requestAnimationFrame(() => { sizeCanvas(); loadHistory(); subscribeRealtime(); });
+
+  palette.forEach((c, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'draw-color' + (i === 0 ? ' active' : '');
+    dot.style.background = c;
+    dot.addEventListener('click', () => {
+      currentColor = c;
+      colorsEl.querySelectorAll('.draw-color').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+    });
+    colorsEl.appendChild(dot);
+  });
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const point = e.touches ? e.touches[0] : e;
+    return { x: point.clientX - rect.left, y: point.clientY - rect.top, w: rect.width, h: rect.height };
+  }
+
+  function start(e) {
+    drawing = true;
+    const p = getPos(e);
+    lastX = p.x; lastY = p.y;
+  }
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    ctx.strokeStyle = currentColor;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+
+    if (sb) {
+      sb.from('drawing_strokes').insert({
+        x0: lastX / p.w, y0: lastY / p.h,
+        x1: p.x / p.w, y1: p.y / p.h,
+        color: currentColor
+      }).then(() => {}, () => { /* offline or blocked, drawing still works locally */ });
+    }
+
+    lastX = p.x; lastY = p.y;
+  }
+  function end() { drawing = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, { passive: true });
+  canvas.addEventListener('touchmove', move, { passive: false });
+  canvas.addEventListener('touchend', end);
+
+  clearBtn.addEventListener('click', async () => {
+    const rect = canvas.getBoundingClientRect();
+    ctx.clearRect(0, 0, rect.width, rect.height);
+    if (sb) {
+      await sb.from('drawing_strokes').delete().neq('id', -1);
+    }
+  });
+})();
+
+// ---------- map of us ----------
+(function () {
+  const mapEl = document.getElementById('us-map');
+  const panel = document.getElementById('map-panel');
+  const panelLabel = document.getElementById('map-panel-label');
+  const panelStory = document.getElementById('map-panel-story');
+  const panelClose = document.getElementById('map-panel-close');
+  if (!mapEl) return;
+
+  const pinIcon = `<svg class="map-pin-ico" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.2"><path d="M12 22s-7.5-6.7-7.5-12.5A7.5 7.5 0 0 1 12 2a7.5 7.5 0 0 1 7.5 7.5C19.5 15.3 12 22 12 22Z"/><circle cx="12" cy="9.3" r="2.6" fill="#fff" stroke="none"/></svg>`;
+
+  (CONFIG.mapPins || []).forEach(pin => {
+    const el = document.createElement('div');
+    el.className = 'map-pin';
+    el.style.left = pin.x + '%';
+    el.style.top = pin.y + '%';
+    el.innerHTML = `${pinIcon}<span class="map-pin-label">${pin.label}</span>`;
+    el.addEventListener('click', () => {
+      panelLabel.textContent = pin.label;
+      panelStory.textContent = pin.story;
+      panel.classList.add('open');
+    });
+    mapEl.appendChild(el);
+  });
+
+  panelClose.addEventListener('click', () => panel.classList.remove('open'));
+  panel.addEventListener('click', (e) => { if (e.target === panel) panel.classList.remove('open'); });
+})();
+
+// ---------- background music toggle ----------
+(function () {
+  const btn = document.getElementById('bgmusic-btn');
+  const audio = document.getElementById('bg-music');
+  const ico = document.getElementById('bgmusic-ico');
+  if (!btn || !CONFIG.bgMusic || !CONFIG.bgMusic.src) return;
+
+  audio.src = CONFIG.bgMusic.src;
+  btn.style.display = 'flex';
+  let playing = false;
+
+  btn.addEventListener('click', () => {
+    if (playing) {
+      audio.pause();
+      btn.classList.remove('playing');
+      ico.textContent = '♪';
+    } else {
+      audio.play().catch(() => { /* browser blocked playback, she can just tap again */ });
+      btn.classList.add('playing');
+      ico.textContent = '❚❚';
+    }
+    playing = !playing;
+  });
+})();
+
+// ---------- playlist(s) ----------
+(function () {
+  const chipsEl = document.getElementById('playlist-chips');
+  const contentEl = document.getElementById('playlist-content');
+  const lists = (CONFIG.playlists || []).filter(p => p && p.embedUrl);
+
+  function renderEmbed(embedUrl) {
+    contentEl.innerHTML = `
+      <div class="spotify-wrap">
+        <iframe src="${embedUrl}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+      </div>`;
+  }
+
+  function renderSongFallback() {
+    const songs = CONFIG.playlistSongs || [];
+    contentEl.innerHTML = songs.length
+      ? songs.map(s => `<div class="song-row">🎶 <span>${s}</span></div>`).join('')
+      : `<div class="song-row" style="opacity:.6;">add a Spotify embed link or a few songs above to fill this in</div>`;
+  }
+
+  if (!lists.length) { renderSongFallback(); return; }
+
+  if (lists.length === 1) {
+    renderEmbed(lists[0].embedUrl);
+    return;
+  }
+
+  lists.forEach((p, i) => {
+    const chip = document.createElement('button');
+    chip.className = 'playlist-chip' + (i === 0 ? ' active' : '');
+    chip.textContent = p.label || `Playlist ${i + 1}`;
+    chip.addEventListener('click', () => {
+      chipsEl.querySelectorAll('.playlist-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderEmbed(p.embedUrl);
+    });
+    chipsEl.appendChild(chip);
+  });
+  renderEmbed(lists[0].embedUrl);
+})();
 
 // ---------- someday ----------
 const somedayList = document.getElementById('someday-list');
