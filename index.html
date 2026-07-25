@@ -36,7 +36,7 @@
   }
   ::selection { background:#e8a7bb; color:#3a1220; }
 
-  button { font-family:inherit; border:none; background:none; cursor:pointer; }
+  button { font-family:inherit; border:none; background:none; cursor:pointer; touch-action:manipulation; }
 
   /* ========================================================================
      APP SHELL
@@ -144,7 +144,7 @@
 
   /* side progress dots for the letter */
   #letter-progress {
-    position:fixed; right:14px; top:50%; transform:translateY(-50%);
+    position:fixed; right:calc(14px + env(safe-area-inset-right, 0px)); top:50%; transform:translateY(-50%);
     z-index:400; display:flex; flex-direction:column; gap:10px;
   }
   #letter-progress .dot {
@@ -177,6 +177,13 @@
     min-height:100svh;
     background:linear-gradient(180deg, #2c0910, #5c1a29 55%, #8a2e46);
   }
+  /* view-chat gets its own sizing rule below (via #view-chat.active) so it
+     must NOT also get min-height:100svh here — that was overriding the
+     intended height and pushing the message input down behind the fixed
+     bottom nav bar, making it invisible and unusable. */
+  #view-chat {
+    background:linear-gradient(180deg, #2c0910, #5c1a29 55%, #8a2e46);
+  }
 
   /* ---- timeline ---- */
   .tl-item {
@@ -191,6 +198,23 @@
   .tl-date { font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#ffb6c9; margin-bottom:4px; }
   .tl-title { font-family:'Playfair Display', serif; font-size:19px; color:#fff; margin-bottom:4px; }
   .tl-text { font-size:14px; color:rgba(255,255,255,0.72); line-height:1.55; }
+  .tl-item-actions { display:flex; gap:8px; margin-top:8px; }
+  .tl-item-actions button {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:11px;
+    padding:5px 11px; border-radius:12px; border:1.5px solid rgba(255,255,255,0.25);
+    color:rgba(255,255,255,0.85); background:transparent; touch-action:manipulation;
+  }
+  .story-add-btn {
+    display:block; margin:0 0 20px; padding:9px 16px; border-radius:20px;
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px;
+    background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.3); color:#fff;
+    touch-action:manipulation;
+  }
+  .tl-edit-form { padding:2px 0 6px; }
+  .tl-edit-form .map-edit-input, .tl-edit-form .map-edit-textarea {
+    background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.2); color:#fff;
+  }
+  .tl-edit-form .map-edit-input::placeholder, .tl-edit-form .map-edit-textarea::placeholder { color:rgba(255,255,255,0.4); }
 
   /* ---- reasons ---- */
   .reasons-wrap { display:flex; flex-direction:column; gap:12px; }
@@ -376,11 +400,11 @@
     outline:none;
   }
   .love-slider::-webkit-slider-thumb {
-    -webkit-appearance:none; appearance:none; width:22px; height:22px; border-radius:50%;
+    -webkit-appearance:none; appearance:none; width:28px; height:28px; border-radius:50%;
     background:#fff; border:3px solid #ff4d6d; cursor:pointer;
   }
   .love-slider::-moz-range-thumb {
-    width:22px; height:22px; border-radius:50%; background:#fff; border:3px solid #ff4d6d; cursor:pointer;
+    width:28px; height:28px; border-radius:50%; background:#fff; border:3px solid #ff4d6d; cursor:pointer;
   }
   .love-meter-value {
     text-align:center; margin-top:10px;
@@ -479,9 +503,9 @@
   }
   .draw-canvas-static img { width:100%; height:100%; object-fit:contain; }
   .draw-controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
-  .draw-colors { display:flex; gap:7px; }
+  .draw-colors { display:flex; gap:10px; }
   .draw-color {
-    width:22px; height:22px; border-radius:50%;
+    width:30px; height:30px; border-radius:50%;
     border:2px solid rgba(255,255,255,0.3); transition:transform .12s ease;
   }
   .draw-color.active { border-color:#fff; transform:scale(1.18); }
@@ -491,6 +515,57 @@
     background:transparent; border:1.5px solid rgba(255,255,255,0.3); color:#fff;
   }
   .draw-btn:active { transform:scale(0.94); }
+
+  /* ---- chat ---- */
+  #view-chat.active {
+    display:flex; flex-direction:column;
+    height:calc(100svh - 66px - env(safe-area-inset-bottom, 0px));
+  }
+  .chat-page {
+    flex:1; display:flex; flex-direction:column; min-height:0;
+    max-width:640px; width:100%; margin:0 auto;
+    padding:clamp(20px, 6vh, 32px) 20px 12px;
+  }
+  .chat-header {
+    display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+    flex-shrink:0; margin-bottom:14px;
+  }
+  .chat-subtitle { font-size:13px; color:rgba(255,255,255,0.55); }
+  .chat-whoami {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:11.5px;
+    color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.08);
+    border:1.5px solid rgba(255,255,255,0.25); border-radius:16px;
+    padding:6px 12px; white-space:nowrap; touch-action:manipulation;
+  }
+  .chat-messages {
+    flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    display:flex; flex-direction:column; gap:8px; padding:4px 2px 10px;
+  }
+  .chat-msg { max-width:78%; display:flex; flex-direction:column; }
+  .chat-msg.mine { align-self:flex-end; align-items:flex-end; }
+  .chat-msg.theirs { align-self:flex-start; align-items:flex-start; }
+  .chat-bubble {
+    font-family:'Quicksand', sans-serif; font-size:14px; line-height:1.4;
+    padding:10px 14px; border-radius:18px; word-break:break-word;
+  }
+  .chat-msg.mine .chat-bubble { background:#ff4d6d; color:#fff; border-bottom-right-radius:5px; }
+  .chat-msg.theirs .chat-bubble { background:rgba(255,255,255,0.12); color:#fff; border-bottom-left-radius:5px; }
+  .chat-msg-meta { font-size:10px; color:rgba(255,255,255,0.4); margin:3px 6px 0; }
+  .chat-empty { text-align:center; color:rgba(255,255,255,0.4); font-size:13px; margin-top:20px; }
+  .chat-input-row { flex-shrink:0; display:flex; gap:8px; padding-top:8px; }
+  .chat-input {
+    flex:1; font-family:'Quicksand', sans-serif; font-size:14px;
+    padding:12px 16px; border-radius:24px; border:1.5px solid rgba(255,255,255,0.2);
+    background:rgba(255,255,255,0.08); color:#fff;
+  }
+  .chat-input::placeholder { color:rgba(255,255,255,0.45); }
+  .chat-input:focus { outline:none; border-color:#ff4d6d; }
+  .chat-send-btn {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px;
+    padding:0 20px; border-radius:24px; background:#ff4d6d; color:#fff;
+    touch-action:manipulation;
+  }
+  .chat-send-btn:disabled { opacity:.5; }
 
   /* ---- map of us ---- */
   .us-map {
@@ -537,6 +612,48 @@
   .map-panel-story {
     font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15px;
     color:rgba(44,26,34,0.75); line-height:1.55; margin-bottom:20px;
+  }
+  .map-panel-actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .map-panel-actions .gate-btn { flex:1 1 auto; min-width:80px; }
+  .map-edit-input, .map-edit-textarea {
+    width:100%; font-family:'Quicksand', sans-serif; font-size:14px;
+    padding:11px 13px; border-radius:12px; border:1.5px solid rgba(44,26,34,0.18);
+    background:#fff; color:#2c1a22; margin-bottom:10px; resize:vertical;
+  }
+  .map-edit-input:focus, .map-edit-textarea:focus { outline:none; border-color:#ff4d6d; }
+  .map-add-btn {
+    display:block; margin:10px 0 14px; padding:9px 16px; border-radius:20px;
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px;
+    background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.3); color:#fff;
+    touch-action:manipulation;
+  }
+  .map-add-btn.active { background:#ff4d6d; border-color:#ff4d6d; }
+  .us-map.placing { cursor:crosshair; }
+  .us-map.placing::after {
+    content:'tap the map to place a pin'; position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
+    font-family:'Quicksand', sans-serif; font-size:11px; font-weight:700; color:#fff;
+    background:rgba(20,4,8,0.7); padding:5px 12px; border-radius:10px; pointer-events:none;
+  }
+
+  /* ---- playlist manage ---- */
+  .playlist-toolbar { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+  .playlist-manage-btn {
+    padding:8px 15px; border-radius:20px; font-family:'Quicksand', sans-serif;
+    font-weight:700; font-size:12px; color:#fff;
+    background:rgba(255,255,255,0.08); border:1.5px solid rgba(255,255,255,0.3);
+    touch-action:manipulation; white-space:nowrap;
+  }
+  .playlist-manage-row {
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 0; border-bottom:1px solid rgba(44,26,34,0.1); flex-wrap:wrap;
+  }
+  .playlist-manage-row:last-child { border-bottom:none; }
+  .playlist-manage-label { font-family:'Quicksand', sans-serif; font-weight:700; font-size:14px; color:#2c1a22; }
+  .playlist-manage-actions { display:flex; gap:8px; }
+  .playlist-manage-actions button, .pm-edit, .pm-delete, .pm-save, .pm-cancel {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:12px;
+    padding:6px 12px; border-radius:14px; border:1.5px solid rgba(44,26,34,0.2);
+    color:#2c1a22; background:transparent; touch-action:manipulation;
   }
 
   /* ---- playlist chips ---- */
@@ -733,6 +850,7 @@
     <div class="page">
       <div class="page-title">Our Story</div>
       <div class="page-sub">every date on here is a day I'd relive on loop</div>
+      <button class="story-add-btn" id="story-add-btn">+ Add memory</button>
       <div id="story-list"></div>
     </div>
   </div>
@@ -917,16 +1035,31 @@
     <div class="page">
       <div class="page-title">Map Of Us</div>
       <div class="page-sub">tap a pin for the story behind it</div>
+      <button class="map-add-btn" id="map-add-btn">+ Add pin</button>
       <div class="us-map" id="us-map"></div>
     </div>
   </div>
 
-  <!-- map pin story panel -->
+  <!-- map pin story / edit panel -->
   <div class="map-panel" id="map-panel">
     <div class="map-panel-card">
-      <div class="map-panel-label" id="map-panel-label"></div>
-      <div class="map-panel-story" id="map-panel-story"></div>
-      <button class="gate-btn gate-yes" id="map-panel-close">Close</button>
+      <div id="map-panel-view">
+        <div class="map-panel-label" id="map-panel-label"></div>
+        <div class="map-panel-story" id="map-panel-story"></div>
+        <div class="map-panel-actions">
+          <button class="gate-btn gate-yes" id="map-panel-edit-btn">Edit</button>
+          <button class="gate-btn gate-yes" id="map-panel-close">Close</button>
+        </div>
+      </div>
+      <div id="map-panel-edit" style="display:none;">
+        <input type="text" id="map-panel-label-input" class="map-edit-input" placeholder="Label (e.g. Where we met)" />
+        <textarea id="map-panel-story-input" class="map-edit-textarea" rows="4" placeholder="The story behind this place..."></textarea>
+        <div class="map-panel-actions">
+          <button class="gate-btn gate-yes" id="map-panel-save">Save</button>
+          <button class="gate-btn gate-yes" id="map-panel-delete">Delete</button>
+          <button class="gate-btn gate-yes" id="map-panel-cancel">Cancel</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -935,8 +1068,55 @@
     <div class="page">
       <div class="page-title">Our Playlist</div>
       <div class="page-sub" id="playlist-sub">songs that sound like you</div>
-      <div class="playlist-chips" id="playlist-chips"></div>
+      <div class="playlist-toolbar">
+        <div class="playlist-chips" id="playlist-chips"></div>
+        <button class="playlist-manage-btn" id="playlist-manage-btn">Manage</button>
+      </div>
       <div id="playlist-content"></div>
+    </div>
+  </div>
+
+  <!-- playlist manage panel -->
+  <div class="map-panel" id="playlist-panel">
+    <div class="map-panel-card" style="max-width:400px;">
+      <div class="map-panel-label">Manage Playlists</div>
+      <div id="playlist-manage-list"></div>
+      <input type="text" id="playlist-new-label" class="map-edit-input" placeholder="Label (e.g. August)" />
+      <input type="text" id="playlist-new-url" class="map-edit-input" placeholder="Spotify embed URL" />
+      <div class="map-panel-actions">
+        <button class="gate-btn gate-yes" id="playlist-add-btn">Add Playlist</button>
+        <button class="gate-btn gate-yes" id="playlist-panel-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ CHAT ============================ -->
+  <div class="view" id="view-chat">
+    <div class="chat-page">
+      <div class="chat-header">
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Chat</div>
+          <div class="chat-subtitle">messages clear every day, just for us</div>
+        </div>
+        <button class="chat-whoami" id="chat-whoami">you: <span id="chat-whoami-name">—</span></button>
+      </div>
+      <div class="chat-messages" id="chat-messages"></div>
+      <form class="chat-input-row" id="chat-input-row">
+        <input type="text" id="chat-input" class="chat-input" placeholder="Type a message..." autocomplete="off" />
+        <button type="submit" class="chat-send-btn" id="chat-send-btn">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- who-am-i panel (used to tag messages as you vs. her) -->
+  <div class="map-panel" id="chat-whoami-panel">
+    <div class="map-panel-card">
+      <div class="map-panel-label">Who's this?</div>
+      <div class="map-panel-story" style="margin-bottom:14px;">Pick a name so your messages show up on the right side for you, and hers on the other side.</div>
+      <input type="text" id="chat-whoami-input" class="map-edit-input" placeholder="Your name" />
+      <div class="map-panel-actions">
+        <button class="gate-btn gate-yes" id="chat-whoami-save">Save</button>
+      </div>
     </div>
   </div>
 
@@ -1072,6 +1252,7 @@ const CONFIG = {
     { id: "view-draw",     icon: "draw",     label: "Draw" },
     { id: "view-map",      icon: "map",      label: "Map" },
     { id: "view-playlist", icon: "music",    label: "Playlist" },
+    { id: "view-chat",     icon: "chat",     label: "Chat" },
     { id: "view-someday",  icon: "sunrise",  label: "Someday" }
   ],
 
@@ -1101,6 +1282,7 @@ const CONFIG = {
     "KINIKISS MO AKO KAHIT SA CALL",
     "pag f2f us malapit ka sakin and maclingy din!", 
     "lagi nangaasar",
+    "KASI LOVE MO AKU!",
     "MADAMI PA'TO HA DAGDAGAN KO 'TO SOON DWWW"
   ],
 
@@ -1123,6 +1305,16 @@ const CONFIG = {
       question: "What song reminds me of you?",
       options: ["Anutkin - Rico Blanco", "Mundo - IVOS", "Pasilyo - SunKissed Lola"],
       correctIndex: 1
+    },
+    {
+      question: "anu fav ulam ko.",
+      options: ["Bacon CDO Honey Flavored, semi hilaw", "Bacon Purefoods, Semi Hilaw", "Itlog"],
+      correctIndex: 0
+    },
+    {
+      question: "bakit ako nag first chat sayo!",
+      options: ["bracelet thank you!", "cute mo kasi.", "dahil super cute ko and dahil sa bracelet!"],
+      correctIndex: 2
     }
   ],
 
@@ -1161,12 +1353,12 @@ const CONFIG = {
   //       photo2.jpg
   // --------------------------------------------------------------------
   gallery: [
-    { src: "photos/photo1.jpg", caption: "our first photo together" },
-    { src: "photos/photo2.jpg", caption: "that one trip" },
-    { src: "photos/photo3.jpg", caption: "your favorite silly face" },
-    { src: "photos/photo4.jpg", caption: "the day you said yes" },
-    { src: "photos/photo5.jpg", caption: "just us, being us" },
-    { src: "", caption: "add more anytime <3" }
+    { src: "photos/photo1.jpg", caption: "US" },
+    { src: "photos/photo2.jpg", caption: "uhm macute tayo here!" },
+    { src: "photos/photo3.jpg", caption: "pacute pa us ha!" },
+    { src: "photos/photo4.jpg", caption: "mga oras na love mo pako." },
+    { src: "photos/photo5.jpg", caption: "being playful version of us oh!" },
+    { src: "photos/photo6.jpg", caption: "miss na kita oh."},
   ],
 
   // --------------------------------------------------------------------
@@ -1185,12 +1377,16 @@ const CONFIG = {
   ],
 
   // --------------------------------------------------------------------
-  // COUNTDOWN — set targetDate to whatever you're counting down to
-  // (a date, a trip, an anniversary). Format: "YYYY-MM-DDTHH:MM:SS".
+  // COUNTDOWN — either a one-time target date, or a recurring monthly
+  // day (e.g. always counts down to the next 20th of the month, then
+  // rolls over automatically once it hits). If recurringDay is set, it
+  // takes priority over targetDate.
   // --------------------------------------------------------------------
   countdown: {
-    label: "until I see you again",
-    targetDate: "2026-12-25T00:00:00"
+    label: "until our",              // prefix shown before the auto-calculated monthsary number, e.g. "until our 27th Monthsary"
+    targetDate: "2026-12-25T00:00:00",
+    recurringDay: 20,
+    anniversaryDate: "2024-05-20"    // the very first day (your monthsary "0") — used to auto-calculate which monthsary number is coming up next, so you never have to update this by hand again
   },
 
   // --------------------------------------------------------------------
@@ -1199,12 +1395,12 @@ const CONFIG = {
   // and the last one should end at 100.
   // --------------------------------------------------------------------
   loveMeter: [
-    { max: 20,  msg: "hey now, be nice to yourself 🥺" },
-    { max: 45,  msg: "aw, at least it's something!" },
-    { max: 65,  msg: "okay that's actually sweet" },
-    { max: 85,  msg: "wait that's really sweet omg" },
-    { max: 99,  msg: "okay you clearly adore me, noted" },
-    { max: 100, msg: "maximum love achieved. as it should be. 💗" }
+    { max: 20,  msg: "so di mo nako mahal?" },
+    { max: 45,  msg: "k. bahala k n." },
+    { max: 65,  msg: "wowowowowow." },
+    { max: 85,  msg: "mahal mo pala ako?" },
+    { max: 99,  msg: "hmm love mo nga ako! pero maslovekita." },
+    { max: 100, msg: "HAIII I LOVE YOUUUU MOREEEBABYYYKUUU MASLOVE KITAA!" }
   ],
 
   // --------------------------------------------------------------------
@@ -1213,7 +1409,7 @@ const CONFIG = {
   // --------------------------------------------------------------------
   scratchCard: {
     coverText: "scratch me",
-    message: "you're the best thing that's happened to me this year."
+    message: "I love you so much baby!"
   },
 
   // --------------------------------------------------------------------
@@ -1222,16 +1418,16 @@ const CONFIG = {
   // as you want.
   // --------------------------------------------------------------------
   dailyAffection: [
-    "your laugh is my favorite sound, no competition",
-    "you make ordinary days feel like something worth remembering",
-    "I like you in a very inconvenient, thinking-about-you-mid-task kind of way",
-    "you're the softest place I know",
-    "I'm so lucky someone like you exists, let alone puts up with me",
-    "you make hard days feel a lot more survivable",
-    "I think about random little things you've said and just smile",
-    "you're it for me, easily",
-    "being near you is my favorite kind of quiet",
-    "you're proof good things happen to normal people like me"
+    "MISS KONA YAKAP MP PAYAKAP PLS",
+    "I LOVE YOUUU SO MUCHHHBABYYYYY",
+    "ANG CUTEEE MO NANAMNNN MWAMWAAAAA",
+    "asawa na kita forever! #usforever",
+    "ASAWA KITA LETS GOOOOOO I LOVE YOUUUU SOMUCHH",
+    "you got this xuxu! No matter what nandito aku!",
+    "miss na miss na kita.",
+    "baby ang lamig palambing ako",
+    "me miss u so much :()",
+    "mahal pu kita sana makrash bak"
   ],
 
   // --------------------------------------------------------------------
@@ -1240,12 +1436,12 @@ const CONFIG = {
   // (just also add a matching button in the HTML if you add a new key).
   // --------------------------------------------------------------------
   moodMessages: {
-    happy:   ["I love this energy on you", "keep that smile, it's doing things to me", "this is my favorite version of you"],
-    loved:   ["good, because you are, so much", "that's the correct feeling to have honestly", "I'll take full credit for this one"],
-    tired:   ["go rest, I'll still be here", "sleepy you is still my favorite person", "drink some water and lie down, seriously"],
-    sad:     ["hey, I've got you, okay?", "you don't have to be okay right now", "tell me what's wrong, I'm listening"],
-    stressed:["breathe. one thing at a time.", "you're doing better than you think", "I believe in you, for what it's worth"],
-    missing: ["I miss you too, more than you know", "come here (virtually). I mean it.", "not long now, promise"]
+    happy:   ["ILOVEEEEYOUUUU BABYYYYYY, PAPANGITIIN PA KITAAA LALOOOOOO MWAAMWAAAAA US FOREVER HAAAAAAA"],
+    loved:   ["YESSS, NAAMIN MO NADIN NA LOVE KITAAAAAAAAAA"],
+    tired:   ["pagod ka? wag sakin pls, lalambingin nalang kita! mwamwa sweetiee !!!"],
+    sad:     ["sino away sayo baby? aawayin natin, dali! peroz pag masad ikaw magsabi ka sakin ha I LOVEE YOUUUU DARLINGGG"],
+    stressed:["stressed na ikaw? pahinga muna pu ikawww drink water ha!"],
+    missing: ["Miss mo na ako? wow himala. Jukz! MASMISSS PA KITAA BABYYYYY"]
   },
 
   // --------------------------------------------------------------------
@@ -1286,11 +1482,15 @@ const CONFIG = {
   // (saved right in her browser via localStorage).
   // --------------------------------------------------------------------
   someday: [
-    "Take a trip somewhere neither of us has been",
-    "Cook a whole meal together, start to finish",
-    "Adopt a pet together",
-    "Go to a concert of a band we both love",
-    "Build something together (a home, a shelf, a garden — you decide)"
+      "France tour 1 week",
+      "MAGLUTOOO",
+      "Adopt a pdog togethers",
+      "Go to a concert of a band we both love! ivos etc",
+      "Build legos more together!",
+      "MAGGAWA NG BACKYARD",
+      "nakatira sa isang bubong",
+      "magtekken",
+      'fc26 together!'
   ]
 
 };
@@ -1369,7 +1569,8 @@ const SVG_ICONS = {
   kitty: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6.5 4 3l3 1.4"/><path d="M18 6.5 20 3l-3 1.4"/><circle cx="12" cy="13" r="7.2"/><circle cx="9.1" cy="12.4" r=".4" fill="currentColor" stroke="none"/><circle cx="14.9" cy="12.4" r=".4" fill="currentColor" stroke="none"/><path d="M11.4 14.6h1.2"/><path d="M4.6 16.2h2.4M4.9 17.6h2.1M16.9 16.2h2.5M17.2 17.6h2.1"/><path d="M9.4 9.6c1.6-1 3.6-1 5.2 0" stroke-width="1.4"/></svg>`,
   sparkle: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2c.5 3 1.9 5.3 4.4 6.6-2.5 1.3-3.9 3.6-4.4 6.6-.5-3-1.9-5.3-4.4-6.6 2.5-1.3 3.9-3.6 4.4-6.6Z"/><path d="M19 15c.3 1.5.9 2.6 2.2 3.3-1.3.7-1.9 1.8-2.2 3.3-.3-1.5-.9-2.6-2.2-3.3 1.3-.7 1.9-1.8 2.2-3.3Z"/></svg>`,
   draw: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.2L14.5 6.3a1.8 1.8 0 0 1 2.5 0l.7.7a1.8 1.8 0 0 1 0 2.5L8.2 19 4 20Z"/><path d="M13 8l3 3"/></svg>`,
-  map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.2-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>`
+  map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.8-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.2-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></svg>`,
+  chat: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v11H9l-4 3.5v-3.5H4v-11Z"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -1554,17 +1755,106 @@ const observer = new IntersectionObserver((entries) => {
 
 sectionEls.forEach(el => observer.observe(el));
 
-// ---------- our story ----------
-const storyList = document.getElementById('story-list');
-CONFIG.timeline.forEach(item => {
-  const el = document.createElement('div');
-  el.className = 'tl-item';
-  el.innerHTML = `
-    <div class="tl-date">${item.date}</div>
-    <div class="tl-title">${item.title}</div>
-    <div class="tl-text">${item.text}</div>`;
-  storyList.appendChild(el);
-});
+// ---------- our story (editable, live-synced via Supabase) ----------
+(function () {
+  const storyList = document.getElementById('story-list');
+  const addBtn = document.getElementById('story-add-btn');
+  if (!storyList) return;
+
+  const sbCfg = CONFIG.supabase || {};
+  const sb = (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+
+  let entries = [];
+
+  function renderView() {
+    storyList.innerHTML = '';
+    entries.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'tl-item';
+      el.innerHTML = `
+        <div class="tl-date">${item.date}</div>
+        <div class="tl-title">${item.title}</div>
+        <div class="tl-text">${item.text}</div>
+        <div class="tl-item-actions">
+          <button class="tl-edit-btn">Edit</button>
+          <button class="tl-delete-btn">Delete</button>
+        </div>`;
+      el.querySelector('.tl-edit-btn').addEventListener('click', () => renderEditForm(el, item));
+      el.querySelector('.tl-delete-btn').addEventListener('click', async () => {
+        if (sb) await sb.from('story_entries').delete().eq('id', item.id);
+        entries = entries.filter(e => e.id !== item.id);
+        renderView();
+      });
+      storyList.appendChild(el);
+    });
+  }
+
+  function renderEditForm(el, item) {
+    // item is null when adding a new entry
+    el.innerHTML = `
+      <div class="tl-edit-form">
+        <input type="text" class="map-edit-input tl-date-input" placeholder="Date (e.g. May 20 2024)" value="${item ? item.date : ''}" />
+        <input type="text" class="map-edit-input tl-title-input" placeholder="Title (e.g. How we started)" value="${item ? item.title : ''}" />
+        <textarea class="map-edit-textarea tl-text-input" rows="3" placeholder="Tell the story...">${item ? item.text : ''}</textarea>
+        <div class="tl-item-actions">
+          <button class="tl-save-btn">Save</button>
+          <button class="tl-cancel-btn">Cancel</button>
+        </div>
+      </div>`;
+    el.querySelector('.tl-cancel-btn').addEventListener('click', () => {
+      if (item) renderView(); else el.remove();
+    });
+    el.querySelector('.tl-save-btn').addEventListener('click', async () => {
+      const date = el.querySelector('.tl-date-input').value.trim();
+      const title = el.querySelector('.tl-title-input').value.trim();
+      const text = el.querySelector('.tl-text-input').value.trim();
+      if (!date || !title || !text) return;
+      if (item) {
+        if (sb) await sb.from('story_entries').update({ date, title, text }).eq('id', item.id);
+        item.date = date; item.title = title; item.text = text;
+      } else {
+        if (sb) {
+          const { data } = await sb.from('story_entries').insert({ date, title, text, position: entries.length }).select();
+          if (data && data[0]) entries.push(data[0]);
+        } else {
+          entries.push({ id: 'local-' + Date.now(), date, title, text });
+        }
+      }
+      renderView();
+    });
+  }
+
+  addBtn.addEventListener('click', () => {
+    const el = document.createElement('div');
+    el.className = 'tl-item';
+    storyList.appendChild(el);
+    renderEditForm(el, null);
+  });
+
+  async function loadEntries() {
+    const fallback = () => (CONFIG.timeline || []).map((t, i) => ({ id: 'local-' + i, ...t }));
+    if (!sb) { entries = fallback(); renderView(); return; }
+    const { data, error } = await sb.from('story_entries').select('*').order('position', { ascending: true }).order('id', { ascending: true });
+    if (error) { entries = fallback(); renderView(); return; }
+    if (!data || !data.length) {
+      const seed = (CONFIG.timeline || []).map((t, i) => ({ date: t.date, title: t.title, text: t.text, position: i }));
+      entries = seed.length ? (await sb.from('story_entries').insert(seed).select()).data || [] : [];
+    } else {
+      entries = data;
+    }
+    renderView();
+  }
+
+  function subscribeRealtime() {
+    if (!sb) return;
+    sb.channel('story_entries_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'story_entries' }, () => loadEntries())
+      .subscribe();
+  }
+
+  loadEntries();
+  subscribeRealtime();
+})();
 
 // ---------- reasons ----------
 const reasonsList = document.getElementById('reasons-list');
@@ -1834,10 +2124,10 @@ buildDeck();
 (function () {
   const grid = document.getElementById('countdown-grid');
   const labelEl = document.getElementById('countdown-label');
-  if (!grid || !CONFIG.countdown || !CONFIG.countdown.targetDate) return;
+  const cfg = CONFIG.countdown || {};
+  if (!grid || (!cfg.targetDate && !cfg.recurringDay)) return;
 
-  labelEl.textContent = CONFIG.countdown.label || 'Counting down';
-  const target = new Date(CONFIG.countdown.targetDate).getTime();
+  labelEl.textContent = cfg.label || 'Counting down';
   const dEl = document.getElementById('cd-days');
   const hEl = document.getElementById('cd-hours');
   const mEl = document.getElementById('cd-mins');
@@ -1845,14 +2135,70 @@ buildDeck();
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
+  // "1st", "2nd", "3rd", "4th", "11th", "21st", etc.
+  function ordinal(n) {
+    const rem100 = n % 100;
+    if (rem100 >= 11 && rem100 <= 13) return n + 'th';
+    switch (n % 10) {
+      case 1: return n + 'st';
+      case 2: return n + 'nd';
+      case 3: return n + 'rd';
+      default: return n + 'th';
+    }
+  }
+
+  // how many whole months have passed between the anniversary start date
+  // and a given target date — e.g. if you started May 20 2024, the target
+  // of Aug 20 2026 is +27 months, i.e. the 27th monthsary.
+  function monthsaryNumber(targetMs) {
+    if (!cfg.anniversaryDate) return null;
+    const start = new Date(cfg.anniversaryDate);
+    const end = new Date(targetMs);
+    if (isNaN(start.getTime())) return null;
+    return (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+  }
+
+  function updateLabel(targetMs) {
+    const n = monthsaryNumber(targetMs);
+    const base = cfg.label || 'Counting down';
+    labelEl.textContent = (n && n > 0) ? `${base} ${ordinal(n)} Monthsary` : base;
+  }
+
+  // returns the timestamp of the next occurrence of `day` this month,
+  // or next month if that day has already passed (or doesn't exist yet
+  // this month, e.g. day 31 in a 30-day month rolls to the following one)
+  function nextRecurringTarget(day) {
+    const now = new Date();
+    let year = now.getFullYear();
+    let month = now.getMonth();
+    let candidate = new Date(year, month, day, 0, 0, 0, 0);
+    if (candidate.getTime() <= now.getTime()) {
+      month += 1;
+      candidate = new Date(year, month, day, 0, 0, 0, 0);
+    }
+    return candidate.getTime();
+  }
+
+  let target = cfg.recurringDay
+    ? nextRecurringTarget(cfg.recurringDay)
+    : new Date(cfg.targetDate).getTime();
+  updateLabel(target);
+
   function tick() {
-    const diff = target - Date.now();
     if (isNaN(target)) { grid.style.display = 'none'; return; }
+    let diff = target - Date.now();
     if (diff <= 0) {
-      dEl.textContent = hEl.textContent = mEl.textContent = sEl.textContent = '00';
-      labelEl.textContent = "it's here! 🎉";
-      clearInterval(timer);
-      return;
+      if (cfg.recurringDay) {
+        // roll over to next month's occurrence and keep going
+        target = nextRecurringTarget(cfg.recurringDay);
+        updateLabel(target);
+        diff = target - Date.now();
+      } else {
+        dEl.textContent = hEl.textContent = mEl.textContent = sEl.textContent = '00';
+        labelEl.textContent = "it's here! 🎉";
+        clearInterval(timer);
+        return;
+      }
     }
     const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
@@ -1913,8 +2259,24 @@ buildDeck();
     canvas.classList.remove('done');
     clearedPct = 0; doneChecked = false;
   }
-  // build once the layout has settled
-  requestAnimationFrame(sizeCanvas);
+  // The Surprises tab starts hidden (display:none), so measuring/sizing
+  // the canvas at page load gives 0x0 and the scratch card silently never
+  // works. Re-size (and redraw the cover) any time the wrapper's actual
+  // on-screen size changes — e.g. when its tab becomes visible, or on
+  // window resize — instead of only once at load.
+  let scratchSizedOnce = false;
+  const scratchResizeObserver = new ResizeObserver(() => {
+    const rect = wrap.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return; // still hidden
+    // don't wipe away scratch progress on every resize once it's already
+    // properly sized and in use — only (re)draw on the first real size,
+    // or if the size actually changed (e.g. real window resize).
+    if (!scratchSizedOnce || canvas.width !== Math.round(rect.width) || canvas.height !== Math.round(rect.height)) {
+      sizeCanvas();
+      scratchSizedOnce = true;
+    }
+  });
+  scratchResizeObserver.observe(wrap);
 
   function scratchAt(x, y) {
     ctx.globalCompositeOperation = 'destination-out';
@@ -2123,7 +2485,19 @@ buildDeck();
       });
   }
 
-  requestAnimationFrame(() => { sizeCanvas(); loadHistory(); subscribeRealtime(); });
+  // the draw tab starts hidden (display:none), so measuring the canvas at
+  // page load gives 0x0. Re-measure any time the canvas's actual on-screen
+  // size changes (e.g. when its tab becomes visible, or on window resize)
+  // and redraw the existing strokes at the new size.
+  let sizedOnce = false;
+  const resizeObserver = new ResizeObserver(() => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return; // still hidden
+    sizeCanvas();
+    loadHistory();
+    if (!sizedOnce) { sizedOnce = true; subscribeRealtime(); }
+  });
+  resizeObserver.observe(canvas);
 
   palette.forEach((c, i) => {
     const dot = document.createElement('button');
@@ -2186,33 +2560,159 @@ buildDeck();
   });
 })();
 
-// ---------- map of us ----------
+// ---------- map of us (editable, live-synced via Supabase) ----------
 (function () {
   const mapEl = document.getElementById('us-map');
   const panel = document.getElementById('map-panel');
+  const viewBlock = document.getElementById('map-panel-view');
+  const editBlock = document.getElementById('map-panel-edit');
   const panelLabel = document.getElementById('map-panel-label');
   const panelStory = document.getElementById('map-panel-story');
+  const labelInput = document.getElementById('map-panel-label-input');
+  const storyInput = document.getElementById('map-panel-story-input');
+  const editBtn = document.getElementById('map-panel-edit-btn');
+  const saveBtn = document.getElementById('map-panel-save');
+  const deleteBtn = document.getElementById('map-panel-delete');
+  const cancelBtn = document.getElementById('map-panel-cancel');
   const panelClose = document.getElementById('map-panel-close');
+  const addBtn = document.getElementById('map-add-btn');
   if (!mapEl) return;
 
   const pinIcon = `<svg class="map-pin-ico" viewBox="0 0 24 24" fill="currentColor" stroke="#fff" stroke-width="1.2"><path d="M12 22s-7.5-6.7-7.5-12.5A7.5 7.5 0 0 1 12 2a7.5 7.5 0 0 1 7.5 7.5C19.5 15.3 12 22 12 22Z"/><circle cx="12" cy="9.3" r="2.6" fill="#fff" stroke="none"/></svg>`;
 
-  (CONFIG.mapPins || []).forEach(pin => {
-    const el = document.createElement('div');
-    el.className = 'map-pin';
-    el.style.left = pin.x + '%';
-    el.style.top = pin.y + '%';
-    el.innerHTML = `${pinIcon}<span class="map-pin-label">${pin.label}</span>`;
-    el.addEventListener('click', () => {
-      panelLabel.textContent = pin.label;
-      panelStory.textContent = pin.story;
-      panel.classList.add('open');
+  const sbCfg = CONFIG.supabase || {};
+  const sb = (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+
+  let pins = [];
+  let activePinId = null;
+  let placing = false;
+  let pendingCoords = null;
+
+  function closePanel() { panel.classList.remove('open'); pendingCoords = null; }
+
+  function renderPins() {
+    mapEl.querySelectorAll('.map-pin').forEach(el => el.remove());
+    pins.forEach(pin => {
+      const el = document.createElement('div');
+      el.className = 'map-pin';
+      el.style.left = pin.x + '%';
+      el.style.top = pin.y + '%';
+      el.innerHTML = `${pinIcon}<span class="map-pin-label">${pin.label}</span>`;
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (placing) return;
+        openView(pin);
+      });
+      mapEl.appendChild(el);
     });
-    mapEl.appendChild(el);
+  }
+
+  function openView(pin) {
+    activePinId = pin.id;
+    panelLabel.textContent = pin.label;
+    panelStory.textContent = pin.story;
+    viewBlock.style.display = '';
+    editBlock.style.display = 'none';
+    panel.classList.add('open');
+  }
+
+  function openEdit(pin) {
+    activePinId = pin ? pin.id : null;
+    labelInput.value = pin ? pin.label : '';
+    storyInput.value = pin ? pin.story : '';
+    deleteBtn.style.display = pin ? '' : 'none';
+    viewBlock.style.display = 'none';
+    editBlock.style.display = '';
+    panel.classList.add('open');
+    labelInput.focus();
+  }
+
+  editBtn.addEventListener('click', () => openEdit(pins.find(p => p.id === activePinId)));
+  cancelBtn.addEventListener('click', closePanel);
+  panelClose.addEventListener('click', closePanel);
+  panel.addEventListener('click', (e) => { if (e.target === panel) closePanel(); });
+
+  saveBtn.addEventListener('click', async () => {
+    const label = labelInput.value.trim();
+    const story = storyInput.value.trim();
+    if (!label || !story) return;
+    if (activePinId != null) {
+      if (sb) await sb.from('map_pins').update({ label, story }).eq('id', activePinId);
+      const p = pins.find(p => p.id === activePinId);
+      if (p) { p.label = label; p.story = story; }
+    } else if (pendingCoords) {
+      const { x, y } = pendingCoords;
+      if (sb) {
+        const { data } = await sb.from('map_pins').insert({ x, y, label, story }).select();
+        if (data && data[0]) pins.push(data[0]);
+      } else {
+        pins.push({ id: 'local-' + Date.now(), x, y, label, story });
+      }
+    }
+    renderPins();
+    closePanel();
   });
 
-  panelClose.addEventListener('click', () => panel.classList.remove('open'));
-  panel.addEventListener('click', (e) => { if (e.target === panel) panel.classList.remove('open'); });
+  deleteBtn.addEventListener('click', async () => {
+    if (activePinId == null) return;
+    if (sb) await sb.from('map_pins').delete().eq('id', activePinId);
+    pins = pins.filter(p => p.id !== activePinId);
+    renderPins();
+    closePanel();
+  });
+
+  addBtn.addEventListener('click', () => {
+    placing = !placing;
+    addBtn.classList.toggle('active', placing);
+    addBtn.textContent = placing ? 'Cancel' : '+ Add pin';
+    mapEl.classList.toggle('placing', placing);
+  });
+
+  mapEl.addEventListener('click', (e) => {
+    if (!placing) return;
+    const rect = mapEl.getBoundingClientRect();
+    pendingCoords = {
+      x: Math.round(((e.clientX - rect.left) / rect.width) * 1000) / 10,
+      y: Math.round(((e.clientY - rect.top) / rect.height) * 1000) / 10
+    };
+    placing = false;
+    addBtn.classList.remove('active');
+    addBtn.textContent = '+ Add pin';
+    mapEl.classList.remove('placing');
+    openEdit(null);
+  });
+
+  async function loadPins() {
+    if (!sb) {
+      pins = (CONFIG.mapPins || []).map((p, i) => ({ id: 'local-' + i, ...p }));
+      renderPins();
+      return;
+    }
+    const { data, error } = await sb.from('map_pins').select('*').order('id', { ascending: true });
+    if (error) {
+      pins = (CONFIG.mapPins || []).map((p, i) => ({ id: 'local-' + i, ...p }));
+      renderPins();
+      return;
+    }
+    if (!data || !data.length) {
+      // first time ever loading — seed with the starter pins so they become editable
+      const seed = CONFIG.mapPins || [];
+      pins = seed.length ? (await sb.from('map_pins').insert(seed).select()).data || [] : [];
+    } else {
+      pins = data;
+    }
+    renderPins();
+  }
+
+  function subscribeRealtime() {
+    if (!sb) return;
+    sb.channel('map_pins_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'map_pins' }, () => loadPins())
+      .subscribe();
+  }
+
+  loadPins();
+  subscribeRealtime();
 })();
 
 // ---------- background music toggle ----------
@@ -2240,45 +2740,279 @@ buildDeck();
   });
 })();
 
-// ---------- playlist(s) ----------
+// ---------- playlist(s) (editable, live-synced via Supabase) ----------
 (function () {
   const chipsEl = document.getElementById('playlist-chips');
   const contentEl = document.getElementById('playlist-content');
-  const lists = (CONFIG.playlists || []).filter(p => p && p.embedUrl);
+  const manageBtn = document.getElementById('playlist-manage-btn');
+  const panel = document.getElementById('playlist-panel');
+  const panelClose = document.getElementById('playlist-panel-close');
+  const listEl = document.getElementById('playlist-manage-list');
+  const newLabelInput = document.getElementById('playlist-new-label');
+  const newUrlInput = document.getElementById('playlist-new-url');
+  const addBtn = document.getElementById('playlist-add-btn');
 
-  function renderEmbed(embedUrl) {
+  const sbCfg = CONFIG.supabase || {};
+  const sb = (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+
+  let lists = [];
+  let activeIndex = 0;
+
+  function renderChips() {
+    chipsEl.innerHTML = '';
+    chipsEl.style.display = lists.length <= 1 ? 'none' : '';
+    lists.forEach((p, i) => {
+      const chip = document.createElement('button');
+      chip.className = 'playlist-chip' + (i === activeIndex ? ' active' : '');
+      chip.textContent = p.label || `Playlist ${i + 1}`;
+      chip.addEventListener('click', () => { activeIndex = i; renderChips(); renderContent(); });
+      chipsEl.appendChild(chip);
+    });
+  }
+
+  function renderContent() {
+    if (!lists.length) {
+      const songs = CONFIG.playlistSongs || [];
+      contentEl.innerHTML = songs.length
+        ? songs.map(s => `<div class="song-row">🎶 <span>${s}</span></div>`).join('')
+        : `<div class="song-row" style="opacity:.6;">tap Manage to add a playlist</div>`;
+      return;
+    }
+    const p = lists[Math.min(activeIndex, lists.length - 1)];
     contentEl.innerHTML = `
       <div class="spotify-wrap">
-        <iframe src="${embedUrl}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+        <iframe src="${p.embed_url}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
       </div>`;
   }
 
-  function renderSongFallback() {
-    const songs = CONFIG.playlistSongs || [];
-    contentEl.innerHTML = songs.length
-      ? songs.map(s => `<div class="song-row">🎶 <span>${s}</span></div>`).join('')
-      : `<div class="song-row" style="opacity:.6;">add a Spotify embed link or a few songs above to fill this in</div>`;
-  }
-
-  if (!lists.length) { renderSongFallback(); return; }
-
-  if (lists.length === 1) {
-    renderEmbed(lists[0].embedUrl);
-    return;
-  }
-
-  lists.forEach((p, i) => {
-    const chip = document.createElement('button');
-    chip.className = 'playlist-chip' + (i === 0 ? ' active' : '');
-    chip.textContent = p.label || `Playlist ${i + 1}`;
-    chip.addEventListener('click', () => {
-      chipsEl.querySelectorAll('.playlist-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      renderEmbed(p.embedUrl);
+  function renderManageList() {
+    listEl.innerHTML = lists.length ? '' : `<div class="song-row" style="opacity:.6;">no playlists yet — add one below</div>`;
+    lists.forEach((p) => {
+      const row = document.createElement('div');
+      row.className = 'playlist-manage-row';
+      row.innerHTML = `
+        <div class="playlist-manage-label">${p.label}</div>
+        <div class="playlist-manage-actions">
+          <button class="pm-edit">Edit</button>
+          <button class="pm-delete">Delete</button>
+        </div>`;
+      row.querySelector('.pm-delete').addEventListener('click', async () => {
+        if (sb) await sb.from('playlist_entries').delete().eq('id', p.id);
+        lists = lists.filter(x => x.id !== p.id);
+        activeIndex = 0;
+        renderAll();
+      });
+      row.querySelector('.pm-edit').addEventListener('click', () => {
+        row.innerHTML = `
+          <input type="text" class="map-edit-input pm-edit-label" value="${p.label}" />
+          <input type="text" class="map-edit-input pm-edit-url" value="${p.embed_url}" />
+          <div class="playlist-manage-actions">
+            <button class="pm-save">Save</button>
+            <button class="pm-cancel">Cancel</button>
+          </div>`;
+        row.querySelector('.pm-cancel').addEventListener('click', renderManageList);
+        row.querySelector('.pm-save').addEventListener('click', async () => {
+          const label = row.querySelector('.pm-edit-label').value.trim();
+          const embed_url = row.querySelector('.pm-edit-url').value.trim();
+          if (!label || !embed_url) return;
+          if (sb) await sb.from('playlist_entries').update({ label, embed_url }).eq('id', p.id);
+          p.label = label; p.embed_url = embed_url;
+          renderAll();
+        });
+      });
+      listEl.appendChild(row);
     });
-    chipsEl.appendChild(chip);
+  }
+
+  function renderAll() { renderChips(); renderContent(); renderManageList(); }
+
+  manageBtn.addEventListener('click', () => panel.classList.add('open'));
+  panelClose.addEventListener('click', () => panel.classList.remove('open'));
+  panel.addEventListener('click', (e) => { if (e.target === panel) panel.classList.remove('open'); });
+
+  addBtn.addEventListener('click', async () => {
+    const label = newLabelInput.value.trim();
+    const embed_url = newUrlInput.value.trim();
+    if (!label || !embed_url) return;
+    if (sb) {
+      const { data } = await sb.from('playlist_entries').insert({ label, embed_url, position: lists.length }).select();
+      if (data && data[0]) lists.push(data[0]);
+    } else {
+      lists.push({ id: 'local-' + Date.now(), label, embed_url });
+    }
+    newLabelInput.value = '';
+    newUrlInput.value = '';
+    activeIndex = lists.length - 1;
+    renderAll();
   });
-  renderEmbed(lists[0].embedUrl);
+
+  async function loadLists() {
+    const fallback = () => (CONFIG.playlists || []).filter(p => p && p.embedUrl).map((p, i) => ({ id: 'local-' + i, label: p.label, embed_url: p.embedUrl }));
+    if (!sb) { lists = fallback(); renderAll(); return; }
+    const { data, error } = await sb.from('playlist_entries').select('*').order('position', { ascending: true }).order('id', { ascending: true });
+    if (error) { lists = fallback(); renderAll(); return; }
+    if (!data || !data.length) {
+      const seed = (CONFIG.playlists || []).filter(p => p && p.embedUrl).map((p, i) => ({ label: p.label, embed_url: p.embedUrl, position: i }));
+      lists = seed.length ? (await sb.from('playlist_entries').insert(seed).select()).data || [] : [];
+    } else {
+      lists = data;
+    }
+    renderAll();
+  }
+
+  function subscribeRealtime() {
+    if (!sb) return;
+    sb.channel('playlist_entries_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'playlist_entries' }, () => loadLists())
+      .subscribe();
+  }
+
+  loadLists();
+  subscribeRealtime();
+})();
+
+// ---------- chat (live-synced via Supabase, clears daily) ----------
+(function () {
+  const messagesEl = document.getElementById('chat-messages');
+  const form = document.getElementById('chat-input-row');
+  const input = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send-btn');
+  const whoamiBtn = document.getElementById('chat-whoami');
+  const whoamiName = document.getElementById('chat-whoami-name');
+  const whoamiPanel = document.getElementById('chat-whoami-panel');
+  const whoamiInput = document.getElementById('chat-whoami-input');
+  const whoamiSave = document.getElementById('chat-whoami-save');
+  if (!messagesEl) return;
+
+  const sbCfg = CONFIG.supabase || {};
+  const sb = (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+
+  const NAME_KEY = 'lls_chat_name';
+  let myName = localStorage.getItem(NAME_KEY) || '';
+  let messages = [];
+
+  function updateWhoamiLabel() { whoamiName.textContent = myName || 'set name'; }
+  updateWhoamiLabel();
+
+  function openWhoami() {
+    whoamiInput.value = myName;
+    whoamiPanel.classList.add('open');
+    whoamiInput.focus();
+  }
+  whoamiBtn.addEventListener('click', openWhoami);
+  whoamiPanel.addEventListener('click', (e) => { if (e.target === whoamiPanel && myName) whoamiPanel.classList.remove('open'); });
+  whoamiSave.addEventListener('click', () => {
+    const val = whoamiInput.value.trim();
+    if (!val) return;
+    myName = val;
+    localStorage.setItem(NAME_KEY, myName);
+    updateWhoamiLabel();
+    whoamiPanel.classList.remove('open');
+    renderMessages();
+  });
+  // first-ever visit: ask who this is before letting them chat — but only
+  // once they actually open the Chat tab, not immediately on page load
+  // (opening it on load used to cover the whole site, including the
+  // access gate, before anyone even reached the Chat tab).
+  document.querySelectorAll('.nav-btn').forEach(btn => {
+    if (btn.dataset.target === 'view-chat') {
+      btn.addEventListener('click', () => { if (!myName) openWhoami(); });
+    }
+  });
+
+  function fmtTime(iso) {
+    const d = new Date(iso);
+    return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function renderMessages() {
+    messagesEl.innerHTML = '';
+    if (!messages.length) {
+      messagesEl.innerHTML = `<div class="chat-empty">no messages yet today — say hi</div>`;
+      return;
+    }
+    messages.forEach(m => {
+      const mine = myName && m.sender === myName;
+      const wrap = document.createElement('div');
+      wrap.className = 'chat-msg ' + (mine ? 'mine' : 'theirs');
+      wrap.innerHTML = `
+        <div class="chat-bubble"></div>
+        <div class="chat-msg-meta">${mine ? '' : (m.sender + ' · ')}${fmtTime(m.created_at)}</div>`;
+      wrap.querySelector('.chat-bubble').textContent = m.text; // textContent to avoid HTML injection
+      messagesEl.appendChild(wrap);
+    });
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function startOfToday() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
+  async function clearOldMessages() {
+    if (!sb) return;
+    await sb.from('chat_messages').delete().lt('created_at', startOfToday().toISOString());
+  }
+
+  async function loadMessages() {
+    if (!sb) {
+      messages = JSON.parse(sessionStorage.getItem('lls_chat_local') || '[]')
+        .filter(m => new Date(m.created_at) >= startOfToday());
+      renderMessages();
+      return;
+    }
+    await clearOldMessages();
+    const { data, error } = await sb.from('chat_messages')
+      .select('*')
+      .gte('created_at', startOfToday().toISOString())
+      .order('created_at', { ascending: true });
+    if (error) { messages = []; renderMessages(); return; }
+    messages = data || [];
+    renderMessages();
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    if (!myName) { openWhoami(); return; }
+    input.value = '';
+    sendBtn.disabled = true;
+    try {
+      if (sb) {
+        const { error } = await sb.from('chat_messages').insert({ sender: myName, text });
+        if (error) throw error;
+        // realtime subscription below will pick up the echo and re-render
+      } else {
+        throw new Error('no supabase client');
+      }
+    } catch (err) {
+      // Supabase insert failed (offline, misconfigured table/RLS, etc.) —
+      // fall back to a local-only message so sending never silently locks up.
+      console.warn('chat insert failed, saving locally instead:', err);
+      const local = JSON.parse(sessionStorage.getItem('lls_chat_local') || '[]');
+      local.push({ sender: myName, text, created_at: new Date().toISOString() });
+      sessionStorage.setItem('lls_chat_local', JSON.stringify(local));
+      messages.push(local[local.length - 1]);
+      renderMessages();
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  });
+
+  function subscribeRealtime() {
+    if (!sb) return;
+    sb.channel('chat_messages_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'chat_messages' }, () => loadMessages())
+      .subscribe();
+  }
+
+  loadMessages();
+  subscribeRealtime();
+  // re-check every few minutes in case midnight passes while the tab stays open
+  setInterval(loadMessages, 5 * 60 * 1000);
 })();
 
 // ---------- someday ----------
