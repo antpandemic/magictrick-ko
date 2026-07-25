@@ -3877,7 +3877,7 @@ buildDeck();
     const p = lists[Math.min(activeIndex, lists.length - 1)];
     contentEl.innerHTML = `
       <div class="spotify-wrap">
-        <iframe src="${p.embed_url}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
+        <iframe src="${toEmbedSrc(p.embed_url)}" width="100%" height="352" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" allowfullscreen></iframe>
       </div>`;
   }
 
@@ -4452,6 +4452,31 @@ function getSharedName() { return localStorage.getItem('lls_chat_name') || ''; }
 function getSb() {
   const sbCfg = CONFIG.supabase || {};
   return (sbCfg.url && sbCfg.anonKey && window.supabase) ? window.supabase.createClient(sbCfg.url, sbCfg.anonKey) : null;
+}
+
+// ---------- shared helper: turn a normal share/watch link into a URL that
+// actually loads inside an <iframe>. Regular youtube.com/watch and youtu.be
+// links refuse to embed ("youtube.com has refused to connect") because only
+// the /embed/ path allows framing — same idea for Spotify and Apple Music. ----------
+function toEmbedSrc(url) {
+  if (!url) return '';
+  url = url.trim();
+
+  // YouTube: youtu.be/ID, watch?v=ID, shorts/ID, or already an /embed/ link
+  let m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([a-zA-Z0-9_-]{6,})/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+
+  // Spotify: open.spotify.com/track|album|playlist/ID -> /embed/track/ID
+  if (url.includes('open.spotify.com') && !url.includes('/embed/')) {
+    return url.replace('open.spotify.com/', 'open.spotify.com/embed/');
+  }
+
+  // Apple Music: music.apple.com/... -> embed.music.apple.com/...
+  if (url.includes('music.apple.com') && !url.includes('embed.music.apple.com')) {
+    return url.replace('music.apple.com', 'embed.music.apple.com');
+  }
+
+  return url;
 }
 
 function fmtShortDate(d) {
@@ -5081,11 +5106,6 @@ async function loadTwoLocations() {
   function todayStr() {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  }
-  function toEmbedSrc(url) {
-    if (!url) return '';
-    if (url.includes('open.spotify.com') && !url.includes('/embed/')) return url.replace('open.spotify.com/', 'open.spotify.com/embed/');
-    return url;
   }
 
   function renderReactions(container, song) {
