@@ -20,7 +20,7 @@
 -->
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Quicksand:wght@500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
 
 <style>
   /* ========================================================================
@@ -199,7 +199,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4 {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -499,6 +499,48 @@
   .mood-ring-dot { width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.2); }
   .mood-ring-dot:active { transform:scale(0.9); }
   .mood-ring-reading { margin-top:16px; text-align:center; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px; color:rgba(255,255,255,0.85); min-height:40px; }
+
+  /* ---- sticky notes ---- */
+  .note-compose-input {
+    width:100%; min-height:80px; resize:vertical; box-sizing:border-box;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); border-radius:12px;
+    padding:12px 14px; color:#fff; font-family:'Caveat', cursive; font-size:22px; line-height:1.3;
+  }
+  .note-compose-input::placeholder { font-family:'Quicksand', sans-serif; font-size:13px; color:rgba(255,255,255,0.4); }
+  .note-color-row { display:flex; gap:10px; justify-content:center; width:100%; }
+  .note-color-dot { width:28px; height:28px; border-radius:6px; border:2px solid transparent; transform:rotate(-3deg); }
+  .note-color-dot.active { border-color:#fff; }
+  .note-board { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+  .sticky-note {
+    padding:16px 14px 14px; border-radius:2px; min-height:120px;
+    box-shadow:0 8px 18px rgba(0,0,0,0.28), 0 1px 0 rgba(255,255,255,0.15) inset;
+    display:flex; flex-direction:column; justify-content:space-between;
+    position:relative;
+  }
+  .sticky-note::before {
+    content:''; position:absolute; top:-8px; left:50%; transform:translateX(-50%);
+    width:14px; height:14px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, #999 70%, #555);
+    box-shadow:0 3px 4px rgba(0,0,0,0.4);
+  }
+  .sticky-note-text { font-family:'Caveat', cursive; font-size:19px; line-height:1.3; color:#33261c; white-space:pre-wrap; word-break:break-word; }
+  .sticky-note-meta { display:flex; align-items:center; justify-content:space-between; margin-top:10px; font-family:'Quicksand', sans-serif; font-size:10px; color:rgba(0,0,0,0.5); }
+  .sticky-note-delete { font-size:11px; color:rgba(0,0,0,0.45); background:rgba(0,0,0,0.08); border-radius:8px; padding:2px 7px; }
+
+  /* ---- connect four ---- */
+  .c4-board-wrap { display:inline-block; }
+  .c4-cols { display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; width:280px; margin:0 auto; }
+  .c4-col-btn { height:22px; border-radius:6px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.5); font-size:14px; }
+  .c4-col-btn:active { background:rgba(var(--accent-rgb), 0.25); }
+  .c4-board {
+    display:grid; grid-template-columns:repeat(7, 1fr); grid-template-rows:repeat(6, 1fr);
+    gap:4px; width:280px; height:240px; margin:6px auto 0; padding:8px; border-radius:12px;
+    background:#1e3a6e;
+  }
+  .c4-cell { border-radius:50%; background:rgba(255,255,255,0.08); }
+  .c4-cell.r { background:radial-gradient(circle at 35% 30%, #ff8a8a, #e23c3c 70%); }
+  .c4-cell.y { background:radial-gradient(circle at 35% 30%, #ffe98a, #f0c22c 70%); }
+  .c4-cell.win { box-shadow:0 0 0 3px #fff inset; }
 
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -2275,6 +2317,60 @@
     </div>
   </div>
 
+  <!-- ============================ STICKY NOTES (subpage) ============================ -->
+  <div class="view" id="view-notes">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Sticky Notes</div>
+          <div class="page-sub" style="margin-bottom:0;">quick handwritten-style notes on a little corkboard</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <textarea id="note-text-input" class="note-compose-input" placeholder="Leave a little note..." maxlength="200"></textarea>
+        <div class="draw-controls" style="margin-top:10px;">
+          <div class="note-color-row" id="note-color-row"></div>
+        </div>
+        <button class="draw-btn" id="note-pin-btn" style="width:100%; margin-top:12px;">📌 Pin it to the board</button>
+      </div>
+
+      <div class="note-board" id="note-board"></div>
+    </div>
+  </div>
+
+  <!-- ============================ CONNECT FOUR (subpage) ============================ -->
+  <div class="view" id="view-c4">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Connect Four</div>
+          <div class="page-sub" style="margin-bottom:0;">drop discs, get four in a row, live</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label" id="c4-you-label">You are —</div>
+        <div class="ttt-scoreboard" id="c4-scoreboard"></div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="c4-board-wrap">
+          <div class="c4-cols" id="c4-cols"></div>
+          <div class="c4-board" id="c4-board"></div>
+        </div>
+        <div class="distance-cities" id="c4-status-text" style="margin-top:12px;">loading...</div>
+        <button class="draw-btn" id="c4-newgame-btn" style="width:100%; margin-top:12px;">New game</button>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -2627,7 +2723,9 @@ const CONFIG = {
     { id: "view-pixelart",  icon: "grid",        label: "Pixel Art",       sub: "a tiny shared canvas, one pixel at a time",         ready: true },
     { id: "view-wordchain", icon: "link",        label: "Word Chain",      sub: "each word starts with the last letter of the one before", ready: true },
     { id: "view-ttt",       icon: "grid3",       label: "Tic-Tac-Toe",     sub: "actual live turn-based game, keeps score forever",  ready: true },
-    { id: "view-moodring",  icon: "ring",        label: "Mood Ring",       sub: "just for fun, tap a color, get a silly reading",     ready: true }
+    { id: "view-moodring",  icon: "ring",        label: "Mood Ring",       sub: "just for fun, tap a color, get a silly reading",     ready: true },
+    { id: "view-notes",     icon: "pin",         label: "Sticky Notes",    sub: "quick handwritten-style notes on a little corkboard", ready: true },
+    { id: "view-c4",        icon: "grid",        label: "Connect Four",    sub: "the real one — drop discs, get four in a row, live",  ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -2903,7 +3001,8 @@ const SVG_ICONS = {
   grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>`,
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
   grid3: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M9.3 3.5v17M14.7 3.5v17M3.5 9.3h17M3.5 14.7h17"/></svg>`,
-  ring: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.5" r="6.5"/><circle cx="12" cy="14.5" r="2.8" fill="currentColor" stroke="none"/><path d="M9.5 8L12 3l2.5 5"/></svg>`
+  ring: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.5" r="6.5"/><circle cx="12" cy="14.5" r="2.8" fill="currentColor" stroke="none"/><path d="M9.5 8L12 3l2.5 5"/></svg>`,
+  pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5l6 6-3 3-1.5-1.5L12 15l1 5-3-1-3.5-3.5-4 4-1-1 4-4L2 11l5-1 4-4-1.5-1.5 3-3Z"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -7183,6 +7282,260 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-moodring') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- sticky notes (handwritten-style corkboard) ----------
+(function () {
+  const boardEl = document.getElementById('note-board');
+  if (!boardEl) return;
+  const textInput = document.getElementById('note-text-input');
+  const colorRow = document.getElementById('note-color-row');
+  const pinBtn = document.getElementById('note-pin-btn');
+  const sb = getSb();
+  let channel = null;
+  let notes = [];
+
+  const COLORS = ['#ffe08a', '#ffb6c9', '#a7d8ff', '#b8f2c9', '#d8c4ff'];
+  let currentColor = COLORS[0];
+
+  colorRow.innerHTML = COLORS.map((c, i) => `<button class="note-color-dot${i === 0 ? ' active' : ''}" data-c="${c}" style="background:${c};"></button>`).join('');
+  colorRow.querySelectorAll('.note-color-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      currentColor = dot.dataset.c;
+      colorRow.querySelectorAll('.note-color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+    });
+  });
+
+  function rotationFor(id) { return ((id * 37) % 7) - 3; } // stable per-note "handmade" tilt
+
+  function render() {
+    boardEl.innerHTML = '';
+    if (!notes.length) {
+      boardEl.innerHTML = '<div class="capsule-empty">the board is empty — leave the first note</div>';
+      return;
+    }
+    const mine = getSharedName();
+    notes.forEach(n => {
+      const el = document.createElement('div');
+      el.className = 'sticky-note';
+      el.style.background = n.color || COLORS[0];
+      el.style.transform = `rotate(${rotationFor(n.id)}deg)`;
+      const when = new Date(n.created_at);
+      el.innerHTML = `
+        <div class="sticky-note-text">${(n.text || '').replace(/</g, '&lt;')}</div>
+        <div class="sticky-note-meta">
+          <span>${(n.sender || 'someone').replace(/</g, '&lt;')} · ${when.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</span>
+          ${n.sender === mine ? '<button class="sticky-note-delete" data-id="' + n.id + '">remove</button>' : ''}
+        </div>`;
+      const delBtn = el.querySelector('.sticky-note-delete');
+      if (delBtn) delBtn.addEventListener('click', () => removeNote(n.id));
+      boardEl.appendChild(el);
+    });
+  }
+
+  async function removeNote(id) {
+    if (sb) { try { await sb.from('handwritten_notes').delete().eq('id', id); } catch (err) { console.warn('note delete failed:', err); } }
+    load();
+  }
+
+  pinBtn.addEventListener('click', async () => {
+    const text = (textInput.value || '').trim();
+    if (!text) return;
+    const sender = getSharedName() || 'someone';
+    pinBtn.disabled = true;
+    try {
+      if (sb) await sb.from('handwritten_notes').insert({ sender, text, color: currentColor });
+    } catch (err) { console.warn('note pin failed:', err); }
+    textInput.value = '';
+    pinBtn.disabled = false;
+    load();
+  });
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('handwritten_notes').select('*').order('created_at', { ascending: false }).limit(60);
+      if (!error && data) notes = data;
+    } catch (err) { console.warn('note load failed:', err); }
+    render();
+  }
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('handwritten_notes_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'handwritten_notes' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-notes') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- connect four (live, turn-based, real strategy) ----------
+(function () {
+  const boardEl = document.getElementById('c4-board');
+  if (!boardEl) return;
+  const colsEl = document.getElementById('c4-cols');
+  const youLabel = document.getElementById('c4-you-label');
+  const statusText = document.getElementById('c4-status-text');
+  const scoreboardEl = document.getElementById('c4-scoreboard');
+  const newGameBtn = document.getElementById('c4-newgame-btn');
+  const sb = getSb();
+  let game = null;
+
+  const ROWS = 6, COLS = 7;
+  const BLANK_BOARD = '-'.repeat(ROWS * COLS);
+  const idx = (r, c) => r * COLS + c;
+
+  function checkWinner(board) {
+    // horizontal, vertical, both diagonals — first match wins
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const v = board[idx(r, c)];
+        if (v === '-') continue;
+        const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
+        for (const [dr, dc] of dirs) {
+          const line = [idx(r, c)];
+          let ok = true;
+          for (let k = 1; k < 4; k++) {
+            const rr = r + dr * k, cc = c + dc * k;
+            if (rr < 0 || rr >= ROWS || cc < 0 || cc >= COLS || board[idx(rr, cc)] !== v) { ok = false; break; }
+            line.push(idx(rr, cc));
+          }
+          if (ok) return { symbol: v, line };
+        }
+      }
+    }
+    if (!board.includes('-')) return { symbol: 'tie', line: [] };
+    return null;
+  }
+
+  function lowestOpenRow(board, col) {
+    for (let r = ROWS - 1; r >= 0; r--) if (board[idx(r, col)] === '-') return r;
+    return -1;
+  }
+
+  // build board + column-drop buttons once
+  const cellEls = [];
+  for (let i = 0; i < ROWS * COLS; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'c4-cell';
+    boardEl.appendChild(cell);
+    cellEls.push(cell);
+  }
+  for (let c = 0; c < COLS; c++) {
+    const btn = document.createElement('button');
+    btn.className = 'c4-col-btn';
+    btn.textContent = '↓';
+    btn.addEventListener('click', () => drop(c));
+    colsEl.appendChild(btn);
+  }
+
+  function mySymbol() {
+    if (!game) return null;
+    const mine = getSharedName();
+    if (game.player_r === mine) return 'R';
+    if (game.player_y === mine) return 'Y';
+    if (!game.player_r) return 'R';
+    if (!game.player_y) return 'Y';
+    return null;
+  }
+
+  function render() {
+    if (!game) { statusText.textContent = 'loading...'; return; }
+    const board = game.board || BLANK_BOARD;
+    const result = checkWinner(board);
+    board.split('').forEach((v, i) => {
+      cellEls[i].className = 'c4-cell' + (v === 'R' ? ' r' : v === 'Y' ? ' y' : '') + (result && result.line.includes(i) ? ' win' : '');
+    });
+    const sym = mySymbol();
+    youLabel.textContent = sym ? `You are ${sym === 'R' ? '🔴 Red' : '🟡 Yellow'}` : 'watching (both seats taken)';
+
+    if (result) {
+      if (result.symbol === 'tie') statusText.textContent = "board's full — it's a tie!";
+      else {
+        const winnerName = result.symbol === 'R' ? (game.player_r || 'Red') : (game.player_y || 'Yellow');
+        statusText.textContent = `${winnerName} connects four! 🎉`;
+      }
+    } else {
+      const turnName = game.turn === 'R' ? (game.player_r || 'Red') : (game.player_y || 'Yellow');
+      statusText.textContent = sym === game.turn ? 'your turn — drop a disc' : `waiting on ${turnName}`;
+    }
+  }
+
+  async function drop(col) {
+    if (!game || !sb) return;
+    const board = game.board || BLANK_BOARD;
+    if (checkWinner(board)) return;
+    const sym = mySymbol();
+    if (!sym || sym !== game.turn) return;
+    const row = lowestOpenRow(board, col);
+    if (row < 0) return; // column full
+
+    const newBoard = board.slice(0, idx(row, col)) + sym + board.slice(idx(row, col) + 1);
+    const newResult = checkWinner(newBoard);
+    const updates = { board: newBoard, turn: sym === 'R' ? 'Y' : 'R', updated_at: new Date().toISOString() };
+    if (!game.player_r && sym === 'R') updates.player_r = getSharedName();
+    if (!game.player_y && sym === 'Y') updates.player_y = getSharedName();
+    if (newResult) {
+      updates.winner = newResult.symbol;
+      const winnerName = newResult.symbol === 'tie' ? 'Tie' : (newResult.symbol === 'R' ? (updates.player_r || game.player_r) : (updates.player_y || game.player_y));
+      try { await sb.from('connect4_results').insert({ winner_label: winnerName }); } catch (err) { console.warn('c4 result log failed:', err); }
+    }
+    try { await sb.from('connect4_state').update(updates).eq('id', game.id); } catch (err) { console.warn('c4 drop failed:', err); }
+    load();
+  }
+
+  newGameBtn.addEventListener('click', async () => {
+    if (!sb || !game) return;
+    try {
+      await sb.from('connect4_state').update({ board: BLANK_BOARD, turn: 'R', winner: null, updated_at: new Date().toISOString() }).eq('id', game.id);
+    } catch (err) { console.warn('c4 new game failed:', err); }
+    load();
+  });
+
+  async function loadScores() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('connect4_results').select('winner_label');
+      if (error || !data) return;
+      const tally = {};
+      data.forEach(r => { tally[r.winner_label] = (tally[r.winner_label] || 0) + 1; });
+      const names = Object.keys(tally);
+      scoreboardEl.innerHTML = names.length
+        ? names.map(name => `<div><b>${tally[name]}</b>${name.replace(/</g, '&lt;')}</div>`).join('')
+        : '<div style="opacity:.5;">no games finished yet</div>';
+    } catch (err) { console.warn('c4 score load failed:', err); }
+  }
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('connect4_state').select('*').order('id', { ascending: false }).limit(1);
+      if (!error && data && data.length) {
+        game = data[0];
+      } else {
+        const { data: created, error: cErr } = await sb.from('connect4_state').insert({}).select().single();
+        if (!cErr) game = created;
+      }
+    } catch (err) { console.warn('c4 load failed:', err); }
+    render();
+    loadScores();
+  }
+
+  function subscribe() {
+    if (!sb) return;
+    sb.channel('connect4_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'connect4_state' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'connect4_results' }, () => loadScores())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-c4') load(); });
   load();
   subscribe();
 })();
