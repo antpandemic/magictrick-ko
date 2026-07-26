@@ -199,7 +199,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -460,6 +460,45 @@
     background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
     border-radius:14px; padding:10px 14px; margin-bottom:8px; font-size:12.5px; color:rgba(255,255,255,0.7);
   }
+
+  /* ---- pixel art ---- */
+  .pixel-grid {
+    display:grid; grid-template-columns:repeat(16, 1fr); gap:1px;
+    background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2);
+    border-radius:8px; overflow:hidden; aspect-ratio:1/1;
+  }
+  .pixel-cell { background:#fffaf7; aspect-ratio:1/1; }
+
+  /* ---- word chain ---- */
+  .wc-chain { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .wc-word {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15px;
+    background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12);
+    border-radius:12px; padding:6px 12px; color:#fff;
+  }
+  .wc-word .wc-word-by { font-size:9px; font-family:'Quicksand', sans-serif; font-style:normal; color:rgba(255,255,255,0.4); display:block; }
+  .wc-error { min-height:16px; font-size:12px; color:#ff9b9b; margin-top:8px; text-align:center; }
+
+  /* ---- tic-tac-toe ---- */
+  .ttt-scoreboard { display:flex; gap:18px; justify-content:center; margin-top:8px; font-family:'Quicksand', sans-serif; font-size:12.5px; color:rgba(255,255,255,0.7); }
+  .ttt-scoreboard b { color:#fff; font-size:16px; display:block; }
+  .ttt-board { display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:220px; margin:0 auto; }
+  .ttt-cell {
+    aspect-ratio:1/1; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+    border-radius:12px; font-family:'Playfair Display', serif; font-size:34px; color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .ttt-cell:active { background:rgba(255,255,255,0.12); }
+  .ttt-cell.win { background:rgba(var(--accent-rgb), 0.3); border-color:rgba(var(--accent-rgb), 0.6); }
+
+  /* ---- mood ring ---- */
+  .mood-ring-stone { font-size:70px; text-align:center; filter:drop-shadow(0 6px 14px rgba(0,0,0,0.3)); transition:transform .2s ease; }
+  .mood-ring-stone.spin { animation:moodRingSpin .5s ease; }
+  @keyframes moodRingSpin { 0%{ transform:scale(1) rotate(0deg); } 50%{ transform:scale(1.15) rotate(10deg); } 100%{ transform:scale(1) rotate(0deg); } }
+  .mood-ring-colors { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-top:16px; }
+  .mood-ring-dot { width:34px; height:34px; border-radius:50%; border:2px solid rgba(255,255,255,0.2); }
+  .mood-ring-dot:active { transform:scale(0.9); }
+  .mood-ring-reading { margin-top:16px; text-align:center; font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px; color:rgba(255,255,255,0.85); min-height:40px; }
 
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -2127,6 +2166,115 @@
     </div>
   </div>
 
+  <!-- ============================ PIXEL ART (subpage) ============================ -->
+  <div class="view" id="view-pixelart">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Pixel Art</div>
+          <div class="page-sub" style="margin-bottom:0;">a tiny shared canvas, one pixel at a time</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="pixel-grid" id="pixel-grid"></div>
+        <div class="draw-controls" style="margin-top:14px;">
+          <div class="draw-colors" id="pixel-colors"></div>
+        </div>
+        <div class="draw-controls" style="margin-top:10px;">
+          <button class="draw-tool-btn" id="pixel-eraser">🧹 Eraser</button>
+          <button class="draw-tool-btn" id="pixel-save">⬇ Save</button>
+          <button class="draw-btn" id="pixel-clear">Clear grid</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ WORD CHAIN (subpage) ============================ -->
+  <div class="view" id="view-wordchain">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Word Chain</div>
+          <div class="page-sub" style="margin-bottom:0;">each word starts with the last letter of the one before</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label">Current chain</div>
+        <div class="distance-figure" id="wc-length-figure">0</div>
+        <div class="distance-cities" id="wc-best-text"></div>
+      </div>
+
+      <div class="wc-chain" id="wc-chain-list"></div>
+
+      <div class="surprise-card" id="wc-add-card" style="margin-top:14px;">
+        <input type="text" id="wc-word-input" class="map-edit-input" placeholder="Type your word..." maxlength="30" />
+        <div class="wc-error" id="wc-error"></div>
+        <button class="draw-btn" id="wc-add-btn" style="width:100%; margin-top:10px;">Add word</button>
+        <button class="draw-tool-btn" id="wc-reset-btn" style="width:100%; margin-top:10px;">Reset chain</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ TIC-TAC-TOE (subpage) ============================ -->
+  <div class="view" id="view-ttt">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Tic-Tac-Toe</div>
+          <div class="page-sub" style="margin-bottom:0;">actual live turn-based game, keeps score forever</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label" id="ttt-you-label">You are —</div>
+        <div class="ttt-scoreboard" id="ttt-scoreboard"></div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="ttt-board" id="ttt-board"></div>
+        <div class="distance-cities" id="ttt-status-text" style="margin-top:12px;">loading...</div>
+        <button class="draw-btn" id="ttt-newgame-btn" style="width:100%; margin-top:12px;">New game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ MOOD RING (subpage) ============================ -->
+  <div class="view" id="view-moodring">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Mood Ring</div>
+          <div class="page-sub" style="margin-bottom:0;">just for fun — tap a color, get a silly reading</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="mood-ring-stone" id="mood-ring-stone">💍</div>
+        <div class="mood-ring-colors" id="mood-ring-colors"></div>
+        <div class="mood-ring-reading" id="mood-ring-reading">tap a color to see your "mood"</div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label" id="mood-ring-partner-label">Their ring, right now</div>
+        <div class="currently-partner-text" id="mood-ring-partner-text">—</div>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -2475,7 +2623,11 @@ const CONFIG = {
     { id: "view-duel",      icon: "trophy",      label: "Playlist Duel",   sub: "one pick each, rate each other's, weekly",          ready: true },
     { id: "view-card",      icon: "card",        label: "Anniversary Card",sub: "build a little card, save it as an image",          ready: true },
     { id: "view-thisorthat",icon: "dice",        label: "This or That",    sub: "same prompt, both answer, see if you match",        ready: true },
-    { id: "view-plant",     icon: "seedling",    label: "Our Plant",       sub: "grows a little every day you both check in",        ready: true }
+    { id: "view-plant",     icon: "seedling",    label: "Our Plant",       sub: "grows a little every day you both check in",        ready: true },
+    { id: "view-pixelart",  icon: "grid",        label: "Pixel Art",       sub: "a tiny shared canvas, one pixel at a time",         ready: true },
+    { id: "view-wordchain", icon: "link",        label: "Word Chain",      sub: "each word starts with the last letter of the one before", ready: true },
+    { id: "view-ttt",       icon: "grid3",       label: "Tic-Tac-Toe",     sub: "actual live turn-based game, keeps score forever",  ready: true },
+    { id: "view-moodring",  icon: "ring",        label: "Mood Ring",       sub: "just for fun, tap a color, get a silly reading",     ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -2637,7 +2789,7 @@ const CONFIG = {
   // reference it by filename. Leave src empty to hide the toggle.
   // --------------------------------------------------------------------
   bgMusic: {
-    src: "music/song.mp3" // e.g. "music/our-song.mp3"
+    src: "music/our-song.mp3" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -2747,7 +2899,11 @@ const SVG_ICONS = {
   trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h10v5.5a5 5 0 0 1-10 0V4.5Z"/><path d="M7 6H4.5A2.5 2.5 0 0 0 4.5 11H7M17 6h2.5A2.5 2.5 0 0 1 19.5 11H17"/><path d="M12 15v3.5M9 20.5h6"/></svg>`,
   card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="M3 9.5h18"/><path d="M12 13.6s-2.4-1.5-2.4-3.1a1.5 1.5 0 0 1 2.4-1.2 1.5 1.5 0 0 1 2.4 1.2c0 1.6-2.4 3.1-2.4 3.1Z" fill="currentColor" stroke="none"/></svg>`,
   dice: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.3" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>`,
-  seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`
+  seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`,
+  grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>`,
+  link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
+  grid3: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M9.3 3.5v17M14.7 3.5v17M3.5 9.3h17M3.5 14.7h17"/></svg>`,
+  ring: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.5" r="6.5"/><circle cx="12" cy="14.5" r="2.8" fill="currentColor" stroke="none"/><path d="M9.5 8L12 3l2.5 5"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -6647,6 +6803,386 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-plant') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- pixel art (shared 16x16 grid) ----------
+(function () {
+  const gridEl = document.getElementById('pixel-grid');
+  if (!gridEl) return;
+  const colorsEl = document.getElementById('pixel-colors');
+  const eraserBtn = document.getElementById('pixel-eraser');
+  const saveBtn = document.getElementById('pixel-save');
+  const clearBtn = document.getElementById('pixel-clear');
+  const sb = getSb();
+  const GRID = 16;
+  const PAPER = '#fffaf7';
+  const palette = ['#2c1a22', '#ff4d6d', '#ff9fb3', '#ffd166', '#5aa9e6', '#6fcf97', '#a78bfa', '#ffffff'];
+  let currentColor = palette[0];
+  let eraserOn = false;
+  const cells = [];
+  let channel = null;
+
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'pixel-cell';
+      cell.dataset.x = x; cell.dataset.y = y;
+      cell.addEventListener('click', () => paint(x, y));
+      gridEl.appendChild(cell);
+      cells.push(cell);
+    }
+  }
+  function cellAt(x, y) { return cells[y * GRID + x]; }
+
+  palette.forEach((c, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'draw-color' + (i === 0 ? ' active' : '');
+    dot.style.background = c;
+    dot.addEventListener('click', () => {
+      currentColor = c;
+      eraserOn = false;
+      eraserBtn.classList.remove('active');
+      colorsEl.querySelectorAll('.draw-color').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+    });
+    colorsEl.appendChild(dot);
+  });
+  eraserBtn.addEventListener('click', () => {
+    eraserOn = !eraserOn;
+    eraserBtn.classList.toggle('active', eraserOn);
+  });
+
+  async function paint(x, y) {
+    const color = eraserOn ? PAPER : currentColor;
+    cellAt(x, y).style.background = color;
+    if (sb) {
+      try { await sb.from('pixel_art_cells').upsert({ x, y, color, updated_by: getSharedName() || null }, { onConflict: 'x,y' }); } catch (err) { console.warn('pixel paint failed:', err); }
+    }
+  }
+
+  async function load() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('pixel_art_cells').select('*');
+      if (error || !data) return;
+      cells.forEach(c => { c.style.background = PAPER; });
+      data.forEach(row => { const c = cellAt(row.x, row.y); if (c) c.style.background = row.color; });
+    } catch (err) { console.warn('pixel load failed:', err); }
+  }
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('pixel_art_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pixel_art_cells' }, (payload) => {
+        if (payload.eventType === 'DELETE') { load(); return; }
+        const row = payload.new;
+        const c = cellAt(row.x, row.y);
+        if (c) c.style.background = row.color;
+      })
+      .subscribe();
+  }
+
+  saveBtn.addEventListener('click', () => {
+    const SCALE = 20;
+    const temp = document.createElement('canvas');
+    temp.width = GRID * SCALE; temp.height = GRID * SCALE;
+    const tctx = temp.getContext('2d');
+    cells.forEach(c => {
+      tctx.fillStyle = c.style.background || PAPER;
+      tctx.fillRect(parseInt(c.dataset.x, 10) * SCALE, parseInt(c.dataset.y, 10) * SCALE, SCALE, SCALE);
+    });
+    const link = document.createElement('a');
+    link.download = 'our-pixel-art.png';
+    link.href = temp.toDataURL('image/png');
+    link.click();
+  });
+
+  clearBtn.addEventListener('click', async () => {
+    cells.forEach(c => { c.style.background = PAPER; });
+    if (sb) { try { await sb.from('pixel_art_cells').delete().neq('x', -1); } catch (err) { console.warn('pixel clear failed:', err); } }
+  });
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-pixelart') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- word chain ----------
+(function () {
+  const lengthFigure = document.getElementById('wc-length-figure');
+  if (!lengthFigure) return;
+  const bestText = document.getElementById('wc-best-text');
+  const chainListEl = document.getElementById('wc-chain-list');
+  const wordInput = document.getElementById('wc-word-input');
+  const errorEl = document.getElementById('wc-error');
+  const addBtn = document.getElementById('wc-add-btn');
+  const resetBtn = document.getElementById('wc-reset-btn');
+  const sb = getSb();
+  let chain = [];
+  let bestLength = 0;
+
+  function render() {
+    lengthFigure.textContent = chain.length;
+    chainListEl.innerHTML = chain.map(w => `<div class="wc-word">${(w.word || '').replace(/</g, '&lt;')}<span class="wc-word-by">${(w.sender || '').replace(/</g, '&lt;')}</span></div>`).join('');
+    bestText.textContent = bestLength ? `your record: ${bestLength} words` : '';
+  }
+
+  addBtn.addEventListener('click', async () => {
+    const raw = (wordInput.value || '').trim();
+    errorEl.textContent = '';
+    if (!raw || /\s/.test(raw)) { errorEl.textContent = 'one word only, please'; return; }
+    const word = raw.toLowerCase();
+    if (chain.length) {
+      const lastWord = chain[chain.length - 1].word.toLowerCase();
+      const lastLetter = lastWord[lastWord.length - 1];
+      if (word[0] !== lastLetter) { errorEl.textContent = `needs to start with "${lastLetter.toUpperCase()}"`; return; }
+    }
+    if (chain.some(w => w.word.toLowerCase() === word)) { errorEl.textContent = 'already used that word in this chain'; return; }
+    const sender = getSharedName() || 'someone';
+    addBtn.disabled = true;
+    try {
+      if (sb) await sb.from('word_chain_entries').insert({ sender, word: raw });
+    } catch (err) { console.warn('word chain add failed:', err); }
+    wordInput.value = '';
+    addBtn.disabled = false;
+    load();
+  });
+
+  resetBtn.addEventListener('click', async () => {
+    if (sb) {
+      try {
+        if (chain.length) await sb.from('word_chain_records').insert({ length: chain.length });
+        await sb.from('word_chain_entries').delete().neq('id', -1);
+      } catch (err) { console.warn('word chain reset failed:', err); }
+    }
+    load();
+  });
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('word_chain_entries').select('*').order('id', { ascending: true });
+      if (!error && data) chain = data;
+      const { data: recData } = await sb.from('word_chain_records').select('length').order('length', { ascending: false }).limit(1);
+      bestLength = (recData && recData[0]) ? recData[0].length : 0;
+    } catch (err) { console.warn('word chain load failed:', err); }
+    render();
+  }
+
+  function subscribe() {
+    const sbLocal = sb;
+    if (!sbLocal) return;
+    sbLocal.channel('word_chain_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'word_chain_entries' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-wordchain') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- tic-tac-toe (live, turn-based, keeps score forever) ----------
+(function () {
+  const boardEl = document.getElementById('ttt-board');
+  if (!boardEl) return;
+  const youLabel = document.getElementById('ttt-you-label');
+  const statusText = document.getElementById('ttt-status-text');
+  const scoreboardEl = document.getElementById('ttt-scoreboard');
+  const newGameBtn = document.getElementById('ttt-newgame-btn');
+  const sb = getSb();
+  let game = null;
+
+  const WIN_LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  function checkWinner(board) {
+    for (const line of WIN_LINES) {
+      const [a, b, c] = line;
+      if (board[a] !== '-' && board[a] === board[b] && board[b] === board[c]) return { symbol: board[a], line };
+    }
+    if (!board.includes('-')) return { symbol: 'tie', line: [] };
+    return null;
+  }
+
+  const cellEls = [];
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement('button');
+    cell.className = 'ttt-cell';
+    cell.addEventListener('click', () => move(i));
+    boardEl.appendChild(cell);
+    cellEls.push(cell);
+  }
+
+  function mySymbol() {
+    if (!game) return null;
+    const mine = getSharedName();
+    if (game.player_x === mine) return 'X';
+    if (game.player_o === mine) return 'O';
+    if (!game.player_x) return 'X'; // claimed the moment they actually move
+    if (!game.player_o) return 'O';
+    return null;
+  }
+
+  function render() {
+    if (!game) { statusText.textContent = 'loading...'; return; }
+    const board = game.board || '---------';
+    const result = checkWinner(board);
+    board.split('').forEach((v, i) => {
+      cellEls[i].textContent = v === '-' ? '' : v;
+      cellEls[i].classList.toggle('win', !!(result && result.line.includes(i)));
+    });
+    const sym = mySymbol();
+    youLabel.textContent = sym ? `You are ${sym}` : 'watching (both seats taken)';
+
+    if (result) {
+      if (result.symbol === 'tie') statusText.textContent = "it's a tie!";
+      else {
+        const winnerName = result.symbol === 'X' ? (game.player_x || 'X') : (game.player_o || 'O');
+        statusText.textContent = `${winnerName} wins! 🎉`;
+      }
+    } else {
+      const turnName = game.turn === 'X' ? (game.player_x || 'X') : (game.player_o || 'O');
+      statusText.textContent = sym === game.turn ? 'your turn' : `waiting on ${turnName}`;
+    }
+  }
+
+  async function move(i) {
+    if (!game || !sb) return;
+    const board = game.board || '---------';
+    if (board[i] !== '-' || checkWinner(board)) return;
+    const sym = mySymbol();
+    if (!sym || sym !== game.turn) return;
+
+    const newBoard = board.slice(0, i) + sym + board.slice(i + 1);
+    const newResult = checkWinner(newBoard);
+    const updates = { board: newBoard, turn: sym === 'X' ? 'O' : 'X', updated_at: new Date().toISOString() };
+    if (!game.player_x && sym === 'X') updates.player_x = getSharedName();
+    if (!game.player_o && sym === 'O') updates.player_o = getSharedName();
+    if (newResult) {
+      updates.winner = newResult.symbol;
+      const winnerName = newResult.symbol === 'tie' ? 'Tie' : (newResult.symbol === 'X' ? (updates.player_x || game.player_x) : (updates.player_o || game.player_o));
+      try { await sb.from('tictactoe_results').insert({ winner_label: winnerName }); } catch (err) { console.warn('ttt result log failed:', err); }
+    }
+    try { await sb.from('tictactoe_state').update(updates).eq('id', game.id); } catch (err) { console.warn('ttt move failed:', err); }
+    load();
+  }
+
+  newGameBtn.addEventListener('click', async () => {
+    if (!sb || !game) return;
+    try {
+      await sb.from('tictactoe_state').update({ board: '---------', turn: 'X', winner: null, updated_at: new Date().toISOString() }).eq('id', game.id);
+    } catch (err) { console.warn('ttt new game failed:', err); }
+    load();
+  });
+
+  async function loadScores() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('tictactoe_results').select('winner_label');
+      if (error || !data) return;
+      const tally = {};
+      data.forEach(r => { tally[r.winner_label] = (tally[r.winner_label] || 0) + 1; });
+      const names = Object.keys(tally);
+      scoreboardEl.innerHTML = names.length
+        ? names.map(name => `<div><b>${tally[name]}</b>${name.replace(/</g, '&lt;')}</div>`).join('')
+        : '<div style="opacity:.5;">no games finished yet</div>';
+    } catch (err) { console.warn('ttt score load failed:', err); }
+  }
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('tictactoe_state').select('*').order('id', { ascending: false }).limit(1);
+      if (!error && data && data.length) {
+        game = data[0];
+      } else {
+        const { data: created, error: cErr } = await sb.from('tictactoe_state').insert({}).select().single();
+        if (!cErr) game = created;
+      }
+    } catch (err) { console.warn('ttt load failed:', err); }
+    render();
+    loadScores();
+  }
+
+  function subscribe() {
+    if (!sb) return;
+    sb.channel('tictactoe_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tictactoe_state' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tictactoe_results' }, () => loadScores())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-ttt') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- mood ring (just for fun, no real diagnostic weight) ----------
+(function () {
+  const stoneEl = document.getElementById('mood-ring-stone');
+  if (!stoneEl) return;
+  const colorsEl = document.getElementById('mood-ring-colors');
+  const readingEl = document.getElementById('mood-ring-reading');
+  const partnerLabel = document.getElementById('mood-ring-partner-label');
+  const partnerText = document.getElementById('mood-ring-partner-text');
+  const sb = getSb();
+
+  const COLORS = [
+    { hex: '#8B5CF6', readings: ["you're feeling mysterious and a little magical today", 'big main-character energy detected', "possibly thinking about snacks, possibly thinking about destiny"] },
+    { hex: '#3B82F6', readings: ['calm waters, deep thoughts', "you could use a nap, and that's valid", 'quietly plotting something wholesome'] },
+    { hex: '#10B981', readings: ['growth era, apparently', "you'd probably enjoy a walk outside right now", 'surprisingly balanced for a random Tuesday'] },
+    { hex: '#F59E0B', readings: ['warm, a little chaotic, deeply loved', 'craving something sweet, and not just emotionally', "main character in your own rom-com today"] },
+    { hex: '#EF4444', readings: ['passionate, possibly hangry', 'big feelings incoming, brace yourself', "either very in love or very tired, no in-between"] },
+    { hex: '#EC4899', readings: ['soft-launching a good mood', 'thinking about your person more than usual', 'certified simp behavior detected'] },
+    { hex: '#111827', readings: ['mysterious. the ring is a little scared of you', 'villain era, but the fun kind', 'the ring refuses to elaborate'] }
+  ];
+
+  colorsEl.innerHTML = COLORS.map(c => `<button class="mood-ring-dot" data-hex="${c.hex}" style="background:${c.hex};"></button>`).join('');
+  colorsEl.querySelectorAll('.mood-ring-dot').forEach(dot => {
+    dot.addEventListener('click', () => spin(dot.dataset.hex));
+  });
+
+  async function spin(hex) {
+    const c = COLORS.find(x => x.hex === hex);
+    const reading = c.readings[Math.floor(Math.random() * c.readings.length)];
+    stoneEl.style.filter = `drop-shadow(0 6px 14px ${hex}88)`;
+    stoneEl.classList.remove('spin');
+    void stoneEl.offsetWidth; // restart the CSS animation
+    stoneEl.classList.add('spin');
+    readingEl.textContent = `"${reading}"`;
+    const sender = getSharedName();
+    if (sb && sender) {
+      try { await sb.from('mood_ring_spins').upsert({ sender, color: hex, reading, updated_at: new Date().toISOString() }, { onConflict: 'sender' }); } catch (err) { console.warn('mood ring save failed:', err); }
+    }
+  }
+
+  function showPartnerRow(row) {
+    const mine = getSharedName();
+    if (!row || row.sender === mine) return;
+    partnerLabel.textContent = `${row.sender}'s ring, right now`;
+    partnerText.textContent = `"${row.reading}"`;
+  }
+
+  async function load() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('mood_ring_spins').select('*');
+      if (error || !data) return;
+      const mine = getSharedName();
+      const partnerRow = data.find(r => r.sender !== mine);
+      if (partnerRow) showPartnerRow(partnerRow); else partnerText.textContent = "hasn't spun the ring yet";
+    } catch (err) { console.warn('mood ring load failed:', err); }
+  }
+
+  function subscribe() {
+    if (!sb) return;
+    sb.channel('mood_ring_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'mood_ring_spins' }, (payload) => { if (payload.new) showPartnerRow(payload.new); })
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-moodring') load(); });
   load();
   subscribe();
 })();
