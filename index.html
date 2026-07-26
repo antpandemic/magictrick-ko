@@ -199,7 +199,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -408,6 +408,59 @@
   }
   .mood-partner.show { opacity:1; }
 
+  /* ---- love languages ---- */
+  .lovelang-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; }
+  .lovelang-btn {
+    display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px; padding:12px 6px; font-size:20px;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .lovelang-btn span {
+    font-family:'Quicksand', sans-serif; font-size:10.5px; font-weight:600;
+    color:rgba(255,255,255,0.65); letter-spacing:.02em;
+  }
+  .lovelang-btn:active { transform:scale(0.95); }
+  .lovelang-btn.active { background:rgba(var(--accent-rgb), 0.22); border-color:rgba(var(--accent-rgb), 0.4); }
+
+  /* ---- playlist duel ---- */
+  .duel-entry { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:16px; margin-bottom:14px; }
+  .duel-entry-top { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
+  .duel-entry-sender { font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px; color:rgba(255,255,255,0.85); }
+  .duel-entry-score { font-family:'Playfair Display', serif; font-style:italic; font-size:15px; color:var(--accent-light); }
+  .duel-stars { display:flex; gap:6px; justify-content:center; margin-top:10px; }
+  .duel-star { font-size:22px; opacity:.35; transition:opacity .15s ease, transform .15s ease; }
+  .duel-star.filled { opacity:1; }
+  .duel-star:active { transform:scale(0.85); }
+  .duel-winner-badge {
+    display:inline-block; margin-top:6px; font-size:11px; font-weight:700;
+    background:rgba(var(--accent-rgb), 0.25); color:#ffd9a0; border-radius:10px; padding:3px 9px;
+  }
+
+  /* ---- anniversary card builder ---- */
+  .card-style-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .card-style-swatch {
+    width:38px; height:38px; border-radius:50%; border:2px solid rgba(255,255,255,0.15);
+    transition:transform .15s ease, border-color .15s ease;
+  }
+  .card-style-swatch.active { border-color:#fff; transform:scale(1.1); }
+
+  /* ---- this or that ---- */
+  .tot-options { display:flex; gap:10px; margin-top:6px; }
+  .tot-option-btn {
+    flex:1; background:rgba(255,255,255,0.07); border:1.5px solid rgba(255,255,255,0.15);
+    border-radius:16px; padding:18px 10px; text-align:center;
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:16.5px; color:#fff;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .tot-option-btn:active { transform:scale(0.96); }
+  .tot-option-btn.chosen { background:rgba(var(--accent-rgb), 0.28); border-color:rgba(var(--accent-rgb), 0.6); }
+  .tot-reveal { margin-top:14px; text-align:center; font-size:13.5px; color:rgba(255,255,255,0.75); min-height:18px; }
+  .tot-history-item {
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px; padding:10px 14px; margin-bottom:8px; font-size:12.5px; color:rgba(255,255,255,0.7);
+  }
+
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   .hub-card {
@@ -511,6 +564,8 @@
   /* ---- distance ---- */
   .distance-figure { font-family:'Playfair Display', serif; font-style:italic; font-size:38px; color:#fff; margin:6px 0; }
   .distance-cities { font-size:12.5px; color:rgba(255,255,255,0.55); }
+  .distance-closer-track { width:100%; height:14px; border-radius:8px; background:rgba(255,255,255,0.1); overflow:hidden; }
+  .distance-closer-fill { height:100%; width:0%; border-radius:8px; background:linear-gradient(90deg, var(--accent), var(--accent-light)); transition:width .6s ease; }
   .nowplaying-partner { font-size:14px; color:rgba(255,255,255,0.85); font-family:'Cormorant Garamond', serif; font-style:italic; }
 
   /* ---- song of the day ---- */
@@ -753,6 +808,39 @@
     background:#fffaf7; border:1px solid rgba(255,255,255,0.15);
   }
   .draw-canvas-wrap canvas { width:100%; height:100%; display:block; touch-action:none; cursor:crosshair; }
+  #draw-canvas-overlay { position:absolute; top:0; left:0; pointer-events:none; }
+  .draw-cursor {
+    position:absolute; top:0; left:0; pointer-events:none;
+    transform:translate(-50%, -50%); transition:left .06s linear, top .06s linear;
+    display:flex; flex-direction:column; align-items:center; gap:2px; z-index:5;
+  }
+  .draw-cursor-dot { width:14px; height:14px; border-radius:50%; background:var(--accent); border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.35); }
+  .draw-cursor-label {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:10px; color:#fff;
+    background:rgba(0,0,0,0.55); padding:2px 6px; border-radius:8px; white-space:nowrap;
+  }
+  .draw-tools { display:flex; gap:6px; flex-wrap:wrap; }
+  .draw-tool-select-btn {
+    font-size:16px; width:36px; height:36px; border-radius:10px;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .draw-tool-select-btn.active { background:rgba(var(--accent-rgb), 0.28); border-color:rgba(var(--accent-rgb), 0.6); }
+  .draw-gallery-label { font-size:11.5px; color:rgba(255,255,255,0.5); margin-top:18px; margin-bottom:8px; font-family:'Quicksand', sans-serif; font-weight:600; }
+  .draw-gallery { display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; }
+  .draw-gallery img {
+    width:74px; height:56px; object-fit:cover; border-radius:10px; border:1px solid rgba(255,255,255,0.15);
+    flex-shrink:0; cursor:pointer;
+  }
+  .draw-lightbox {
+    position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .draw-lightbox img { max-width:100%; max-height:100%; border-radius:12px; }
+  .draw-lightbox-close {
+    position:absolute; top:20px; right:20px; width:38px; height:38px; border-radius:50%;
+    background:rgba(255,255,255,0.15); color:#fff; font-size:18px;
+  }
   .draw-canvas-static {
     background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center;
   }
@@ -762,8 +850,21 @@
     color:rgba(255,255,255,0.55);
   }
   .draw-canvas-static img { width:100%; height:100%; object-fit:contain; }
-  .draw-controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+  .draw-controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; flex-wrap:wrap; gap:8px; }
   .draw-colors { display:flex; gap:10px; }
+  .draw-sizes { display:flex; gap:8px; align-items:center; }
+  .draw-size-btn {
+    border-radius:50%; background:rgba(255,255,255,0.15); border:2px solid transparent;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .draw-size-btn span { display:block; border-radius:50%; background:#2c1a22; }
+  .draw-size-btn.active { border-color:var(--accent); }
+  .draw-tool-btn {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:12px;
+    background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+    color:rgba(255,255,255,0.85); border-radius:12px; padding:8px 12px;
+  }
+  .draw-tool-btn.active { background:rgba(var(--accent-rgb), 0.28); border-color:rgba(var(--accent-rgb), 0.6); }
   .draw-color {
     width:30px; height:30px; border-radius:50%;
     border:2px solid rgba(255,255,255,0.3); transition:transform .12s ease;
@@ -1389,13 +1490,31 @@
         </div>
         <div class="draw-canvas-wrap">
           <canvas id="draw-canvas-hers"></canvas>
+          <canvas id="draw-canvas-overlay"></canvas>
+          <div class="draw-cursor" id="draw-partner-cursor" style="display:none;"><span class="draw-cursor-dot"></span><span class="draw-cursor-label"></span></div>
         </div>
         <div class="draw-controls">
+          <div class="draw-tools" id="draw-tools"></div>
+        </div>
+        <div class="draw-controls" style="margin-top:8px;">
           <div class="draw-colors" id="draw-colors"></div>
+          <div class="draw-sizes" id="draw-sizes"></div>
+        </div>
+        <div class="draw-controls" style="margin-top:8px;">
+          <button class="draw-tool-btn" id="draw-undo">↩ Undo</button>
+          <button class="draw-tool-btn" id="draw-redo">↪ Redo</button>
+          <button class="draw-tool-btn" id="draw-save">⬇ Save</button>
           <button class="draw-btn" id="draw-clear">Clear for both</button>
         </div>
+        <div class="draw-gallery-label" id="draw-gallery-label" style="display:none;">Past doodles (saved automatically before each clear)</div>
+        <div class="draw-gallery" id="draw-gallery"></div>
       </div>
     </div>
+  </div>
+
+  <div class="draw-lightbox" id="draw-lightbox" style="display:none;">
+    <img id="draw-lightbox-img" src="" alt="past doodle" />
+    <button class="draw-lightbox-close" id="draw-lightbox-close">✕</button>
   </div>
 
   <!-- ============================ MAP OF US ============================ -->
@@ -1708,6 +1827,13 @@
         <div class="capsule-hint" id="distance-locate-status"></div>
       </div>
 
+      <div class="surprise-card" id="distance-closer-card" style="display:none;">
+        <div class="surprise-label">Getting closer</div>
+        <div class="distance-closer-track"><div class="distance-closer-fill" id="distance-closer-fill"></div></div>
+        <div class="distance-cities" id="distance-closer-pct" style="margin-top:8px; text-align:center;"></div>
+        <button class="draw-btn" id="distance-closer-reset-btn" style="width:100%; margin-top:12px;">Reset (start tracking from here)</button>
+      </div>
+
       <div class="surprise-card surprise-card-center" id="distance-countdown-card" style="display:none;">
         <div class="surprise-label">Until we're in the same place</div>
         <div class="distance-figure" id="distance-countdown">—</div>
@@ -1862,6 +1988,141 @@
         <input type="text" id="movienight-title-input" class="map-edit-input" style="margin-top:10px;" placeholder="What are you watching?" maxlength="80" />
         <input type="datetime-local" id="movienight-time-input" class="map-edit-input" style="margin-top:10px;" />
         <button class="draw-btn" id="movienight-plan-btn" style="width:100%; margin-top:12px;">Set movie night</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ LOVE LANGUAGES (subpage) ============================ -->
+  <div class="view" id="view-lovelang">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Love Languages</div>
+          <div class="page-sub" style="margin-bottom:0;">what would make you feel loved this week</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="surprise-label">Right now, I'd feel most loved by...</div>
+        <div class="lovelang-grid" id="lovelang-grid"></div>
+        <input type="text" id="lovelang-note-input" class="map-edit-input" style="margin-top:12px;" placeholder="optional: a specific example" maxlength="100" />
+        <button class="draw-btn" id="lovelang-save-btn" style="width:100%; margin-top:12px;">Save</button>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label" id="lovelang-partner-label">Them, this week</div>
+        <div class="currently-partner-text" id="lovelang-partner-text">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ PLAYLIST DUEL (subpage) ============================ -->
+  <div class="view" id="view-duel">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Playlist Duel</div>
+          <div class="page-sub" style="margin-bottom:0;">one pick each this week — rate each other's, see who wins</div>
+        </div>
+      </div>
+
+      <div class="surprise-card" id="duel-my-entry-card">
+        <div class="surprise-label">Your pick this week</div>
+        <input type="text" id="duel-my-title" class="map-edit-input" placeholder="Song / artist" />
+        <input type="text" id="duel-my-url" class="map-edit-input" style="margin-top:10px;" placeholder="YouTube / Spotify / Apple Music link" />
+        <button class="draw-btn" id="duel-my-save-btn" style="width:100%; margin-top:12px;">Submit this week's pick</button>
+      </div>
+
+      <div id="duel-entries"></div>
+    </div>
+  </div>
+
+  <!-- ============================ ANNIVERSARY CARD BUILDER (subpage) ============================ -->
+  <div class="view" id="view-card">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Anniversary Card</div>
+          <div class="page-sub" style="margin-bottom:0;">build a little card, save it as an image</div>
+        </div>
+      </div>
+
+      <div class="surprise-card">
+        <div class="surprise-label">Style</div>
+        <div class="card-style-row" id="card-style-row"></div>
+        <input type="text" id="card-title-input" class="map-edit-input" style="margin-top:12px;" placeholder="Title (e.g. Happy 2 Years)" maxlength="40" />
+        <textarea id="card-message-input" class="map-edit-input" style="margin-top:10px; min-height:90px; resize:vertical; font-family:'Cormorant Garamond', serif; font-style:italic;" placeholder="Write your message..." maxlength="280"></textarea>
+        <input type="text" id="card-signature-input" class="map-edit-input" style="margin-top:10px;" placeholder="Signature (e.g. yours always, Z)" maxlength="40" />
+        <button class="draw-btn" id="card-download-btn" style="width:100%; margin-top:12px;">Download card</button>
+      </div>
+
+      <canvas id="card-canvas" width="800" height="1000" style="width:100%; max-width:340px; display:block; margin:0 auto; border-radius:16px; box-shadow:0 12px 30px rgba(0,0,0,0.3);"></canvas>
+    </div>
+  </div>
+
+  <!-- ============================ THIS OR THAT (subpage) ============================ -->
+  <div class="view" id="view-thisorthat">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">This or That</div>
+          <div class="page-sub" style="margin-bottom:0;">same prompt, both answer, see if you match</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label" id="tot-prompt-label">Loading today's prompt...</div>
+        <div class="tot-options" id="tot-options"></div>
+        <div class="tot-reveal" id="tot-reveal"></div>
+      </div>
+
+      <div class="page-sub" style="margin:22px 0 10px;">Streak</div>
+      <div class="surprise-card surprise-card-center">
+        <div class="distance-figure" id="tot-streak-figure">—</div>
+        <div class="distance-cities">rounds you've matched on</div>
+      </div>
+
+      <div class="page-sub" style="margin:22px 0 10px;">Past rounds</div>
+      <div id="tot-history"></div>
+    </div>
+  </div>
+
+  <!-- ============================ OUR PLANT (subpage) ============================ -->
+  <div class="view" id="view-plant">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Our Plant</div>
+          <div class="page-sub" style="margin-bottom:0;">grows a little every day you both check in</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div id="plant-svg-wrap"></div>
+        <div class="surprise-label" id="plant-stage-label" style="margin-top:14px;">Seed</div>
+        <div class="distance-cities" id="plant-status-text">loading...</div>
+        <button class="draw-btn" id="plant-water-btn" style="width:100%; margin-top:14px;">💧 Water it today</button>
+      </div>
+
+      <div class="page-sub" style="margin:22px 0 10px;">Streak</div>
+      <div class="surprise-card surprise-card-center">
+        <div class="distance-figure" id="plant-streak-figure">—</div>
+        <div class="distance-cities">consecutive days you've both watered it</div>
       </div>
     </div>
   </div>
@@ -2209,7 +2470,12 @@ const CONFIG = {
     { id: "view-milestones",icon: "sparkle",    label: "Milestones",      sub: "every month-aversary, counted automatically",      ready: true },
     { id: "view-theme",     icon: "palette",    label: "Theme",           sub: "reskin the whole app, for both of you",            ready: true },
     { id: "view-currently", icon: "sunrise",    label: "Currently",       sub: "a one-line status, always visible to each other",  ready: true },
-    { id: "view-movienight",icon: "film",       label: "Movie Night",     sub: "schedule it, then press play together",            ready: true }
+    { id: "view-movienight",icon: "film",       label: "Movie Night",     sub: "schedule it, then press play together",            ready: true },
+    { id: "view-lovelang",  icon: "heart",       label: "Love Languages",  sub: "what would make you feel loved this week",         ready: true },
+    { id: "view-duel",      icon: "trophy",      label: "Playlist Duel",   sub: "one pick each, rate each other's, weekly",          ready: true },
+    { id: "view-card",      icon: "card",        label: "Anniversary Card",sub: "build a little card, save it as an image",          ready: true },
+    { id: "view-thisorthat",icon: "dice",        label: "This or That",    sub: "same prompt, both answer, see if you match",        ready: true },
+    { id: "view-plant",     icon: "seedling",    label: "Our Plant",       sub: "grows a little every day you both check in",        ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -2371,7 +2637,7 @@ const CONFIG = {
   // reference it by filename. Leave src empty to hide the toggle.
   // --------------------------------------------------------------------
   bgMusic: {
-    src: "music/our-song.mp3" // e.g. "music/our-song.mp3"
+    src: "music/song.mp3" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -2477,7 +2743,11 @@ const SVG_ICONS = {
   watchlist: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="6.5" width="17.6" height="13" rx="2"/><path d="M3.2 10.5h17.6"/><path d="M7 6.5 9.3 3.5M13 6.5l2.3-3M17.8 6.5l1.6-2.2"/><path d="M10.3 13.2 14 15.4l-3.7 2.2v-4.4Z" fill="currentColor" stroke="none"/></svg>`,
   distance: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5c0-3.5 2.3-6 4-6s4 2.5 4 6"/><circle cx="8.5" cy="9.5" r="3"/><path d="M14.5 14.5c0-2.6 1.7-4.5 3-4.5s3 1.9 3 4.5"/><circle cx="17.5" cy="6.5" r="2.2"/></svg>`,
   palette: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5A8.5 8.5 0 1 0 12 20.5c1 0 1.8-.8 1.8-1.8 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-1 .8-1.8 1.8-1.8h1.8a4 4 0 0 0 4-4c0-4.4-4-7-8.4-7Z"/><circle cx="7.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="10.5" cy="7" r="1" fill="currentColor" stroke="none"/><circle cx="15" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="17" cy="11.5" r="1" fill="currentColor" stroke="none"/></svg>`,
-  film: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 9.5h18M3 14.5h18M8 5.5v13M16 5.5v13"/></svg>`
+  film: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3 9.5h18M3 14.5h18M8 5.5v13M16 5.5v13"/></svg>`,
+  trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h10v5.5a5 5 0 0 1-10 0V4.5Z"/><path d="M7 6H4.5A2.5 2.5 0 0 0 4.5 11H7M17 6h2.5A2.5 2.5 0 0 1 19.5 11H17"/><path d="M12 15v3.5M9 20.5h6"/></svg>`,
+  card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="M3 9.5h18"/><path d="M12 13.6s-2.4-1.5-2.4-3.1a1.5 1.5 0 0 1 2.4-1.2 1.5 1.5 0 0 1 2.4 1.2c0 1.6-2.4 3.1-2.4 3.1Z" fill="currentColor" stroke="none"/></svg>`,
+  dice: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.3" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>`,
+  seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -3419,37 +3689,95 @@ buildDeck();
 // ---------- draw something (shared, live, via Supabase) ----------
 (function () {
   const canvas = document.getElementById('draw-canvas-hers');
+  const overlay = document.getElementById('draw-canvas-overlay');
+  const toolsEl = document.getElementById('draw-tools');
   const colorsEl = document.getElementById('draw-colors');
+  const sizesEl = document.getElementById('draw-sizes');
+  const undoBtn = document.getElementById('draw-undo');
+  const redoBtn = document.getElementById('draw-redo');
+  const saveBtn = document.getElementById('draw-save');
   const clearBtn = document.getElementById('draw-clear');
   const statusEl = document.getElementById('draw-status');
+  const cursorEl = document.getElementById('draw-partner-cursor');
+  const galleryEl = document.getElementById('draw-gallery');
+  const galleryLabelEl = document.getElementById('draw-gallery-label');
+  const lightbox = document.getElementById('draw-lightbox');
+  const lightboxImg = document.getElementById('draw-lightbox-img');
+  const lightboxClose = document.getElementById('draw-lightbox-close');
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
+  const octx = overlay.getContext('2d');
   const palette = ['#2c1a22', '#ff4d6d', '#ff9fb3', '#ffd166', '#5aa9e6', '#6fcf97'];
+  const SIZES = [3, 6, 12];
+  const TOOLS = [
+    { key: 'pen',    icon: '✏️' },
+    { key: 'line',   icon: '／' },
+    { key: 'rect',   icon: '▭' },
+    { key: 'circle', icon: '◯' },
+    { key: 'eraser', icon: '🧹' }
+  ];
   let currentColor = palette[0];
+  let currentSize = SIZES[1];
+  let currentTool = 'pen';
   let drawing = false;
   let lastX = 0, lastY = 0;
+  let startX = 0, startY = 0;
+  let currentStrokeId = null;
+  const PAPER_COLOR = '#fffaf7';
 
   function sizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+    [canvas, overlay].forEach(cv => {
+      cv.width = rect.width * dpr;
+      cv.height = rect.height * dpr;
+    });
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = 4;
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    octx.lineCap = 'round'; octx.lineJoin = 'round';
   }
 
   // strokes are stored as fractions (0-1) of the canvas size so they line
-  // up correctly no matter what size screen either of you is on
-  function drawSegment(x0f, y0f, x1f, y1f, color) {
+  // up correctly no matter what size screen either of you is on.
+  // color === 'eraser' is a sentinel meaning "erase" rather than a real color.
+  function drawSegment(targetCtx, x0f, y0f, x1f, y1f, color, size) {
     const rect = canvas.getBoundingClientRect();
-    ctx.strokeStyle = color;
-    ctx.beginPath();
-    ctx.moveTo(x0f * rect.width, y0f * rect.height);
-    ctx.lineTo(x1f * rect.width, y1f * rect.height);
-    ctx.stroke();
+    const isEraser = color === 'eraser';
+    targetCtx.save();
+    targetCtx.globalCompositeOperation = isEraser ? 'destination-out' : 'source-over';
+    targetCtx.strokeStyle = isEraser ? 'rgba(0,0,0,1)' : color;
+    targetCtx.lineWidth = size || 4;
+    targetCtx.beginPath();
+    targetCtx.moveTo(x0f * rect.width, y0f * rect.height);
+    targetCtx.lineTo(x1f * rect.width, y1f * rect.height);
+    targetCtx.stroke();
+    targetCtx.restore();
+  }
+
+  // shape tools are just approximated as a batch of line segments sharing
+  // one stroke_id — this means shapes reuse the exact same sync/undo/redo
+  // pipeline as freehand pen strokes with zero schema changes needed.
+  function segmentsForShape(tool, x0, y0, x1, y1) {
+    const segs = [];
+    if (tool === 'line') {
+      segs.push([x0, y0, x1, y1]);
+    } else if (tool === 'rect') {
+      segs.push([x0, y0, x1, y0], [x1, y0, x1, y1], [x1, y1, x0, y1], [x0, y1, x0, y0]);
+    } else if (tool === 'circle') {
+      const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+      const rx = Math.abs(x1 - x0) / 2, ry = Math.abs(y1 - y0) / 2;
+      const STEPS = 28;
+      let prev = null;
+      for (let i = 0; i <= STEPS; i++) {
+        const a = (i / STEPS) * Math.PI * 2;
+        const px = cx + rx * Math.cos(a), py = cy + ry * Math.sin(a);
+        if (prev) segs.push([prev[0], prev[1], px, py]);
+        prev = [px, py];
+      }
+    }
+    return segs;
   }
 
   const sbCfg = CONFIG.supabase || {};
@@ -3461,7 +3789,8 @@ buildDeck();
   function setStatus(text) { if (statusEl) statusEl.textContent = text; }
 
   // ---- presence: shows "she's here" while the other person also has the
-  // Draw tab open, using the same Supabase Presence channel trick as Chat ----
+  // Draw tab open, using the same Supabase Presence channel trick as Chat.
+  // Also doubles as the transport for the live partner-cursor dot below. ----
   const drawPresenceEl = document.getElementById('draw-presence');
   const DRAW_TAB_ID_KEY = 'lls_draw_tab_id';
   let drawTabId = sessionStorage.getItem(DRAW_TAB_ID_KEY);
@@ -3479,12 +3808,28 @@ buildDeck();
           drawPresenceEl.classList.toggle('show', partnerHere);
           drawPresenceEl.textContent = partnerHere ? "· she's here" : '';
         }
+        if (!partnerHere) cursorEl.style.display = 'none';
+      })
+      // ---- live cursor: broadcast, not a DB write — this is what makes the
+      // canvas feel truly live (you see the partner's pointer move in real
+      // time, even mid-stroke, not just when a segment lands) ----
+      .on('broadcast', { event: 'cursor' }, (msg) => {
+        const p = msg.payload;
+        if (!p || p.tabId === drawTabId) return;
+        const rect = canvas.getBoundingClientRect();
+        cursorEl.style.left = (p.x * rect.width) + 'px';
+        cursorEl.style.top = (p.y * rect.height) + 'px';
+        cursorEl.querySelector('.draw-cursor-label').textContent = p.name || 'them';
+        cursorEl.style.display = '';
+        clearTimeout(cursorHideTimer);
+        cursorHideTimer = setTimeout(() => { cursorEl.style.display = 'none'; }, 2200);
       })
       .subscribe((status) => {
         if (status === 'SUBSCRIBED' && onDrawTab) drawPresenceChannel.track({ here: true });
       });
   }
   setupDrawPresence();
+  let cursorHideTimer = null;
 
   // only announce presence while the Draw tab is actually the active view,
   // so "she's here" reflects being on this screen, not just the app being open
@@ -3495,11 +3840,20 @@ buildDeck();
     else drawPresenceChannel.untrack();
   });
 
+  let lastCursorSend = 0;
+  function broadcastCursor(xf, yf) {
+    if (!drawPresenceChannel || !onDrawTab) return;
+    const now = Date.now();
+    if (now - lastCursorSend < 45) return; // throttle — plenty smooth, avoids flooding the socket
+    lastCursorSend = now;
+    drawPresenceChannel.send({ type: 'broadcast', event: 'cursor', payload: { x: xf, y: yf, name: getSharedName() || 'them', tabId: drawTabId } });
+  }
+
   async function loadHistory(retries = 3) {
     if (!sb) { setStatus('○ offline (no sync configured)'); return; }
     const { data, error } = await sb
       .from('drawing_strokes')
-      .select('x0,y0,x1,y1,color')
+      .select('x0,y0,x1,y1,color,size')
       .order('id', { ascending: true });
     if (error) {
       // a blank canvas after a failed fetch used to just sit there looking
@@ -3516,7 +3870,7 @@ buildDeck();
     }
     const rect = canvas.getBoundingClientRect();
     ctx.clearRect(0, 0, rect.width, rect.height);
-    (data || []).forEach(s => drawSegment(s.x0, s.y0, s.x1, s.y1, s.color));
+    (data || []).forEach(s => drawSegment(ctx, s.x0, s.y0, s.x1, s.y1, s.color, s.size));
   }
 
   let realtimeChannel = null;
@@ -3527,11 +3881,13 @@ buildDeck();
     realtimeChannel = sb.channel('drawing_strokes_live')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'drawing_strokes' }, (payload) => {
         const s = payload.new;
-        drawSegment(s.x0, s.y0, s.x1, s.y1, s.color);
+        drawSegment(ctx, s.x0, s.y0, s.x1, s.y1, s.color, s.size);
       })
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'drawing_strokes' }, () => {
-        const rect = canvas.getBoundingClientRect();
-        ctx.clearRect(0, 0, rect.width, rect.height);
+        // could be "Clear for both", an "Undo", or a "Redo" re-insert follow-up
+        // — either way, the correct picture is whatever's left in the DB, so
+        // just reload and redraw from scratch rather than assuming a full clear.
+        loadHistory();
       })
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
@@ -3583,11 +3939,19 @@ buildDeck();
       lastW = rect.width; lastH = rect.height;
       sizeCanvas();
       loadHistory();
-      if (!sizedOnce) { sizedOnce = true; subscribeRealtime(); }
+      if (!sizedOnce) { sizedOnce = true; subscribeRealtime(); loadGallery(); }
     }, 120);
   });
   resizeObserver.observe(canvas);
 
+  // ---- tool selector: pen / line / rect / circle / eraser ----
+  toolsEl.innerHTML = TOOLS.map(t => `<button class="draw-tool-select-btn${t.key === 'pen' ? ' active' : ''}" data-tool="${t.key}">${t.icon}</button>`).join('');
+  toolsEl.querySelectorAll('.draw-tool-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentTool = btn.dataset.tool;
+      toolsEl.querySelectorAll('.draw-tool-select-btn').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
 
   palette.forEach((c, i) => {
     const dot = document.createElement('button');
@@ -3601,6 +3965,26 @@ buildDeck();
     colorsEl.appendChild(dot);
   });
 
+  SIZES.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'draw-size-btn' + (i === 1 ? ' active' : '');
+    btn.style.width = '30px'; btn.style.height = '30px';
+    btn.innerHTML = `<span style="width:${Math.round(s * 1.3)}px; height:${Math.round(s * 1.3)}px;"></span>`;
+    btn.addEventListener('click', () => {
+      currentSize = s;
+      sizesEl.querySelectorAll('.draw-size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    sizesEl.appendChild(btn);
+  });
+
+  // per-session undo/redo: each pointer-down/shape starts a new stroke_id;
+  // undo removes every segment belonging to the most recent stroke YOU drew
+  // this session (not the partner's), and caches the rows so redo can bring
+  // that exact stroke back — both are session-only, same as before.
+  const myStrokeIds = [];
+  const redoCache = []; // [{strokeId, rows}]
+
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
     const point = e.touches ? e.touches[0] : e;
@@ -3609,30 +3993,76 @@ buildDeck();
 
   function start(e) {
     drawing = true;
+    currentStrokeId = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     const p = getPos(e);
-    lastX = p.x; lastY = p.y;
+    lastX = p.x; lastY = p.y; startX = p.x; startY = p.y;
+    if (currentTool !== 'pen' && currentTool !== 'eraser') {
+      const orect = overlay.getBoundingClientRect();
+      octx.clearRect(0, 0, orect.width, orect.height);
+    }
   }
   function move(e) {
     if (!drawing) return;
     e.preventDefault();
     const p = getPos(e);
-    ctx.strokeStyle = currentColor;
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
+    broadcastCursor(p.x / p.w, p.y / p.h);
 
-    if (sb) {
-      sb.from('drawing_strokes').insert({
-        x0: lastX / p.w, y0: lastY / p.h,
-        x1: p.x / p.w, y1: p.y / p.h,
-        color: currentColor
-      }).then(() => {}, () => { /* offline or blocked, drawing still works locally */ });
+    if (currentTool === 'pen' || currentTool === 'eraser') {
+      const strokeColor = currentTool === 'eraser' ? 'eraser' : currentColor;
+      ctx.save();
+      ctx.globalCompositeOperation = currentTool === 'eraser' ? 'destination-out' : 'source-over';
+      ctx.strokeStyle = currentTool === 'eraser' ? 'rgba(0,0,0,1)' : currentColor;
+      ctx.lineWidth = currentSize;
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      ctx.restore();
+
+      if (sb) {
+        sb.from('drawing_strokes').insert({
+          x0: lastX / p.w, y0: lastY / p.h,
+          x1: p.x / p.w, y1: p.y / p.h,
+          color: strokeColor, size: currentSize, stroke_id: currentStrokeId
+        }).then(() => {}, () => { /* offline or blocked, drawing still works locally */ });
+      }
+      lastX = p.x; lastY = p.y;
+    } else {
+      // shape tools: just preview on the overlay canvas while dragging,
+      // nothing is committed to the DB until release
+      const orect = overlay.getBoundingClientRect();
+      octx.clearRect(0, 0, orect.width, orect.height);
+      const segs = segmentsForShape(currentTool, startX / p.w, startY / p.h, p.x / p.w, p.y / p.h);
+      segs.forEach(([x0, y0, x1, y1]) => drawSegment(octx, x0, y0, x1, y1, currentColor, currentSize));
     }
-
-    lastX = p.x; lastY = p.y;
   }
-  function end() { drawing = false; }
+  async function end(e) {
+    if (!drawing) return;
+    drawing = false;
+    if (currentTool !== 'pen' && currentTool !== 'eraser') {
+      const orect = overlay.getBoundingClientRect();
+      octx.clearRect(0, 0, orect.width, orect.height);
+      const p = e && (e.changedTouches ? { x: e.changedTouches[0].clientX - orect.left, y: e.changedTouches[0].clientY - orect.top } : getPos(e));
+      const endX = p ? p.x : lastX, endY = p ? p.y : lastY;
+      const rect = canvas.getBoundingClientRect();
+      const segs = segmentsForShape(currentTool, startX / rect.width, startY / rect.height, endX / rect.width, endY / rect.height);
+      const strokeId = currentStrokeId;
+      segs.forEach(([x0, y0, x1, y1]) => drawSegment(ctx, x0, y0, x1, y1, currentColor, currentSize));
+      if (sb && segs.length) {
+        try {
+          await sb.from('drawing_strokes').insert(segs.map(([x0, y0, x1, y1]) => ({
+            x0, y0, x1, y1, color: currentColor, size: currentSize, stroke_id: strokeId
+          })));
+        } catch (err) { console.warn('shape insert failed:', err); }
+      }
+      myStrokeIds.push(strokeId);
+      if (myStrokeIds.length > 50) myStrokeIds.shift();
+    } else {
+      myStrokeIds.push(currentStrokeId);
+      if (myStrokeIds.length > 50) myStrokeIds.shift();
+    }
+    currentStrokeId = null;
+  }
 
   canvas.addEventListener('mousedown', start);
   canvas.addEventListener('mousemove', move);
@@ -3641,13 +4071,99 @@ buildDeck();
   canvas.addEventListener('touchmove', move, { passive: false });
   canvas.addEventListener('touchend', end);
 
+  undoBtn.addEventListener('click', async () => {
+    const idToUndo = myStrokeIds.pop();
+    if (!idToUndo) return;
+    if (sb) {
+      try {
+        // cache the rows first so Redo can bring this exact stroke back
+        const { data } = await sb.from('drawing_strokes').select('*').eq('stroke_id', idToUndo);
+        if (data && data.length) redoCache.push({ strokeId: idToUndo, rows: data });
+        if (redoCache.length > 50) redoCache.shift();
+        await sb.from('drawing_strokes').delete().eq('stroke_id', idToUndo);
+      } catch (err) { console.warn('undo failed:', err); }
+    }
+    loadHistory();
+  });
+
+  redoBtn.addEventListener('click', async () => {
+    const entry = redoCache.pop();
+    if (!entry) return;
+    if (sb) {
+      try {
+        await sb.from('drawing_strokes').insert(entry.rows.map(r => ({
+          x0: r.x0, y0: r.y0, x1: r.x1, y1: r.y1, color: r.color, size: r.size, stroke_id: r.stroke_id
+        })));
+      } catch (err) { console.warn('redo failed:', err); }
+    }
+    myStrokeIds.push(entry.strokeId);
+    loadHistory();
+  });
+
+  function canvasToPngDataUrl() {
+    const temp = document.createElement('canvas');
+    temp.width = canvas.width;
+    temp.height = canvas.height;
+    const tctx = temp.getContext('2d');
+    // fill with the paper background first — the live canvas itself is
+    // transparent (it relies on the wrapper div's CSS background), so
+    // exporting it directly would give a transparent PNG instead of a photo
+    tctx.fillStyle = PAPER_COLOR;
+    tctx.fillRect(0, 0, temp.width, temp.height);
+    tctx.drawImage(canvas, 0, 0);
+    return temp.toDataURL('image/png');
+  }
+
+  saveBtn.addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'our-doodle.png';
+    link.href = canvasToPngDataUrl();
+    link.click();
+  });
+
+  // ---- gallery: every "Clear" first snapshots the current doodle so
+  // clearing never actually loses anything, just archives it ----
+  async function loadGallery() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('doodle_gallery').select('*').order('created_at', { ascending: false }).limit(24);
+      if (error || !data) return;
+      galleryLabelEl.style.display = data.length ? '' : 'none';
+      galleryEl.innerHTML = '';
+      data.forEach(row => {
+        const img = document.createElement('img');
+        img.src = row.image_data;
+        img.alt = row.sender ? `doodle by ${row.sender}` : 'past doodle';
+        img.addEventListener('click', () => {
+          lightboxImg.src = row.image_data;
+          lightbox.style.display = 'flex';
+        });
+        galleryEl.appendChild(img);
+      });
+    } catch (err) { console.warn('gallery load failed:', err); }
+  }
+  lightboxClose.addEventListener('click', () => { lightbox.style.display = 'none'; });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.style.display = 'none'; });
+
   clearBtn.addEventListener('click', async () => {
     const rect = canvas.getBoundingClientRect();
+    const isBlank = rect.width === 0 || rect.height === 0;
+    if (sb && !isBlank) {
+      try {
+        const dataUrl = canvasToPngDataUrl();
+        await sb.from('doodle_gallery').insert({ sender: getSharedName() || null, image_data: dataUrl });
+      } catch (err) { console.warn('gallery snapshot failed:', err); }
+    }
     ctx.clearRect(0, 0, rect.width, rect.height);
+    myStrokeIds.length = 0;
+    redoCache.length = 0;
     if (sb) {
       await sb.from('drawing_strokes').delete().neq('id', -1);
     }
+    loadGallery();
   });
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-draw') loadGallery(); });
 })();
 
 // ---------- map of us (editable, live-synced via Supabase) ----------
@@ -4945,6 +5461,12 @@ async function loadTwoLocations() {
   const citiesEl = document.getElementById('distance-cities');
   const locateBtn = document.getElementById('distance-locate-btn');
   const statusEl = document.getElementById('distance-locate-status');
+  const closerCard = document.getElementById('distance-closer-card');
+  const closerFill = document.getElementById('distance-closer-fill');
+  const closerPct = document.getElementById('distance-closer-pct');
+  const closerResetBtn = document.getElementById('distance-closer-reset-btn');
+  const BASELINE_KEY = 'lls_distance_baseline_km';
+  let sbChannel = null;
 
   function haversineKm(a, b) {
     const R = 6371;
@@ -4955,16 +5477,45 @@ async function loadTwoLocations() {
     return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
   }
 
+  function getBaseline() {
+    const raw = localStorage.getItem(BASELINE_KEY);
+    return raw ? parseFloat(raw) : null;
+  }
+  function setBaseline(km) { localStorage.setItem(BASELINE_KEY, String(km)); }
+
+  function renderCloser(km) {
+    if (km == null) { closerCard.style.display = 'none'; return; }
+    let baseline = getBaseline();
+    // no baseline yet, or you're now further away than the baseline covers — reset it to current so "closer" always means progress from here
+    if (baseline == null || km > baseline) { baseline = km; setBaseline(km); }
+    closerCard.style.display = '';
+    const pct = baseline > 0 ? Math.max(0, Math.min(100, Math.round((1 - km / baseline) * 100))) : 100;
+    closerFill.style.width = pct + '%';
+    closerPct.textContent = pct >= 100
+      ? "you're together! 🎉"
+      : `${pct}% closer than your tracked starting point (${Math.round(baseline).toLocaleString()} km)`;
+  }
+
   async function load() {
     const [you, partner] = await loadTwoLocations();
     if (you.lat != null && you.lon != null && partner.lat != null && partner.lon != null) {
       const km = Math.round(haversineKm(you, partner));
       figureEl.textContent = km.toLocaleString() + ' km';
+      renderCloser(km);
     } else {
       figureEl.textContent = '—';
+      renderCloser(null);
     }
     citiesEl.textContent = `${you.city} ↔ ${partner.city}`;
   }
+
+  closerResetBtn.addEventListener('click', async () => {
+    const [you, partner] = await loadTwoLocations();
+    if (you.lat != null && partner.lat != null) {
+      setBaseline(haversineKm(you, partner));
+      load();
+    }
+  });
 
   const cfg = CONFIG.distance || {};
   const countdownCard = document.getElementById('distance-countdown-card');
@@ -4982,9 +5533,21 @@ async function loadTwoLocations() {
     }
   }
 
-  if (locateBtn) locateBtn.addEventListener('click', () => updateMyLocation(statusEl));
+  // subscribe so the moment your partner updates their location, this
+  // updates live without either of you needing to reopen the tab
+  function subscribe() {
+    const sb = getSb();
+    if (!sb || sbChannel) return;
+    sbChannel = sb.channel('locations_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'locations' }, () => load())
+      .subscribe();
+  }
+
+  if (locateBtn) locateBtn.addEventListener('click', () => updateMyLocation(statusEl).then(load));
   window.addEventListener('locationupdated', load);
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-distance') load(); });
+  load();
+  subscribe();
 })();
 
 // ---------- theme (applied immediately on load, editable from More hub) ----------
@@ -5545,6 +6108,545 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-movienight') { load(); loadWatchlistPicker(); } });
+  load();
+  subscribe();
+})();
+
+// ---------- love languages ----------
+(function () {
+  const gridEl = document.getElementById('lovelang-grid');
+  if (!gridEl) return;
+  const noteInput = document.getElementById('lovelang-note-input');
+  const saveBtn = document.getElementById('lovelang-save-btn');
+  const partnerLabel = document.getElementById('lovelang-partner-label');
+  const partnerText = document.getElementById('lovelang-partner-text');
+  const sb = getSb();
+
+  const LANGUAGES = [
+    { key: 'words', emoji: '💬', label: 'Words' },
+    { key: 'time',  emoji: '⏳', label: 'Quality Time' },
+    { key: 'gifts', emoji: '🎁', label: 'Gifts' },
+    { key: 'acts',  emoji: '🤝', label: 'Acts of Service' },
+    { key: 'touch', emoji: '🫶', label: 'Touch' }
+  ];
+  let selected = null;
+  let channel = null;
+
+  gridEl.innerHTML = LANGUAGES.map(l => `<button class="lovelang-btn" data-key="${l.key}">${l.emoji}<span>${l.label}</span></button>`).join('');
+  gridEl.querySelectorAll('.lovelang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selected = btn.dataset.key;
+      gridEl.querySelectorAll('.lovelang-btn').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  function labelFor(key) { const l = LANGUAGES.find(x => x.key === key); return l ? `${l.emoji} ${l.label}` : key; }
+
+  function showPartnerRow(row) {
+    const mine = getSharedName();
+    if (!row || row.sender === mine) return;
+    partnerLabel.textContent = `${row.sender}, this week`;
+    partnerText.textContent = labelFor(row.language) + (row.note ? ` — "${row.note}"` : '');
+  }
+
+  async function load() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('love_language_checkins').select('*');
+      if (error || !data) return;
+      const mine = getSharedName();
+      const mineRow = data.find(r => r.sender === mine);
+      const partnerRow = data.find(r => r.sender !== mine);
+      if (mineRow) {
+        selected = mineRow.language;
+        noteInput.value = mineRow.note || '';
+        gridEl.querySelectorAll('.lovelang-btn').forEach(b => b.classList.toggle('active', b.dataset.key === selected));
+      }
+      if (partnerRow) showPartnerRow(partnerRow); else partnerText.textContent = 'not set yet';
+    } catch (err) { console.warn('love language load failed:', err); }
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    const sender = getSharedName();
+    if (!sender) { partnerText.textContent = 'set your name in Chat first'; return; }
+    if (!selected) return;
+    const note = (noteInput.value || '').trim();
+    saveBtn.disabled = true;
+    try {
+      if (sb) await sb.from('love_language_checkins').upsert({ sender, language: selected, note, updated_at: new Date().toISOString() }, { onConflict: 'sender' });
+    } catch (err) { console.warn('love language save failed:', err); }
+    saveBtn.disabled = false;
+    load();
+  });
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('love_language_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'love_language_checkins' }, (payload) => { if (payload.new) showPartnerRow(payload.new); })
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-lovelang') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- playlist duel ----------
+(function () {
+  const entriesEl = document.getElementById('duel-entries');
+  if (!entriesEl) return;
+  const titleInput = document.getElementById('duel-my-title');
+  const urlInput = document.getElementById('duel-my-url');
+  const saveBtn = document.getElementById('duel-my-save-btn');
+  const sb = getSb();
+  let entries = [];
+  let ratings = {}; // entry_id -> [{rater, rating}]
+  let channel = null;
+
+  function weekStart() {
+    const d = new Date();
+    const day = d.getDay();
+    const diff = (day === 0 ? -6 : 1) - day; // shift back to this week's Monday
+    d.setDate(d.getDate() + diff);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function avgRating(entryId) {
+    const rows = ratings[entryId] || [];
+    if (!rows.length) return 0;
+    return rows.reduce((s, r) => s + r.rating, 0) / rows.length;
+  }
+
+  function render() {
+    const mine = getSharedName();
+    const mineEntry = entries.find(e => e.sender === mine);
+    if (mineEntry) {
+      titleInput.value = mineEntry.title || '';
+      urlInput.value = mineEntry.embed_url || '';
+    }
+
+    entriesEl.innerHTML = '';
+    if (!entries.length) {
+      entriesEl.innerHTML = '<div class="capsule-empty">no picks yet this week</div>';
+      return;
+    }
+    const scored = entries.map(e => ({ e, score: avgRating(e.id) }));
+    const maxScore = Math.max(...scored.map(s => s.score));
+    const tiedForLead = scored.filter(s => s.score === maxScore).length;
+    scored.forEach(({ e, score }) => {
+      const el = document.createElement('div');
+      el.className = 'duel-entry';
+      const isWinner = score > 0 && score === maxScore && tiedForLead === 1;
+      const src = toEmbedSrc(e.embed_url);
+      const myRating = (ratings[e.id] || []).find(r => r.rater === mine);
+      el.innerHTML = `
+        <div class="duel-entry-top">
+          <span class="duel-entry-sender">${e.sender}${e.sender === mine ? ' (you)' : ''}</span>
+          <span class="duel-entry-score">${score ? score.toFixed(1) + '★' : 'no ratings yet'}</span>
+        </div>
+        ${isWinner ? '<div class="duel-winner-badge">👑 leading this week</div>' : ''}
+        <div style="margin-top:8px;">${e.title || 'untitled'}</div>
+        ${src ? `<iframe class="song-embed-frame" src="${src}" height="152" allow="encrypted-media" style="margin-top:8px; width:100%;"></iframe>` : ''}
+        ${e.sender !== mine ? `<div class="duel-stars" data-id="${e.id}">${[1, 2, 3, 4, 5].map(n => `<span class="duel-star${myRating && myRating.rating >= n ? ' filled' : ''}" data-n="${n}">★</span>`).join('')}</div>` : ''}
+      `;
+      const starsRow = el.querySelector('.duel-stars');
+      if (starsRow) {
+        starsRow.querySelectorAll('.duel-star').forEach(star => {
+          star.addEventListener('click', async () => {
+            const n = parseInt(star.dataset.n, 10);
+            if (!mine) return;
+            try { if (sb) await sb.from('duel_ratings').upsert({ entry_id: e.id, rater: mine, rating: n }, { onConflict: 'entry_id,rater' }); } catch (err) { console.warn('duel rating failed:', err); }
+            load();
+          });
+        });
+      }
+      entriesEl.appendChild(el);
+    });
+  }
+
+  saveBtn.addEventListener('click', async () => {
+    const title = (titleInput.value || '').trim();
+    const embed_url = (urlInput.value || '').trim();
+    if (!title || !embed_url) return;
+    const sender = getSharedName() || 'someone';
+    saveBtn.disabled = true;
+    try {
+      if (sb) await sb.from('playlist_duel').upsert({ sender, title, embed_url, week_start: weekStart() }, { onConflict: 'sender,week_start' });
+    } catch (err) { console.warn('duel entry save failed:', err); }
+    saveBtn.disabled = false;
+    load();
+  });
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('playlist_duel').select('*').eq('week_start', weekStart());
+      if (!error && data) entries = data;
+      const ids = entries.map(e => e.id).filter(id => id != null);
+      if (ids.length) {
+        const { data: rData, error: rErr } = await sb.from('duel_ratings').select('*').in('entry_id', ids);
+        if (!rErr && rData) {
+          ratings = {};
+          rData.forEach(r => { (ratings[r.entry_id] = ratings[r.entry_id] || []).push(r); });
+        }
+      } else { ratings = {}; }
+    } catch (err) { console.warn('duel load failed:', err); }
+    render();
+  }
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('playlist_duel_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'playlist_duel' }, () => load())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'duel_ratings' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-duel') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- anniversary card builder (client-side canvas, no table needed) ----------
+(function () {
+  const canvas = document.getElementById('card-canvas');
+  if (!canvas) return;
+  const styleRow = document.getElementById('card-style-row');
+  const titleInput = document.getElementById('card-title-input');
+  const msgInput = document.getElementById('card-message-input');
+  const sigInput = document.getElementById('card-signature-input');
+  const downloadBtn = document.getElementById('card-download-btn');
+  const ctx = canvas.getContext('2d');
+
+  const STYLES = [
+    { name: 'Rose',     from: '#2c0910', to: '#8a2e46', text: '#fffaf6', accent: '#ffb6c9' },
+    { name: 'Blush',    from: '#3a1a2a', to: '#c86a86', text: '#fff5f8', accent: '#ffe3ec' },
+    { name: 'Gold',     from: '#2a1c08', to: '#8a5a1e', text: '#fff8ea', accent: '#ffd98a' },
+    { name: 'Midnight', from: '#0b1330', to: '#2c3e70', text: '#f2f4ff', accent: '#a7c0ff' }
+  ];
+  let activeStyle = STYLES[0];
+
+  styleRow.innerHTML = STYLES.map((s, i) => `<button class="card-style-swatch${i === 0 ? ' active' : ''}" data-i="${i}" style="background:linear-gradient(135deg, ${s.from}, ${s.to});" aria-label="${s.name}"></button>`).join('');
+  styleRow.querySelectorAll('.card-style-swatch').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeStyle = STYLES[parseInt(btn.dataset.i, 10)];
+      styleRow.querySelectorAll('.card-style-swatch').forEach(b => b.classList.toggle('active', b === btn));
+      draw();
+    });
+  });
+
+  function wrapText(text, maxWidth) {
+    const words = text.split(/\s+/);
+    const lines = [];
+    let line = '';
+    words.forEach(w => {
+      const test = line ? line + ' ' + w : w;
+      if (ctx.measureText(test).width > maxWidth && line) { lines.push(line); line = w; }
+      else line = test;
+    });
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function draw() {
+    const W = canvas.width, H = canvas.height;
+    const grad = ctx.createLinearGradient(0, 0, W, H);
+    grad.addColorStop(0, activeStyle.from);
+    grad.addColorStop(1, activeStyle.to);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(30, 30, W - 60, H - 60);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = activeStyle.accent;
+    ctx.font = 'italic 42px Georgia, serif';
+    const title = titleInput.value.trim() || 'Happy Anniversary';
+    ctx.fillText(title, W / 2, 200);
+
+    ctx.fillStyle = activeStyle.text;
+    ctx.font = 'italic 32px Georgia, serif';
+    const msg = msgInput.value.trim() || 'Write your message on the left...';
+    const lines = wrapText(msg, W - 160);
+    let y = 340;
+    lines.slice(0, 12).forEach(line => { ctx.fillText(line, W / 2, y); y += 46; });
+
+    ctx.font = 'italic 26px Georgia, serif';
+    ctx.fillStyle = activeStyle.accent;
+    const sig = sigInput.value.trim();
+    if (sig) ctx.fillText(sig, W / 2, H - 80);
+
+    ctx.font = '40px serif';
+    ctx.fillText('♡', W / 2, H - 140);
+  }
+
+  [titleInput, msgInput, sigInput].forEach(el => el.addEventListener('input', draw));
+  downloadBtn.addEventListener('click', () => {
+    draw();
+    const link = document.createElement('a');
+    link.download = 'anniversary-card.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-card') draw(); });
+  draw();
+})();
+
+// ---------- this or that (daily synced duel — the "play together" game) ----------
+(function () {
+  const promptLabel = document.getElementById('tot-prompt-label');
+  if (!promptLabel) return;
+  const optionsEl = document.getElementById('tot-options');
+  const revealEl = document.getElementById('tot-reveal');
+  const streakFigureEl = document.getElementById('tot-streak-figure');
+  const historyEl = document.getElementById('tot-history');
+  const sb = getSb();
+  let channel = null;
+
+  const PROMPTS = (CONFIG.thisOrThat && CONFIG.thisOrThat.length) ? CONFIG.thisOrThat : [
+    { a: 'Beach', b: 'Mountains' }, { a: 'Morning person', b: 'Night owl' }, { a: 'Sweet', b: 'Savory' },
+    { a: 'Movie night in', b: 'Night out' }, { a: 'Coffee', b: 'Tea' }, { a: 'Summer', b: 'Winter' },
+    { a: 'Dogs', b: 'Cats' }, { a: 'City', b: 'Countryside' }, { a: 'Text', b: 'Call' },
+    { a: 'Spontaneous trip', b: 'Planned trip' }, { a: 'Pizza', b: 'Burgers' }, { a: 'Books', b: 'Movies' },
+    { a: 'Save it', b: 'Spend it' }, { a: 'Early plans', b: 'Last-minute plans' }, { a: 'Window seat', b: 'Aisle seat' }
+  ];
+
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  const EPOCH = new Date(2024, 0, 1); EPOCH.setHours(0, 0, 0, 0);
+  function dayIndexFor(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return Math.floor((d.getTime() - EPOCH.getTime()) / 86400000);
+  }
+  function promptForRound(idx) { return PROMPTS[((idx % PROMPTS.length) + PROMPTS.length) % PROMPTS.length]; }
+
+  const roundKey = todayStr();
+  const prompt = promptForRound(dayIndexFor(roundKey));
+  let allRows = [];
+
+  function renderToday() {
+    const mine = getSharedName();
+    const todaysRows = allRows.filter(r => r.round_key === roundKey);
+    const mineRow = todaysRows.find(r => r.sender === mine);
+    const partnerRow = todaysRows.find(r => r.sender && r.sender !== mine);
+
+    promptLabel.textContent = `${prompt.a} or ${prompt.b}?`;
+    optionsEl.innerHTML = `
+      <button class="tot-option-btn${mineRow && mineRow.choice === 'a' ? ' chosen' : ''}" data-choice="a">${prompt.a}</button>
+      <button class="tot-option-btn${mineRow && mineRow.choice === 'b' ? ' chosen' : ''}" data-choice="b">${prompt.b}</button>
+    `;
+    optionsEl.querySelectorAll('.tot-option-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const sender = getSharedName();
+        if (!sender) { revealEl.textContent = 'set your name in Chat first'; return; }
+        const choice = btn.dataset.choice;
+        try { if (sb) await sb.from('tot_answers').upsert({ round_key: roundKey, sender, choice }, { onConflict: 'round_key,sender' }); } catch (err) { console.warn('this or that save failed:', err); }
+        load();
+      });
+    });
+
+    if (mineRow && partnerRow) {
+      const matched = mineRow.choice === partnerRow.choice;
+      revealEl.textContent = matched
+        ? `You both picked ${prompt[mineRow.choice]} 🎉 match!`
+        : `You picked ${prompt[mineRow.choice]}, ${partnerRow.sender} picked ${prompt[partnerRow.choice]} — no match today`;
+    } else if (mineRow) {
+      revealEl.textContent = "waiting on your partner's answer...";
+    } else {
+      revealEl.textContent = '';
+    }
+  }
+
+  function renderStreakAndHistory() {
+    const byRound = {};
+    allRows.forEach(r => { (byRound[r.round_key] = byRound[r.round_key] || []).push(r); });
+    const roundKeys = Object.keys(byRound).sort().reverse();
+    let streak = 0;
+    for (const rk of roundKeys) {
+      if (rk === roundKey) continue;
+      const rows = byRound[rk];
+      if (rows.length < 2) break;
+      if (rows[0].choice === rows[1].choice) streak++; else break;
+    }
+    streakFigureEl.textContent = streak;
+
+    historyEl.innerHTML = '';
+    const pastKeys = roundKeys.filter(rk => rk !== roundKey).slice(0, 20);
+    if (!pastKeys.length) {
+      historyEl.innerHTML = '<div class="capsule-empty">nothing here yet</div>';
+      return;
+    }
+    pastKeys.forEach(rk => {
+      const rows = byRound[rk];
+      const p = promptForRound(dayIndexFor(rk));
+      const el = document.createElement('div');
+      el.className = 'tot-history-item';
+      el.textContent = rows.length < 2
+        ? `${rk} — ${p.a} or ${p.b}? (only one of you answered)`
+        : `${rk} — ${p.a} or ${p.b}? ${rows[0].choice === rows[1].choice ? '🎉 matched' : 'different picks'}`;
+      historyEl.appendChild(el);
+    });
+  }
+
+  async function load() {
+    if (!sb) { renderToday(); return; }
+    try {
+      const { data, error } = await sb.from('tot_answers').select('*').order('round_key', { ascending: false }).limit(200);
+      if (!error && data) allRows = data;
+    } catch (err) { console.warn('this or that load failed:', err); }
+    renderToday();
+    renderStreakAndHistory();
+  }
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('tot_answers_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tot_answers' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-thisorthat') load(); });
+  load();
+  subscribe();
+})();
+
+// ---------- our plant (grows when you BOTH water it the same day) ----------
+(function () {
+  const wrapEl = document.getElementById('plant-svg-wrap');
+  if (!wrapEl) return;
+  const stageLabel = document.getElementById('plant-stage-label');
+  const statusText = document.getElementById('plant-status-text');
+  const waterBtn = document.getElementById('plant-water-btn');
+  const streakFigureEl = document.getElementById('plant-streak-figure');
+  const sb = getSb();
+  let channel = null;
+  let rows = [];
+
+  const STAGES = [
+    { min: 0,  name: 'Seed' },
+    { min: 2,  name: 'Sprout' },
+    { min: 5,  name: 'Sapling' },
+    { min: 10, name: 'Budding' },
+    { min: 20, name: 'Blooming' },
+    { min: 35, name: 'Thriving' }
+  ];
+  function stageFor(mutualDays) {
+    let stage = STAGES[0];
+    STAGES.forEach(s => { if (mutualDays >= s.min) stage = s; });
+    return stage;
+  }
+  function stageIndex(mutualDays) {
+    let idx = 0;
+    STAGES.forEach((s, i) => { if (mutualDays >= s.min) idx = i; });
+    return idx;
+  }
+
+  function todayStr() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  function isoDateMinus(days) {
+    const d = new Date();
+    d.setDate(d.getDate() - days);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function plantSvg(idx) {
+    // idx 0..5, each stage layers on more of the plant
+    const stemH = [10, 40, 75, 100, 100, 100][idx];
+    const leaves = idx >= 1 ? `
+      <path d="M100 ${210 - stemH * 0.4} C70 ${210 - stemH * 0.4 - 10}, 60 ${210 - stemH * 0.7}, 88 ${210 - stemH * 0.75}Z" fill="#6fcf97"/>
+      <path d="M100 ${210 - stemH * 0.4} C130 ${210 - stemH * 0.4 - 10}, 140 ${210 - stemH * 0.7}, 112 ${210 - stemH * 0.75}Z" fill="#8fe0a8"/>` : '';
+    const leaves2 = idx >= 2 ? `
+      <path d="M100 ${210 - stemH * 0.75} C75 ${210 - stemH * 0.75 - 10}, 68 ${210 - stemH * 0.95}, 92 ${210 - stemH * 1.0}Z" fill="#6fcf97"/>
+      <path d="M100 ${210 - stemH * 0.75} C125 ${210 - stemH * 0.75 - 10}, 132 ${210 - stemH * 0.95}, 108 ${210 - stemH * 1.0}Z" fill="#8fe0a8"/>` : '';
+    const bud = idx === 3 ? `<circle cx="100" cy="${210 - stemH - 4}" r="7" fill="#ffb6c9"/>` : '';
+    const flower = idx >= 4 ? `
+      <g>
+        ${[0,60,120,180,240,300].map(a => `<ellipse cx="100" cy="${210 - stemH - 16}" rx="9" ry="14" fill="#ff9fb3" transform="rotate(${a} 100 ${210 - stemH - 16})"/>`).join('')}
+        <circle cx="100" cy="${210 - stemH - 16}" r="7" fill="#ffd166"/>
+      </g>` : '';
+    const sparkle = idx >= 5 ? `
+      <text x="60" y="60" font-size="18" fill="#ffe08a">✨</text>
+      <text x="135" y="80" font-size="14" fill="#ffe08a">✨</text>` : '';
+    return `
+      <svg viewBox="0 0 200 230" width="180" height="200" style="display:block; margin:0 auto;">
+        ${sparkle}
+        <ellipse cx="100" cy="212" rx="46" ry="10" fill="rgba(0,0,0,0.15)"/>
+        <path d="M60 212 L70 165 L130 165 L140 212Z" fill="#c97b4a"/>
+        <ellipse cx="100" cy="165" rx="36" ry="8" fill="#e0996a"/>
+        <line x1="100" y1="210" x2="100" y2="${210 - stemH}" stroke="#4a8f5c" stroke-width="5" stroke-linecap="round"/>
+        ${leaves}${leaves2}${bud}${flower}
+      </svg>`;
+  }
+
+  function render() {
+    const mine = getSharedName();
+    const today = todayStr();
+    const senders = [...new Set(rows.map(r => r.sender))];
+    const dateSet = {}; // date -> set of senders who watered that date
+    rows.forEach(r => { (dateSet[r.water_date] = dateSet[r.water_date] || new Set()).add(r.sender); });
+    const mutualDates = Object.keys(dateSet).filter(d => {
+      const set = dateSet[d];
+      return set.size >= 2 || (senders.length < 2 && set.size >= 1); // solo-friendly fallback before partner joins
+    });
+    const mutualDays = mutualDates.length;
+    const stage = stageFor(mutualDays);
+    const idx = stageIndex(mutualDays);
+
+    wrapEl.innerHTML = plantSvg(idx);
+    stageLabel.textContent = `${stage.name} · ${mutualDays} day${mutualDays === 1 ? '' : 's'} grown`;
+
+    const todaySet = dateSet[today] || new Set();
+    const iWateredToday = todaySet.has(mine);
+    const partnerWateredToday = [...todaySet].some(s => s !== mine);
+    waterBtn.disabled = iWateredToday;
+    waterBtn.textContent = iWateredToday ? '💧 Watered today' : '💧 Water it today';
+
+    if (iWateredToday && partnerWateredToday) statusText.textContent = "you both watered it today 🎉";
+    else if (iWateredToday) statusText.textContent = "waiting on your partner to water it today";
+    else if (partnerWateredToday) statusText.textContent = "your partner already watered today — your turn";
+    else statusText.textContent = "neither of you has watered it today yet";
+
+    // streak: consecutive days (ending today or yesterday) that were mutual
+    let streak = 0;
+    let cursor = mutualDates.includes(today) ? 0 : 1;
+    while (mutualDates.includes(isoDateMinus(cursor))) { streak++; cursor++; }
+    streakFigureEl.textContent = streak;
+  }
+
+  waterBtn.addEventListener('click', async () => {
+    const sender = getSharedName();
+    if (!sender) { statusText.textContent = 'set your name in Chat first'; return; }
+    waterBtn.disabled = true;
+    try {
+      if (sb) await sb.from('plant_waterings').insert({ sender, water_date: todayStr() });
+    } catch (err) { console.warn('watering save failed (maybe already watered today):', err); }
+    load();
+  });
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('plant_waterings').select('*').order('water_date', { ascending: false }).limit(400);
+      if (!error && data) rows = data;
+    } catch (err) { console.warn('plant load failed:', err); }
+    render();
+  }
+
+  function subscribe() {
+    if (!sb || channel) return;
+    channel = sb.channel('plant_waterings_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'plant_waterings' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-plant') load(); });
   load();
   subscribe();
 })();
