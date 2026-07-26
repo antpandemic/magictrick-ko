@@ -93,6 +93,65 @@
   .nav-btn:active { transform:scale(0.92); }
 
   /* ========================================================================
+     MISS YOU BUTTON — floating on every page. Sends a live ping (in-app
+     banner + real push notification) to whoever's on the other end, and
+     keeps a running count of how many times each of you has sent one.
+  ======================================================================== */
+  #miss-you-fab {
+    position:fixed;
+    right:14px;
+    bottom:calc(66px + env(safe-area-inset-bottom, 0px) + 16px);
+    z-index:600;
+    display:flex; align-items:center; gap:7px;
+    padding:12px 16px;
+    border:none; border-radius:999px;
+    background:linear-gradient(135deg, var(--accent), var(--accent-light));
+    color:#fff; font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px;
+    box-shadow:0 6px 18px rgba(var(--accent-rgb),0.45), 0 2px 6px rgba(0,0,0,0.25);
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  #miss-you-fab:active { transform:scale(0.93); }
+  #miss-you-fab .my-ico { width:16px; height:16px; flex:0 0 auto; }
+  #miss-you-fab .my-ico svg { width:100%; height:100%; display:block; }
+  #miss-you-fab.sending { animation:missYouPulse .5s ease; }
+  @keyframes missYouPulse {
+    0% { transform:scale(1); }
+    40% { transform:scale(1.18); }
+    100% { transform:scale(1); }
+  }
+  #miss-you-count {
+    position:absolute; top:-6px; left:-6px;
+    min-width:19px; height:19px; padding:0 4px;
+    border-radius:999px;
+    background:rgba(20,4,8,0.85);
+    border:1px solid rgba(255,255,255,0.35);
+    color:#ffe6ec; font-size:10px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+    pointer-events:none;
+  }
+
+  #miss-you-banner {
+    position:fixed;
+    left:50%; bottom:calc(66px + env(safe-area-inset-bottom, 0px) + 16px);
+    transform:translate(-50%, 12px);
+    z-index:700;
+    max-width:min(340px, calc(100vw - 28px));
+    padding:13px 16px;
+    border-radius:16px;
+    background:rgba(20,4,8,0.92);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,182,201,0.35);
+    color:#ffe6ec; font-family:'Quicksand', sans-serif; font-size:13px; font-weight:600;
+    text-align:center; line-height:1.4;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  #miss-you-banner.show { opacity:1; transform:translate(-50%, 0); pointer-events:auto; }
+
+  body.locked #miss-you-fab, body.locked #miss-you-banner { display:none; }
+
+  /* ========================================================================
      LOVE LETTER (scroll journey)
   ======================================================================== */
   /* background gradient is painted once across the whole scroll container
@@ -2379,6 +2438,16 @@
 
 </div>
 
+<!-- ============================ MISS YOU (floating, every page) ============================ -->
+<button id="miss-you-fab" aria-label="Send a miss you ping">
+  <span class="my-ico">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.7-4.35-9.3-8.2C.6 9.7 1.6 5.9 4.9 4.7c2-.75 4.1.05 5.4 1.85.4.55.6.85 1.7 2.35 1.1-1.5 1.3-1.8 1.7-2.35 1.3-1.8 3.4-2.6 5.4-1.85 3.3 1.2 4.3 5 2.2 8.1C18.7 16.65 12 21 12 21z"/></svg>
+  </span>
+  <span>Miss you</span>
+  <span id="miss-you-count" style="display:none;">0</span>
+</button>
+<div id="miss-you-banner" role="status" aria-live="polite"></div>
+
 <nav id="bottom-nav"></nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -2866,6 +2935,27 @@ const CONFIG = {
   supabase: {
     url: "https://tivgpukrgbzyeskjnivb.supabase.co",
     anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpdmdwdWtyZ2J6eWVza2puaXZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ5NTUwMDksImV4cCI6MjEwMDUzMTAwOX0.kzcbq1kphGITJNsyl3XYQsfgofLaxnuhpEAQ7IEta5Q"
+  },
+
+  // --------------------------------------------------------------------
+  // MISS YOU BUTTON — floating button on every page. Tapping it inserts
+  // a row into a `miss_you_pings` table (synced live via Supabase like
+  // the Repair Kit ping) AND fires a real push notification through the
+  // service worker (sw.js) + a Supabase Edge Function, so she gets it
+  // even if the site isn't open. See the setup notes shipped alongside
+  // this file (miss-you-setup.sql + the send-miss-you-push function) —
+  // none of this works until: (1) you run the SQL, (2) you generate a
+  // VAPID key pair and paste the PUBLIC one below, (3) you deploy the
+  // edge function with the PRIVATE key as a secret, (4) you wire a
+  // Database Webhook on `miss_you_pings` INSERT -> that function.
+  // Until then, the button still works for the in-app banner + count,
+  // it just won't push a notification to a closed browser.
+  // --------------------------------------------------------------------
+  missYou: {
+    vapidPublicKey: "BI1yDPVKGR1rku68u11ViyboJ-ZkdSnzzwbSRD3dJVoTppHC42ZudEnPZa25Kh6GGSurUAjNSJEwb_w6_kknZ5U", // paste your VAPID public key here (looks like a long base64url string)
+    bannerText: "said I miss you so much lovey dovey.",     // shown to whoever receives it, in-app
+    pushTitle: "I miss you so much baby",                  // push notification title
+    pushBody: "{name} misses you so much right now."  // {name} is swapped for the sender's name
   },
 
   // --------------------------------------------------------------------
@@ -7540,6 +7630,163 @@ async function loadTwoLocations() {
   subscribe();
 })();
 
+// ---------- MISS YOU button: live ping + real push notification ----------
+(function () {
+  const fab = document.getElementById('miss-you-fab');
+  const banner = document.getElementById('miss-you-banner');
+  const countEl = document.getElementById('miss-you-count');
+  if (!fab) return;
+
+  const cfg = CONFIG.missYou || {};
+  const sb = getSb();
+  const getName = getSharedName;
+  let bannerTimeout = null;
+
+  // ---- a soft two-tone chime, synthesized so we don't depend on any
+  // mp3 file existing (no more stub-file surprises) ----
+  function playChime() {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      [660, 880].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        const start = ctx.currentTime + i * 0.14;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(0.15, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.42);
+      });
+      setTimeout(() => ctx.close(), 900);
+    } catch (err) { /* silently skip if audio isn't allowed yet */ }
+  }
+
+  function showBanner(text) {
+    banner.textContent = text;
+    banner.classList.add('show');
+    clearTimeout(bannerTimeout);
+    bannerTimeout = setTimeout(() => banner.classList.remove('show'), 5000);
+  }
+
+  // ---- running count: how many times *I've* sent one (reads the
+  // permanent totals table, since raw pings get purged daily) ----
+  async function refreshCount() {
+    if (!sb) return;
+    const name = getName();
+    if (!name) { countEl.style.display = 'none'; return; }
+    try {
+      const { data, error } = await sb.from('miss_you_totals')
+        .select('total_count')
+        .eq('name', name)
+        .maybeSingle();
+      if (error) return;
+      const count = data ? data.total_count : 0;
+      if (count > 0) {
+        countEl.textContent = count > 99 ? '99+' : String(count);
+        countEl.style.display = 'flex';
+      } else {
+        countEl.style.display = 'none';
+      }
+    } catch (err) { /* ignore */ }
+  }
+
+  // ---- send ----
+  fab.addEventListener('click', async () => {
+    const name = getName();
+    if (!sb || !name) {
+      showBanner("set your name in Chat first so she knows it's from you 💛");
+      return;
+    }
+    fab.classList.add('sending');
+    setTimeout(() => fab.classList.remove('sending'), 500);
+    if (navigator.vibrate) navigator.vibrate(20);
+    try {
+      await sb.from('miss_you_pings').insert({ sender: name });
+      refreshCount();
+    } catch (err) {
+      console.warn('miss you ping failed:', err);
+    }
+    ensurePushSubscribed(true); // this is a real tap, so it's okay to prompt for notification permission
+  });
+
+  // ---- receive: in-app banner + vibrate + chime, only when app is open ----
+  function handleIncoming(row) {
+    if (!row || row.sender === getName()) return; // don't echo my own ping back to me
+    showBanner(`💛 ${row.sender} ${cfg.bannerText || 'sent you a miss you'}`);
+    if (navigator.vibrate) navigator.vibrate([80, 60, 80]);
+    playChime();
+  }
+
+  async function loadRecent() {
+    if (!sb) return;
+    const since = new Date(Date.now() - 60 * 60 * 1000).toISOString(); // last hour only, so reopening the app doesn't replay old pings
+    const { data, error } = await sb.from('miss_you_pings')
+      .select('*').gte('created_at', since).order('created_at', { ascending: false }).limit(1);
+    if (error || !data || !data.length) return;
+    handleIncoming(data[0]);
+  }
+
+  function subscribeLive() {
+    if (!sb) return;
+    sb.channel('miss_you_pings_live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'miss_you_pings' }, (payload) => handleIncoming(payload.new))
+      .subscribe();
+  }
+
+  // ---- push notifications (works even when the site's closed) ----
+  function urlBase64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const raw = atob(base64);
+    return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+  }
+
+  async function ensurePushSubscribed(allowPrompt) {
+    const name = getName();
+    if (!name || !sb || !cfg.vapidPublicKey) return;
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    if (Notification.permission === 'denied') return;
+    if (Notification.permission !== 'granted' && !allowPrompt) return; // never auto-prompt outside a real tap
+
+    try {
+      const reg = await navigator.serviceWorker.register('sw.js');
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        if (Notification.permission !== 'granted') {
+          const perm = await Notification.requestPermission();
+          if (perm !== 'granted') return;
+        }
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(cfg.vapidPublicKey)
+        });
+      }
+      const key = localStorage.getItem('lls_push_saved');
+      const subStr = JSON.stringify(sub);
+      if (key === subStr) return; // already saved this exact subscription
+      await sb.from('push_subscriptions').upsert(
+        { name, subscription: JSON.parse(subStr) },
+        { onConflict: 'name' }
+      );
+      localStorage.setItem('lls_push_saved', subStr);
+    } catch (err) {
+      console.warn('push subscribe failed:', err);
+    }
+  }
+
+  refreshCount();
+  loadRecent();
+  subscribeLive();
+  // silently re-subscribe in the background, but ONLY if permission was
+  // already granted before — this never shows a prompt on page load, so
+  // returning visitors stay subscribed without needing to tap Miss You again
+  if (getName()) ensurePushSubscribed(false);
+})();
 
 </script>
 </body>
