@@ -3453,19 +3453,46 @@ const quizCard = document.getElementById('quiz-card');
 let quizIndex = 0;
 let quizScore = 0;
 
+async function saveQuizScore(score, total) {
+  const sb = getSb();
+  const name = getSharedName();
+  if (!sb) return;
+  try { await sb.from('quiz_scores').insert({ sender: name || 'someone', score, total }); }
+  catch (err) { console.warn('quiz score save failed:', err); }
+}
+
+async function loadPartnerQuizBest() {
+  const sb = getSb();
+  if (!sb) return null;
+  const name = getSharedName();
+  try {
+    const { data, error } = await sb.from('quiz_scores').select('*').order('score', { ascending: false });
+    if (error || !data || !data.length) return null;
+    const theirs = data.find(r => r.sender && r.sender !== name);
+    return theirs || null;
+  } catch (err) { return null; }
+}
+
 function renderQuiz() {
   if (quizIndex >= CONFIG.quiz.length) {
     const prevBest = Number(localStorage.getItem('lls_quiz_best') || 0);
     const best = Math.max(quizScore, prevBest);
     localStorage.setItem('lls_quiz_best', best);
+    saveQuizScore(quizScore, CONFIG.quiz.length);
     quizCard.innerHTML = `
       <div id="quiz-result">
         <div style="font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,0.6);">your score</div>
         <div class="score">${quizScore} / ${CONFIG.quiz.length}</div>
         <div style="color:rgba(255,255,255,0.6); font-size:12.5px; margin-top:4px;">best so far: ${best} / ${CONFIG.quiz.length}</div>
+        <div style="color:rgba(255,255,255,0.6); font-size:12.5px;" id="quiz-partner-best">checking their score…</div>
         <div style="color:rgba(255,255,255,0.75); font-size:14px; margin-top:10px;">whatever the number says, you already won — I chose you.</div>
         <button class="btn-pink" onclick="restartQuiz()">Play again</button>
       </div>`;
+    loadPartnerQuizBest().then(row => {
+      const el = document.getElementById('quiz-partner-best');
+      if (!el) return;
+      el.textContent = row ? `${row.sender}'s best: ${row.score} / ${row.total}` : '';
+    });
     return;
   }
   const q = CONFIG.quiz[quizIndex];
@@ -3521,6 +3548,7 @@ function buildDeck() {
     el.className = photo.src ? 'swipe-card' : 'swipe-card placeholder';
     el.innerHTML = photo.src ? cardMarkup(photo) : placeholderMarkup(photo);
     el.style.zIndex = photos.length - i;
+    el.dataset.photoIndex = i;
     if (photo.src) {
       // photo file not found yet (e.g. not uploaded to the repo) — fall
       // back to the placeholder look instead of a broken image icon
@@ -3534,7 +3562,47 @@ function buildDeck() {
     return el;
   });
   layoutStack();
+  applyPartnerReactionBadges();
 }
+
+// ---- shared reactions: see how your partner swiped on the same photo ----
+async function applyPartnerReactionBadges() {
+  const sb = getSb();
+  if (!sb) return;
+  const name = getSharedName();
+  try {
+    const { data, error } = await sb.from('gallery_reactions').select('*');
+    if (error || !data) return;
+    data.forEach(r => {
+      if (!r.sender || r.sender === name) return; // only show the OTHER person's reaction
+      const card = swipeDeck.querySelector(`[data-photo-index="${r.photo_index}"]`);
+      const caption = card && card.querySelector('.swipe-caption');
+      if (!caption || caption.dataset.badged) return;
+      caption.dataset.badged = '1';
+      caption.innerHTML += ` <span style="opacity:.75;">· ${r.sender} ${r.reaction === 'love' ? 'loved this 💗' : 'said nope 😅'}</span>`;
+    });
+  } catch (err) { console.warn('gallery reactions load failed:', err); }
+}
+
+async function saveReaction(photoIndex, reaction) {
+  const sb = getSb();
+  const name = getSharedName();
+  if (!sb || !name || photoIndex == null) return;
+  try {
+    await sb.from('gallery_reactions').upsert(
+      { photo_index: Number(photoIndex), sender: name, reaction },
+      { onConflict: 'photo_index,sender' }
+    );
+  } catch (err) { console.warn('gallery reaction save failed:', err); }
+}
+
+(function subscribeGalleryReactions() {
+  const sb = getSb();
+  if (!sb) return;
+  sb.channel('gallery_reactions_live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_reactions' }, () => applyPartnerReactionBadges())
+    .subscribe();
+})();
 
 function restackRemaining() {
   activeCards.forEach((el, pos) => {
@@ -3567,6 +3635,7 @@ function showEmptyState() {
 function removeTopCard(direction) {
   const el = activeCards[0];
   if (!el) return;
+  saveReaction(el.dataset.photoIndex, direction === 'right' ? 'love' : 'nah');
   const flyX = direction === 'right' ? window.innerWidth : -window.innerWidth;
   el.classList.remove('dragging');
   el.style.transition = 'transform .4s ease, opacity .4s ease';
@@ -3645,12 +3714,48 @@ buildDeck();
   const heartEmojis = ['💗', '💕', '💖', '🎀'];
   let lastMsg = '';
   let pats = Number(localStorage.getItem('lls_kitty_pats') || 0);
+  let sharedTotal = null; // filled in once we hear back from Supabase
   updateCount();
 
   function updateCount() {
     if (!countEl) return;
-    countEl.textContent = pats > 0 ? `you've patted her ${pats} time${pats === 1 ? '' : 's'}` : '';
+    if (sharedTotal !== null) {
+      countEl.textContent = sharedTotal > 0 ? `together you've patted her ${sharedTotal} time${sharedTotal === 1 ? '' : 's'}` : '';
+    } else {
+      countEl.textContent = pats > 0 ? `you've patted her ${pats} time${pats === 1 ? '' : 's'}` : '';
+    }
   }
+
+  async function loadSharedPats() {
+    const sb = getSb();
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('kitty_pats').select('pats');
+      if (error || !data) return;
+      sharedTotal = data.reduce((sum, r) => sum + (r.pats || 0), 0);
+      updateCount();
+    } catch (err) { console.warn('kitty shared load failed:', err); }
+  }
+
+  async function saveSharedPat() {
+    const sb = getSb();
+    const name = getSharedName();
+    if (!sb || !name) return;
+    try {
+      const { data } = await sb.from('kitty_pats').select('pats').eq('sender', name).maybeSingle();
+      const mine = (data && data.pats ? data.pats : 0) + 1;
+      await sb.from('kitty_pats').upsert({ sender: name, pats: mine }, { onConflict: 'sender' });
+    } catch (err) { console.warn('kitty pat save failed:', err); }
+  }
+
+  loadSharedPats();
+  (function subscribeKittyPats() {
+    const sb = getSb();
+    if (!sb) return;
+    sb.channel('kitty_pats_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'kitty_pats' }, () => loadSharedPats())
+      .subscribe();
+  })();
 
   function pickMessage() {
     const pool = CONFIG.kittyMessages && CONFIG.kittyMessages.length
@@ -3680,6 +3785,7 @@ buildDeck();
   function pat() {
     pats++;
     localStorage.setItem('lls_kitty_pats', pats);
+    saveSharedPat();
     updateCount();
     if (hintEl) hintEl.style.opacity = '0.001'; // fades hint out after first pat via CSS transition inherited
 
