@@ -2952,7 +2952,7 @@ const CONFIG = {
   // it just won't push a notification to a closed browser.
   // --------------------------------------------------------------------
   missYou: {
-    vapidPublicKey: "BI1yDPVKGR1rku68u11ViyboJ-ZkdSnzzwbSRD3dJVoTppHC42ZudEnPZa25Kh6GGSurUAjNSJEwb_w6_kknZ5U", // paste your VAPID public key here (looks like a long base64url string)
+    vapidPublicKey: "", // paste your VAPID public key here (looks like a long base64url string)
     bannerText: "sent you a 💛 miss you",     // shown to whoever receives it, in-app
     pushTitle: "Miss you 💛",                  // push notification title
     pushBody: "{name} misses you right now."  // {name} is swapped for the sender's name
@@ -2977,7 +2977,7 @@ const CONFIG = {
   // reference it by filename. Leave src empty to hide the toggle.
   // --------------------------------------------------------------------
   bgMusic: {
-    src: "music/song.mp3" // e.g. "music/our-song.mp3"
+    src: "music/our-song.mp3" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -3166,6 +3166,19 @@ function switchView(id, btnEl) {
   if (currentlyBadgeEl && currentlyBadgeEl.textContent) currentlyBadgeEl.style.display = (id === 'view-letter') ? 'block' : 'none';
   window.scrollTo({ top: 0, behavior: 'instant' });
   window.dispatchEvent(new CustomEvent('viewchange', { detail: { id } }));
+}
+
+// PERFORMANCE FIX: every feature listens for 'viewchange' to load its data
+// when you actually open that screen — but a bunch of them ALSO used to load
+// their data immediately on page open, no matter which screen you were on.
+// With ~30 features now all wired to Supabase, that meant every app open
+// fired off 20+ network requests at once (including big ones like voice
+// notes / doodle gallery images) before you'd even scrolled the letter.
+// This helper lets those eager calls check "is my screen even open right
+// now?" first — if not, they just wait for the viewchange event instead.
+function isViewActive(id) {
+  const el = document.getElementById(id);
+  return !!el && el.classList.contains('active');
 }
 
 // ---------- more hub ----------
@@ -3421,7 +3434,7 @@ sectionEls.forEach(el => observer.observe(el));
       .subscribe();
   }
 
-  loadEntries();
+  if (isViewActive('view-story')) loadEntries();
   subscribeRealtime();
 })();
 
@@ -4662,7 +4675,7 @@ buildDeck();
       .subscribe();
   }
 
-  loadPins();
+  if (isViewActive('view-map')) loadPins();
   subscribeRealtime();
 })();
 
@@ -5158,7 +5171,7 @@ buildDeck();
     }
   });
 
-  loadMessages();
+  if (isViewActive('view-chat')) loadMessages();
   subscribeRealtime();
   setupPresence();
   // re-check every few minutes in case midnight passes while the tab stays open
@@ -5413,7 +5426,7 @@ function fmtShortDate(d) {
   });
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-capsule') { renderHint(); load(); } });
-  load();
+  if (isViewActive('view-capsule')) load();
 })();
 
 // ---------- shared journal ----------
@@ -5482,7 +5495,7 @@ function fmtShortDate(d) {
   });
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-journal') { renderHint(); load(); } });
-  load();
+  if (isViewActive('view-journal')) load();
 })();
 
 // ---------- voice notes ----------
@@ -5571,7 +5584,7 @@ function fmtShortDate(d) {
     if (!error && data) render(data);
   }
 
-  load();
+  if (isViewActive('view-voice')) load();
 })();
 
 // ----------------------------------------------------------------------
@@ -5796,7 +5809,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-watchlist') load(); });
-  load();
+  if (isViewActive('view-watchlist')) load();
 })();
 
 // ---------- distance ----------
@@ -5891,7 +5904,7 @@ async function loadTwoLocations() {
   if (locateBtn) locateBtn.addEventListener('click', () => updateMyLocation(statusEl).then(load));
   window.addEventListener('locationupdated', load);
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-distance') load(); });
-  load();
+  if (isViewActive('view-distance')) load();
   subscribe();
 })();
 
@@ -6112,7 +6125,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-song') load(); });
-  load();
+  if (isViewActive('view-song')) load();
 })();
 
 // ---------- milestones ----------
@@ -6236,7 +6249,7 @@ async function loadTwoLocations() {
   });
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-currently') load(); });
-  load();
+  if (isViewActive('view-currently')) load();
   setInterval(load, 5 * 60 * 1000);
 })();
 
@@ -6293,7 +6306,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-playlist') load(); });
-  load();
+  if (isViewActive('view-playlist')) load();
   subscribe();
 })();
 
@@ -6453,7 +6466,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-movienight') { load(); loadWatchlistPicker(); } });
-  load();
+  if (isViewActive('view-movienight')) load();
   subscribe();
 })();
 
@@ -6532,7 +6545,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-lovelang') load(); });
-  load();
+  if (isViewActive('view-lovelang')) load();
   subscribe();
 })();
 
@@ -6648,7 +6661,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-duel') load(); });
-  load();
+  if (isViewActive('view-duel')) load();
   subscribe();
 })();
 
@@ -6856,7 +6869,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-thisorthat') load(); });
-  load();
+  if (isViewActive('view-thisorthat')) load();
   subscribe();
 })();
 
@@ -6992,7 +7005,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-plant') load(); });
-  load();
+  if (isViewActive('view-plant')) load();
   subscribe();
 })();
 
@@ -7094,7 +7107,7 @@ async function loadTwoLocations() {
   });
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-pixelart') load(); });
-  load();
+  if (isViewActive('view-pixelart')) load();
   subscribe();
 })();
 
@@ -7169,7 +7182,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-wordchain') load(); });
-  load();
+  if (isViewActive('view-wordchain')) load();
   subscribe();
 })();
 
@@ -7303,7 +7316,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-ttt') load(); });
-  load();
+  if (isViewActive('view-ttt')) load();
   subscribe();
 })();
 
@@ -7372,7 +7385,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-moodring') load(); });
-  load();
+  if (isViewActive('view-moodring')) load();
   subscribe();
 })();
 
@@ -7461,7 +7474,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-notes') load(); });
-  load();
+  if (isViewActive('view-notes')) load();
   subscribe();
 })();
 
@@ -7626,7 +7639,7 @@ async function loadTwoLocations() {
   }
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-c4') load(); });
-  load();
+  if (isViewActive('view-c4')) load();
   subscribe();
 })();
 
