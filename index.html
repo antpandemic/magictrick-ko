@@ -258,7 +258,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -635,6 +635,11 @@
   }
   .sudoku-num-btn:active { background:rgba(var(--accent-rgb), 0.3); }
   .sudoku-num-erase { color:#ff8a8a; }
+
+  /* ---- date idea generator ---- */
+  .dateidea-emoji { font-size:44px; line-height:1; margin-bottom:6px; }
+  .dateidea-title { font-family:'Quicksand', sans-serif; font-weight:700; font-size:17px; color:#fff; margin-bottom:4px; }
+  .dateidea-desc { font-size:13.5px; color:rgba(255,255,255,0.75); line-height:1.4; }
 
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -2509,6 +2514,40 @@
     </div>
   </div>
 
+  <!-- ============================ DATE IDEA GENERATOR (subpage) ============================ -->
+  <div class="view" id="view-dateidea">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Date Idea</div>
+          <div class="page-sub" style="margin-bottom:0;">tap to roll a random date idea, live for both of you</div>
+        </div>
+      </div>
+
+      <div class="sudoku-diff-row" id="dateidea-cat-row">
+        <button class="sudoku-diff-btn active" data-cat="any">Surprise me</button>
+        <button class="sudoku-diff-btn" data-cat="cozy">Cozy</button>
+        <button class="sudoku-diff-btn" data-cat="adventurous">Adventurous</button>
+        <button class="sudoku-diff-btn" data-cat="foodie">Foodie</button>
+        <button class="sudoku-diff-btn" data-cat="budget">Budget</button>
+        <button class="sudoku-diff-btn" data-cat="fancy">Fancy</button>
+        <button class="sudoku-diff-btn" data-cat="outdoorsy">Outdoorsy</button>
+        <button class="sudoku-diff-btn" data-cat="rainyday">Rainy day</button>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="dateidea-emoji" id="dateidea-emoji">🎲</div>
+        <div class="dateidea-title" id="dateidea-title">tap "Roll an idea" to get started</div>
+        <div class="dateidea-desc" id="dateidea-desc"></div>
+        <div class="distance-cities" id="dateidea-meta" style="margin-top:8px;">&nbsp;</div>
+        <button class="draw-btn" id="dateidea-roll-btn" style="width:100%; margin-top:12px;">🎲 Roll an idea</button>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -2874,7 +2913,8 @@ const CONFIG = {
     { id: "view-moodring",  icon: "ring",        label: "Mood Ring",       sub: "just for fun, tap a color, get a silly reading",     ready: true },
     { id: "view-notes",     icon: "pin",         label: "Sticky Notes",    sub: "quick handwritten-style notes on a little corkboard", ready: true },
     { id: "view-c4",        icon: "grid",        label: "Connect Four",    sub: "the real one — drop discs, get four in a row, live",  ready: true },
-    { id: "view-sudoku",    icon: "grid3",       label: "Sudoku",          sub: "one shared puzzle, five difficulties, fill it in together", ready: true }
+    { id: "view-sudoku",    icon: "grid3",       label: "Sudoku",          sub: "one shared puzzle, five difficulties, fill it in together", ready: true },
+    { id: "view-dateidea",  icon: "compass",     label: "Date Idea",       sub: "tap to roll a random date idea, live for both of you",       ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -3167,6 +3207,7 @@ const SVG_ICONS = {
   trophy: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5h10v5.5a5 5 0 0 1-10 0V4.5Z"/><path d="M7 6H4.5A2.5 2.5 0 0 0 4.5 11H7M17 6h2.5A2.5 2.5 0 0 1 19.5 11H17"/><path d="M12 15v3.5M9 20.5h6"/></svg>`,
   card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="M3 9.5h18"/><path d="M12 13.6s-2.4-1.5-2.4-3.1a1.5 1.5 0 0 1 2.4-1.2 1.5 1.5 0 0 1 2.4 1.2c0 1.6-2.4 3.1-2.4 3.1Z" fill="currentColor" stroke="none"/></svg>`,
   dice: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.3" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>`,
+  compass: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-1.6 4.4-4.4 1.6 1.6-4.4z"/></svg>`,
   seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`,
   grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>`,
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
@@ -7990,12 +8031,16 @@ async function loadTwoLocations() {
     }
   }
 
+  // NOTE: always write to the fixed row (id=1), never game.id. There is only
+  // ever supposed to be ONE shared puzzle — writing by whatever id happened to
+  // be loaded locally is how two people could end up editing two different
+  // boards (see SETUP_ALL_TABLES.sql). Pinning to id=1 makes that impossible.
   async function setCell(i, val) {
     if (!game || !sb) return;
     if (game.puzzle[i] !== '0') return;
     const board = game.board || game.puzzle;
     const newBoard = board.slice(0, i) + val + board.slice(i + 1);
-    try { await sb.from('sudoku_state').update({ board: newBoard, updated_at: new Date().toISOString() }).eq('id', game.id); }
+    try { await sb.from('sudoku_state').update({ board: newBoard, updated_at: new Date().toISOString() }).eq('id', 1); }
     catch (err) { console.warn('sudoku cell save failed:', err); }
     load();
   }
@@ -8017,13 +8062,12 @@ async function loadTwoLocations() {
     if (!sb) return;
     selectedIdx = null;
     try {
-      if (game && game.id) {
-        await sb.from('sudoku_state').update({
-          puzzle, solution, board: puzzle, difficulty, updated_at: new Date().toISOString()
-        }).eq('id', game.id);
-      } else {
-        await sb.from('sudoku_state').insert({ puzzle, solution, board: puzzle, difficulty });
-      }
+      // upsert onto the fixed row id=1 — whether it exists yet or not, this
+      // always converges on a single shared puzzle instead of ever creating
+      // (or writing to) a second row.
+      await sb.from('sudoku_state').upsert({
+        id: 1, puzzle, solution, board: puzzle, difficulty, updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
     } catch (err) { console.warn('sudoku new puzzle failed:', err); }
     load();
   }
@@ -8036,14 +8080,20 @@ async function loadTwoLocations() {
   async function load() {
     if (!sb) { render(); return; }
     try {
-      const { data, error } = await sb.from('sudoku_state').select('*').order('id', { ascending: false }).limit(1);
-      if (!error && data && data.length) {
-        game = data[0];
+      // there is exactly one shared puzzle, always id=1 — no more "latest row"
+      // guessing, which is what let two near-simultaneous new-puzzle taps
+      // (or a stale local reference) show each of you a different board.
+      const { data, error } = await sb.from('sudoku_state').select('*').eq('id', 1).maybeSingle();
+      if (!error && data) {
+        game = data;
       } else if (!game) {
-        // first time anyone's opened this — seed a medium puzzle
+        // first time anyone's opened this — seed a medium puzzle. upsert
+        // (not insert) so that if both of you land here at the same moment,
+        // it still converges on one row instead of erroring or forking.
         const { puzzle, solution } = generatePuzzle('medium');
         const { data: created, error: cErr } = await sb.from('sudoku_state')
-          .insert({ puzzle, solution, board: puzzle, difficulty: 'medium' }).select().single();
+          .upsert({ id: 1, puzzle, solution, board: puzzle, difficulty: 'medium' }, { onConflict: 'id' })
+          .select().single();
         if (!cErr) game = created;
       }
     } catch (err) { console.warn('sudoku load failed:', err); }
@@ -8059,6 +8109,125 @@ async function loadTwoLocations() {
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-sudoku') load(); });
   if (isViewActive('view-sudoku')) load();
+  subscribe();
+})();
+
+// ---------- date idea generator (shared: whoever rolls, both of you see it) ----------
+(function () {
+  const rollBtn = document.getElementById('dateidea-roll-btn');
+  if (!rollBtn) return;
+  const catRow = document.getElementById('dateidea-cat-row');
+  const emojiEl = document.getElementById('dateidea-emoji');
+  const titleEl = document.getElementById('dateidea-title');
+  const descEl = document.getElementById('dateidea-desc');
+  const metaEl = document.getElementById('dateidea-meta');
+  const sb = getSb();
+
+  const NAME_KEY = 'lls_chat_name';
+  const getName = () => localStorage.getItem(NAME_KEY) || '';
+
+  let activeCat = 'any';
+  let current = null;
+
+  const IDEAS = [
+    { emoji: '🛋️', title: 'Blanket fort + bad movie night', desc: 'Pick the cheesiest movie you can find and build pillow walls around the couch.', cat: 'cozy' },
+    { emoji: '🍳', title: 'Breakfast-for-dinner night', desc: 'Pancakes, eggs, bacon — at 8pm, on purpose.', cat: 'cozy' },
+    { emoji: '🧩', title: 'Puzzle + hot chocolate', desc: 'Grab a 500-piece puzzle and see how far you get before you give up.', cat: 'cozy' },
+    { emoji: '📖', title: 'Read the same book, out loud, to each other', desc: 'Take turns reading a chapter each. Do the voices.', cat: 'cozy' },
+    { emoji: '🕯️', title: 'Candlelit home spa night', desc: 'Face masks, playlist, phones in the other room.', cat: 'cozy' },
+    { emoji: '🥾', title: 'Find a trail you\'ve never hiked', desc: 'Pick something new within an hour of home and just go.', cat: 'adventurous' },
+    { emoji: '🚗', title: 'No-destination road trip', desc: 'Pick a direction, drive for an hour, turn around whenever you feel like it.', cat: 'adventurous' },
+    { emoji: '🪂', title: 'Try the scary activity you keep putting off', desc: 'Zipline, indoor skydiving, via ferrata — whatever you two keep saying "someday" about.', cat: 'adventurous' },
+    { emoji: '🚲', title: 'Bike somewhere you\'d normally drive', desc: 'Pick a spot 30-45 minutes away and make the ride part of the date.', cat: 'adventurous' },
+    { emoji: '🧗', title: 'Indoor rock climbing', desc: 'Even if neither of you has climbed before — that\'s kind of the fun of it.', cat: 'adventurous' },
+    { emoji: '🍜', title: 'Order the weirdest thing on the menu', desc: 'Go to a restaurant you like and both order something you\'ve never tried.', cat: 'foodie' },
+    { emoji: '👩‍🍳', title: 'Cook a cuisine you\'ve never made', desc: 'Pick a country neither of you has cooked before and follow one recipe together.', cat: 'foodie' },
+    { emoji: '🍷', title: 'Blind taste test night', desc: 'Wine, cheese, chocolate, or hot sauce — rank them without knowing what\'s what.', cat: 'foodie' },
+    { emoji: '🍰', title: 'Dessert crawl', desc: 'Pick three dessert spots nearby and split something small at each.', cat: 'foodie' },
+    { emoji: '🥐', title: 'Bake something from scratch', desc: 'Bread, croissants, whatever looks intimidating on Pinterest — commit to it.', cat: 'foodie' },
+    { emoji: '🎬', title: 'Free movie night at home', desc: 'Whatever\'s already on a service you pay for, plus snacks you already have.', cat: 'budget' },
+    { emoji: '🚶', title: 'Walk and talk, no phones', desc: 'Pick a park or neighborhood, leave the phones in your pockets, just walk.', cat: 'budget' },
+    { emoji: '🎨', title: 'Draw each other', desc: 'Two minutes, no peeking until you\'re both done. Worst portrait wins something silly.', cat: 'budget' },
+    { emoji: '📻', title: 'Make a playlist for each other', desc: 'Each of you builds a 10-song playlist for the other, no explanations, just listen.', cat: 'budget' },
+    { emoji: '🃏', title: 'Learn a new card game', desc: 'Pick one neither of you knows and figure out the rules together.', cat: 'budget' },
+    { emoji: '🎩', title: 'Dress up for a regular Tuesday', desc: 'Actual outfits, actual reservations, treat a normal night like an occasion.', cat: 'fancy' },
+    { emoji: '🥂', title: 'Recreate your first date, upgraded', desc: 'Same idea as your first date, but with the budget and confidence you have now.', cat: 'fancy' },
+    { emoji: '🎭', title: 'Get tickets to a show', desc: 'Theater, comedy, live music — something you\'d normally say "maybe next time" to.', cat: 'fancy' },
+    { emoji: '🏨', title: 'Book a night away, even close by', desc: 'A nice hotel 20 minutes from home still counts as a trip.', cat: 'fancy' },
+    { emoji: '🌅', title: 'Watch the sunrise (or sunset) somewhere new', desc: 'Pick a spot you\'ve never watched the sky from and bring coffee or a blanket.', cat: 'outdoorsy' },
+    { emoji: '🏕️', title: 'Backyard or balcony camping', desc: 'Tent, sleeping bags, string lights — doesn\'t matter if you have a yard or not.', cat: 'outdoorsy' },
+    { emoji: '🛶', title: 'Rent something you paddle', desc: 'Kayak, canoe, paddleboard — whatever\'s nearby and rentable by the hour.', cat: 'outdoorsy' },
+    { emoji: '🌳', title: 'Picnic somewhere with a view', desc: 'Simple food, a blanket, and a spot you\'ve been meaning to check out.', cat: 'outdoorsy' },
+    { emoji: '🌧️', title: 'Museum or gallery hop', desc: 'Perfect for a rainy day — pick one you\'ve never been to, even a small one.', cat: 'rainyday' },
+    { emoji: '☕', title: 'Café hop and journal', desc: 'Two coffee shops, one hour each, just sit and talk or write.', cat: 'rainyday' },
+    { emoji: '🧶', title: 'Learn a small skill together from a video', desc: 'Knitting, origami, a magic trick — anything you can learn in one sitting.', cat: 'rainyday' },
+    { emoji: '🎮', title: 'Co-op video game marathon', desc: 'Pick a two-player game and see how far you get without arguing.', cat: 'rainyday' },
+    { emoji: '📸', title: 'Photo scavenger hunt around the house', desc: 'Write ten weird photo prompts, split up, compare results.', cat: 'rainyday' },
+  ];
+
+  function pickIdea(cat) {
+    const pool = cat === 'any' ? IDEAS : IDEAS.filter(i => i.cat === cat);
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function render() {
+    if (!current) return;
+    emojiEl.textContent = current.idea_emoji || '🎲';
+    titleEl.textContent = current.idea_title || 'tap "Roll an idea" to get started';
+    descEl.textContent = current.idea_desc || '';
+    metaEl.textContent = current.rolled_by ? `rolled by ${current.rolled_by}` : '\u00A0';
+  }
+
+  catRow.querySelectorAll('.sudoku-diff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeCat = btn.dataset.cat;
+      catRow.querySelectorAll('.sudoku-diff-btn').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  async function roll() {
+    const idea = pickIdea(activeCat);
+    const row = {
+      id: 1,
+      idea_title: idea.title,
+      idea_desc: idea.desc,
+      idea_emoji: idea.emoji,
+      category: activeCat,
+      rolled_by: getName() || 'someone',
+      updated_at: new Date().toISOString()
+    };
+    current = row;
+    render();
+    if (!sb) return;
+    try {
+      // same fixed-row upsert pattern as sudoku: always id=1, so a roll from
+      // either phone always converges on the same idea for both of you.
+      await sb.from('date_idea_state').upsert(row, { onConflict: 'id' });
+    } catch (err) { console.warn('date idea roll failed:', err); }
+  }
+
+  rollBtn.addEventListener('click', roll);
+
+  async function load() {
+    if (!sb) return;
+    try {
+      const { data, error } = await sb.from('date_idea_state').select('*').eq('id', 1).maybeSingle();
+      if (!error && data && data.idea_title) {
+        current = { idea_title: data.idea_title, idea_desc: data.idea_desc, idea_emoji: data.idea_emoji, rolled_by: data.rolled_by };
+        render();
+      }
+    } catch (err) { console.warn('date idea load failed:', err); }
+  }
+
+  function subscribe() {
+    if (!sb) return;
+    sb.channel('date_idea_state_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'date_idea_state' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-dateidea') load(); });
+  if (isViewActive('view-dateidea')) load();
   subscribe();
 })();
 
