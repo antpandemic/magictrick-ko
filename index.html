@@ -258,7 +258,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4 {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -600,6 +600,41 @@
   .c4-cell.r { background:radial-gradient(circle at 35% 30%, #ff8a8a, #e23c3c 70%); }
   .c4-cell.y { background:radial-gradient(circle at 35% 30%, #ffe98a, #f0c22c 70%); }
   .c4-cell.win { box-shadow:0 0 0 3px #fff inset; }
+
+  /* ---- sudoku ---- */
+  .sudoku-diff-row { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin-top:8px; }
+  .sudoku-diff-btn {
+    padding:7px 12px; border-radius:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+    color:rgba(255,255,255,0.7); font-size:12px; font-family:'Quicksand', sans-serif; font-weight:600;
+  }
+  .sudoku-diff-btn:active { transform:scale(0.94); }
+  .sudoku-diff-btn.active { background:rgba(var(--accent-rgb), 0.35); border-color:var(--accent); color:#fff; }
+  .sudoku-grid {
+    display:grid; grid-template-columns:repeat(9, 1fr); grid-template-rows:repeat(9, 1fr);
+    width:288px; height:288px; margin:6px auto 0; background:#1e2a44; border-radius:10px;
+    border:2px solid rgba(255,255,255,0.4); overflow:hidden;
+  }
+  .sudoku-cell {
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Quicksand', sans-serif; font-size:14px; font-weight:600;
+    background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);
+    color:#fff; cursor:pointer;
+  }
+  .sudoku-cell:nth-child(3n) { border-right:2px solid rgba(255,255,255,0.4); }
+  .sudoku-cell:nth-child(9n+1) { border-left:2px solid rgba(255,255,255,0.4); }
+  .sudoku-row-3 { border-bottom:2px solid rgba(255,255,255,0.4); }
+  .sudoku-cell.given { color:rgba(255,255,255,0.55); background:rgba(255,255,255,0.02); cursor:default; }
+  .sudoku-cell.selected { background:rgba(var(--accent-rgb), 0.35); }
+  .sudoku-cell.conflict { color:#ff6b6b; }
+  .sudoku-cell.solved-flash { animation:sudokuSolved .6s ease; }
+  @keyframes sudokuSolved { 0%{ background:rgba(122,209,150,0.6);} 100%{ background:rgba(255,255,255,0.04);} }
+  .sudoku-numpad { display:grid; grid-template-columns:repeat(5, 1fr); gap:6px; width:288px; margin:10px auto 0; }
+  .sudoku-num-btn {
+    height:34px; border-radius:8px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15);
+    color:#fff; font-size:15px; font-family:'Quicksand', sans-serif; font-weight:700;
+  }
+  .sudoku-num-btn:active { background:rgba(var(--accent-rgb), 0.3); }
+  .sudoku-num-erase { color:#ff8a8a; }
 
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -2430,6 +2465,50 @@
     </div>
   </div>
 
+  <!-- ============================ SUDOKU (subpage) ============================ -->
+  <div class="view" id="view-sudoku">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Sudoku</div>
+          <div class="page-sub" style="margin-bottom:0;">one shared puzzle, fill it in together, live</div>
+        </div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="surprise-label">Difficulty</div>
+        <div class="sudoku-diff-row" id="sudoku-diff-row">
+          <button class="sudoku-diff-btn" data-diff="easy">Easy</button>
+          <button class="sudoku-diff-btn" data-diff="medium">Medium</button>
+          <button class="sudoku-diff-btn" data-diff="hard">Hard</button>
+          <button class="sudoku-diff-btn" data-diff="difficult">Difficult</button>
+          <button class="sudoku-diff-btn" data-diff="extreme">Extreme</button>
+        </div>
+        <div class="distance-cities" id="sudoku-status-text" style="margin-top:10px;">loading...</div>
+      </div>
+
+      <div class="surprise-card surprise-card-center">
+        <div class="sudoku-grid" id="sudoku-grid"></div>
+        <div class="sudoku-numpad" id="sudoku-numpad">
+          <button class="sudoku-num-btn" data-num="1">1</button>
+          <button class="sudoku-num-btn" data-num="2">2</button>
+          <button class="sudoku-num-btn" data-num="3">3</button>
+          <button class="sudoku-num-btn" data-num="4">4</button>
+          <button class="sudoku-num-btn" data-num="5">5</button>
+          <button class="sudoku-num-btn" data-num="6">6</button>
+          <button class="sudoku-num-btn" data-num="7">7</button>
+          <button class="sudoku-num-btn" data-num="8">8</button>
+          <button class="sudoku-num-btn" data-num="9">9</button>
+          <button class="sudoku-num-btn sudoku-num-erase" data-num="0">✕</button>
+        </div>
+        <button class="draw-btn" id="sudoku-newgame-btn" style="width:100%; margin-top:12px;">New puzzle</button>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -2794,7 +2873,8 @@ const CONFIG = {
     { id: "view-ttt",       icon: "grid3",       label: "Tic-Tac-Toe",     sub: "actual live turn-based game, keeps score forever",  ready: true },
     { id: "view-moodring",  icon: "ring",        label: "Mood Ring",       sub: "just for fun, tap a color, get a silly reading",     ready: true },
     { id: "view-notes",     icon: "pin",         label: "Sticky Notes",    sub: "quick handwritten-style notes on a little corkboard", ready: true },
-    { id: "view-c4",        icon: "grid",        label: "Connect Four",    sub: "the real one — drop discs, get four in a row, live",  ready: true }
+    { id: "view-c4",        icon: "grid",        label: "Connect Four",    sub: "the real one — drop discs, get four in a row, live",  ready: true },
+    { id: "view-sudoku",    icon: "grid3",       label: "Sudoku",          sub: "one shared puzzle, five difficulties, fill it in together", ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -7746,6 +7826,239 @@ async function loadTwoLocations() {
 
   window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-c4') load(); });
   if (isViewActive('view-c4')) load();
+  subscribe();
+})();
+
+// ---------- sudoku (shared 9x9 puzzle, five difficulty levels) ----------
+(function () {
+  const gridEl = document.getElementById('sudoku-grid');
+  if (!gridEl) return;
+  const diffRow = document.getElementById('sudoku-diff-row');
+  const statusText = document.getElementById('sudoku-status-text');
+  const numpad = document.getElementById('sudoku-numpad');
+  const newPuzzleBtn = document.getElementById('sudoku-newgame-btn');
+  const sb = getSb();
+  let game = null;
+  let selectedIdx = null;
+
+  const CLUES_BY_DIFFICULTY = { easy: 42, medium: 34, hard: 28, difficult: 24, extreme: 20 };
+  const idx = (r, c) => r * 9 + c;
+
+  function isSafe(grid, r, c, v) {
+    for (let i = 0; i < 9; i++) {
+      if (grid[idx(r, i)] === v) return false;
+      if (grid[idx(i, c)] === v) return false;
+    }
+    const br = r - (r % 3), bc = c - (c % 3);
+    for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) {
+      if (grid[idx(br + i, bc + j)] === v) return false;
+    }
+    return true;
+  }
+
+  function shuffled(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function generateSolved() {
+    const grid = new Array(81).fill(0);
+    function fill(pos) {
+      if (pos === 81) return true;
+      const r = Math.floor(pos / 9), c = pos % 9;
+      for (const v of shuffled([1, 2, 3, 4, 5, 6, 7, 8, 9])) {
+        if (isSafe(grid, r, c, v)) {
+          grid[idx(r, c)] = v;
+          if (fill(pos + 1)) return true;
+          grid[idx(r, c)] = 0;
+        }
+      }
+      return false;
+    }
+    fill(0);
+    return grid;
+  }
+
+  function countSolutions(grid, limit) {
+    let count = 0;
+    const g = grid.slice();
+    function solve(pos) {
+      if (count >= limit) return;
+      if (pos === 81) { count++; return; }
+      const r = Math.floor(pos / 9), c = pos % 9;
+      if (g[idx(r, c)] !== 0) { solve(pos + 1); return; }
+      for (let v = 1; v <= 9; v++) {
+        if (count >= limit) return;
+        if (isSafe(g, r, c, v)) {
+          g[idx(r, c)] = v;
+          solve(pos + 1);
+          g[idx(r, c)] = 0;
+        }
+      }
+    }
+    solve(0);
+    return count;
+  }
+
+  // removes clues one at a time, only keeping a removal if the puzzle still
+  // has exactly one solution — gives up gracefully after a few seconds so a
+  // request for "extreme" never freezes the page
+  function generatePuzzle(difficulty) {
+    const solved = generateSolved();
+    const puzzle = solved.slice();
+    const target = CLUES_BY_DIFFICULTY[difficulty] || 34;
+    const order = shuffled([...Array(81).keys()]);
+    const deadline = Date.now() + 4000;
+    let clues = 81;
+    for (const i of order) {
+      if (clues <= target || Date.now() > deadline) break;
+      const backup = puzzle[i];
+      puzzle[i] = 0;
+      if (countSolutions(puzzle, 2) !== 1) puzzle[i] = backup;
+      else clues--;
+    }
+    return { puzzle: puzzle.join(''), solution: solved.join('') };
+  }
+
+  // build 81 cells once
+  const cellEls = [];
+  for (let r = 0; r < 9; r++) {
+    for (let c = 0; c < 9; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'sudoku-cell' + (r === 2 || r === 5 ? ' sudoku-row-3' : '');
+      cell.dataset.i = idx(r, c);
+      cell.addEventListener('click', () => selectCell(idx(r, c)));
+      gridEl.appendChild(cell);
+      cellEls.push(cell);
+    }
+  }
+
+  function selectCell(i) {
+    if (!game) return;
+    if (game.puzzle[i] !== '0') return; // given clue, can't edit
+    selectedIdx = i;
+    render();
+  }
+
+  function conflictSet(board) {
+    const bad = new Set();
+    function checkGroup(cells) {
+      const seen = {};
+      cells.forEach(i => {
+        const v = board[i];
+        if (v === '0') return;
+        if (seen[v] !== undefined) { bad.add(i); bad.add(seen[v]); }
+        else seen[v] = i;
+      });
+    }
+    for (let r = 0; r < 9; r++) checkGroup([...Array(9).keys()].map(c => idx(r, c)));
+    for (let c = 0; c < 9; c++) checkGroup([...Array(9).keys()].map(r => idx(r, c)));
+    for (let br = 0; br < 9; br += 3) for (let bc = 0; bc < 9; bc += 3) {
+      const cells = [];
+      for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) cells.push(idx(br + i, bc + j));
+      checkGroup(cells);
+    }
+    return bad;
+  }
+
+  function render() {
+    if (!game) { statusText.textContent = 'loading...'; return; }
+    diffRow.querySelectorAll('.sudoku-diff-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.diff === game.difficulty);
+    });
+    const board = game.board || game.puzzle;
+    const bad = conflictSet(board);
+    cellEls.forEach((cell, i) => {
+      const v = board[i];
+      cell.textContent = v === '0' ? '' : v;
+      cell.className = 'sudoku-cell'
+        + (Math.floor(i / 9) === 2 || Math.floor(i / 9) === 5 ? ' sudoku-row-3' : '')
+        + (game.puzzle[i] !== '0' ? ' given' : '')
+        + (i === selectedIdx ? ' selected' : '')
+        + (bad.has(i) ? ' conflict' : '');
+    });
+    if (!board.includes('0') && board === game.solution) {
+      statusText.textContent = '🎉 solved! nicely done, both of you';
+      cellEls.forEach(c => c.classList.add('solved-flash'));
+    } else if (!board.includes('0')) {
+      statusText.textContent = 'board is full but something\'s off — check the red cells';
+    } else {
+      statusText.textContent = `${game.difficulty} · ${board.split('').filter(v => v !== '0').length}/81 filled`;
+    }
+  }
+
+  async function setCell(i, val) {
+    if (!game || !sb) return;
+    if (game.puzzle[i] !== '0') return;
+    const board = game.board || game.puzzle;
+    const newBoard = board.slice(0, i) + val + board.slice(i + 1);
+    try { await sb.from('sudoku_state').update({ board: newBoard, updated_at: new Date().toISOString() }).eq('id', game.id); }
+    catch (err) { console.warn('sudoku cell save failed:', err); }
+    load();
+  }
+
+  numpad.querySelectorAll('.sudoku-num-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (selectedIdx === null) return;
+      setCell(selectedIdx, btn.dataset.num);
+    });
+  });
+
+  async function newPuzzle(difficulty) {
+    statusText.textContent = 'shuffling a new puzzle…';
+    diffRow.querySelectorAll('.sudoku-diff-btn').forEach(b => b.disabled = true);
+    // let the "shuffling…" text actually paint before the generator blocks the thread
+    await new Promise(res => setTimeout(res, 30));
+    const { puzzle, solution } = generatePuzzle(difficulty);
+    diffRow.querySelectorAll('.sudoku-diff-btn').forEach(b => b.disabled = false);
+    if (!sb) return;
+    selectedIdx = null;
+    try {
+      if (game && game.id) {
+        await sb.from('sudoku_state').update({
+          puzzle, solution, board: puzzle, difficulty, updated_at: new Date().toISOString()
+        }).eq('id', game.id);
+      } else {
+        await sb.from('sudoku_state').insert({ puzzle, solution, board: puzzle, difficulty });
+      }
+    } catch (err) { console.warn('sudoku new puzzle failed:', err); }
+    load();
+  }
+
+  diffRow.querySelectorAll('.sudoku-diff-btn').forEach(btn => {
+    btn.addEventListener('click', () => newPuzzle(btn.dataset.diff));
+  });
+  newPuzzleBtn.addEventListener('click', () => newPuzzle((game && game.difficulty) || 'medium'));
+
+  async function load() {
+    if (!sb) { render(); return; }
+    try {
+      const { data, error } = await sb.from('sudoku_state').select('*').order('id', { ascending: false }).limit(1);
+      if (!error && data && data.length) {
+        game = data[0];
+      } else if (!game) {
+        // first time anyone's opened this — seed a medium puzzle
+        const { puzzle, solution } = generatePuzzle('medium');
+        const { data: created, error: cErr } = await sb.from('sudoku_state')
+          .insert({ puzzle, solution, board: puzzle, difficulty: 'medium' }).select().single();
+        if (!cErr) game = created;
+      }
+    } catch (err) { console.warn('sudoku load failed:', err); }
+    render();
+  }
+
+  function subscribe() {
+    if (!sb) return;
+    sb.channel('sudoku_state_live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sudoku_state' }, () => load())
+      .subscribe();
+  }
+
+  window.addEventListener('viewchange', (e) => { if (e.detail.id === 'view-sudoku') load(); });
+  if (isViewActive('view-sudoku')) load();
   subscribe();
 })();
 
