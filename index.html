@@ -258,7 +258,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea, #view-fight {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -640,6 +640,125 @@
   .dateidea-emoji { font-size:44px; line-height:1; margin-bottom:6px; }
   .dateidea-title { font-family:'Quicksand', sans-serif; font-weight:700; font-size:17px; color:#fff; margin-bottom:4px; }
   .dateidea-desc { font-size:13.5px; color:rgba(255,255,255,0.75); line-height:1.4; }
+
+  /* ---- sweetheart showdown (boxing) ---- */
+  .fight-p1 { --fc: var(--accent); }
+  .fight-p2 { --fc: #4ecdc4; }
+
+  .fight-setup-title {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:24px; color:#fff; text-align:center; margin:6px 0 4px;
+  }
+  .fight-setup-sub {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px;
+    color:rgba(255,255,255,0.7); text-align:center; margin-bottom:20px;
+  }
+  .fight-mode-row { display:flex; gap:8px; margin-bottom:18px; }
+  .fight-mode-btn {
+    flex:1; padding:10px 6px; border-radius:12px; text-align:center;
+    background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.12);
+    color:rgba(255,255,255,0.65); font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px;
+  }
+  .fight-mode-btn.active { background:rgba(var(--accent-rgb),0.22); border-color:var(--accent); color:#fff; }
+  .fight-side-row { display:flex; gap:10px; }
+  .fight-side-btn { transition:transform .1s ease, opacity .15s ease; }
+  .fight-side-btn.picked { box-shadow:0 0 0 2px #fff inset; }
+  .fight-side-btn:disabled { opacity:0.35; }
+  .fight-live-status {
+    text-align:center; min-height:20px; margin:14px 0; font-family:'Quicksand', sans-serif;
+    font-size:13px; color:rgba(255,255,255,0.75); font-weight:600;
+  }
+  .fight-live-cancel {
+    display:block; margin:10px auto 0; font-family:'Quicksand', sans-serif; font-size:12px;
+    color:rgba(255,255,255,0.45); text-decoration:underline;
+  }
+  .fight-name-row { display:flex; gap:10px; margin-bottom:10px; }
+  .fight-name-row input { flex:1; text-align:center; }
+  .fight-name-row input.fight-p1 { box-shadow:inset 0 0 0 1.5px rgba(255,77,109,0.55); }
+  .fight-name-row input.fight-p2 { box-shadow:inset 0 0 0 1.5px rgba(78,205,196,0.55); }
+  .fight-rules {
+    display:flex; flex-direction:column; gap:6px; margin:16px 0 20px;
+    font-size:12.5px; color:rgba(255,255,255,0.6); line-height:1.5;
+  }
+  .fight-rules b { color:rgba(255,255,255,0.85); }
+
+  .fight-arena-wrap {
+    position:relative; width:100%; aspect-ratio:16/10; border-radius:18px; overflow:hidden;
+    background:#1a0509; box-shadow:0 6px 24px rgba(0,0,0,0.35); margin-bottom:14px;
+    touch-action:none; user-select:none;
+  }
+  .fight-canvas { width:100%; height:100%; display:block; }
+
+  .fight-hud {
+    position:absolute; top:0; left:0; right:0; padding:10px 10px 0; display:flex;
+    align-items:flex-start; gap:8px; pointer-events:none;
+  }
+  .fight-hp-box { flex:1; min-width:0; }
+  .fight-hp-name {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:11px; color:#fff;
+    margin-bottom:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .fight-p2 .fight-hp-name { text-align:right; }
+  .fight-hp-track {
+    height:9px; border-radius:6px; background:rgba(0,0,0,0.45);
+    border:1px solid rgba(255,255,255,0.15); overflow:hidden;
+  }
+  .fight-hp-fill {
+    height:100%; width:100%; background:linear-gradient(90deg, var(--fc), #fff8);
+    transition:width .25s ease;
+  }
+  .fight-p2 .fight-hp-fill { margin-left:auto; background:linear-gradient(270deg, var(--fc), #fff8); }
+  .fight-round-dots {
+    position:absolute; top:34px; left:50%; transform:translateX(-50%);
+    display:flex; gap:5px; pointer-events:none;
+  }
+  .fight-round-dot { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,0.25); }
+  .fight-round-dot.won { background:#fff; box-shadow:0 0 6px rgba(255,255,255,0.8); }
+
+  .fight-msg-overlay {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:6px; pointer-events:none; opacity:0; transition:opacity .2s ease;
+    text-align:center; padding:0 20px;
+  }
+  .fight-msg-overlay.show { opacity:1; }
+  .fight-msg-main {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:26px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.6);
+  }
+  .fight-msg-sub {
+    font-family:'Quicksand', sans-serif; font-weight:600; font-size:13px;
+    color:rgba(255,255,255,0.85); text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  .fight-controls { position:absolute; bottom:10px; left:10px; right:10px; display:flex; justify-content:space-between; }
+  .fight-ctrl-cluster { display:flex; align-items:flex-end; gap:8px; }
+  .fight-ctrl-dpad { display:flex; gap:6px; }
+  .fight-ctrl-btn {
+    width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.14); backdrop-filter:blur(4px); border:1.5px solid rgba(255,255,255,0.28);
+    color:#fff; font-size:17px; -webkit-tap-highlight-color:transparent;
+  }
+  .fight-ctrl-btn:active { transform:scale(0.88); background:rgba(255,255,255,0.28); }
+  .fight-ctrl-btn.fight-punch { width:54px; height:54px; font-size:21px; background:rgba(var(--fc-rgb,255,77,109),0.35); border-color:var(--fc); }
+  .fight-p1 .fight-ctrl-btn.fight-punch { --fc-rgb:255,77,109; }
+  .fight-p2 .fight-ctrl-btn.fight-punch { --fc-rgb:78,205,196; }
+  .fight-ctrl-btn.fight-block { background:rgba(255,255,255,0.1); }
+  .fight-ctrl-btn.fight-block.active { background:rgba(255,255,255,0.35); }
+
+  .fight-result-screen {
+    position:absolute; inset:0; background:rgba(15,4,7,0.88); backdrop-filter:blur(3px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    opacity:0; pointer-events:none; transition:opacity .25s ease; text-align:center; padding:0 24px;
+  }
+  .fight-result-screen.show { opacity:1; pointer-events:auto; }
+  .fight-result-title {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:28px; color:#fff;
+  }
+  .fight-result-sub { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:16px; color:rgba(255,255,255,0.75); }
+  .fight-result-btns { display:flex; gap:10px; margin-top:6px; }
+
+  .fight-hint { text-align:center; font-size:11.5px; color:rgba(255,255,255,0.4); margin-top:2px; }
 
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -2548,6 +2667,111 @@
     </div>
   </div>
 
+  <!-- ============================ SWEETHEART SHOWDOWN (boxing, subpage) ============================ -->
+  <div class="view" id="view-fight">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Sweetheart Showdown</div>
+          <div class="page-sub" style="margin-bottom:0;">pass one phone back and forth — first to 2 rounds wins</div>
+        </div>
+      </div>
+
+      <div id="fight-setup">
+        <div class="fight-setup-title">Ready to throw hands? 🥊</div>
+        <div class="fight-setup-sub">lovingly, of course</div>
+
+        <div class="fight-mode-row" id="fight-mode-row">
+          <button class="fight-mode-btn active" data-mode="local">📱 Same phone</button>
+          <button class="fight-mode-btn" data-mode="live">📡 Different phones (live)</button>
+        </div>
+
+        <!-- ---- same-phone pass & play ---- -->
+        <div id="fight-panel-local">
+          <div class="fight-name-row">
+            <input type="text" id="fight-name-p1" class="map-edit-input fight-p1" maxlength="14" placeholder="Player 1" />
+            <input type="text" id="fight-name-p2" class="map-edit-input fight-p2" maxlength="14" placeholder="Player 2" />
+          </div>
+          <div class="fight-rules">
+            <div><b>One phone, two players:</b> Player 1 fights on the left, Player 2 on the right. Prop it up between you or pass it back and forth.</div>
+            <div><b>Move</b> with the arrow buttons, tap <b>👊</b> to punch, hold <b>🛡</b> to block. First to win 2 rounds wins the match.</div>
+          </div>
+          <button class="draw-btn" id="fight-start-btn" style="width:100%;">Start the fight</button>
+        </div>
+
+        <!-- ---- live, two separate phones ---- -->
+        <div id="fight-panel-live" style="display:none;">
+          <input type="text" id="fight-live-name" class="map-edit-input" maxlength="14" placeholder="Your name" style="margin-bottom:10px;" />
+          <div class="fight-rules" style="margin-bottom:14px;">
+            <div>One of you is <b>Player 1</b> (hosts the match), the other is <b>Player 2</b> (joins it). Doesn't matter who's who — just pick different ones on each phone.</div>
+          </div>
+          <div class="fight-side-row">
+            <button class="draw-btn fight-side-btn fight-p1" id="fight-side-p1-btn" style="flex:1;">I'm Player 1</button>
+            <button class="draw-btn fight-side-btn fight-p2" id="fight-side-p2-btn" style="flex:1; background:rgba(78,205,196,0.22);">I'm Player 2</button>
+          </div>
+          <div class="fight-live-status" id="fight-live-status">&nbsp;</div>
+          <button class="draw-btn" id="fight-live-start-btn" style="width:100%; display:none;">Start the fight</button>
+          <button class="fight-live-cancel" id="fight-live-cancel-btn" style="display:none;">cancel</button>
+        </div>
+      </div>
+
+      <div id="fight-arena" style="display:none;">
+        <div class="fight-arena-wrap" id="fight-arena-wrap">
+          <canvas class="fight-canvas" id="fight-canvas"></canvas>
+
+          <div class="fight-hud">
+            <div class="fight-hp-box fight-p1">
+              <div class="fight-hp-name" id="fight-hp-name-p1">Player 1</div>
+              <div class="fight-hp-track"><div class="fight-hp-fill" id="fight-hp-fill-p1"></div></div>
+            </div>
+            <div class="fight-hp-box fight-p2">
+              <div class="fight-hp-name" id="fight-hp-name-p2">Player 2</div>
+              <div class="fight-hp-track"><div class="fight-hp-fill" id="fight-hp-fill-p2"></div></div>
+            </div>
+          </div>
+          <div class="fight-round-dots" id="fight-round-dots"></div>
+
+          <div class="fight-msg-overlay" id="fight-msg-overlay">
+            <div class="fight-msg-main" id="fight-msg-main"></div>
+            <div class="fight-msg-sub" id="fight-msg-sub"></div>
+          </div>
+
+          <div class="fight-controls">
+            <div class="fight-ctrl-cluster fight-p1">
+              <div class="fight-ctrl-dpad">
+                <button class="fight-ctrl-btn" data-act="p1-left" aria-label="Player 1 left">◀</button>
+                <button class="fight-ctrl-btn" data-act="p1-right" aria-label="Player 1 right">▶</button>
+              </div>
+              <button class="fight-ctrl-btn fight-block" data-act="p1-block" aria-label="Player 1 block">🛡</button>
+              <button class="fight-ctrl-btn fight-punch" data-act="p1-punch" aria-label="Player 1 punch">👊</button>
+            </div>
+            <div class="fight-ctrl-cluster fight-p2">
+              <div class="fight-ctrl-dpad">
+                <button class="fight-ctrl-btn" data-act="p2-left" aria-label="Player 2 left">◀</button>
+                <button class="fight-ctrl-btn" data-act="p2-right" aria-label="Player 2 right">▶</button>
+              </div>
+              <button class="fight-ctrl-btn fight-block" data-act="p2-block" aria-label="Player 2 block">🛡</button>
+              <button class="fight-ctrl-btn fight-punch" data-act="p2-punch" aria-label="Player 2 punch">👊</button>
+            </div>
+          </div>
+
+          <div class="fight-result-screen" id="fight-result-screen">
+            <div class="fight-result-title" id="fight-result-title"></div>
+            <div class="fight-result-sub" id="fight-result-sub"></div>
+            <div class="fight-result-btns">
+              <button class="draw-btn" id="fight-rematch-btn">Rematch</button>
+              <button class="draw-btn" id="fight-menu-btn" style="background:rgba(255,255,255,0.14);">Change names</button>
+            </div>
+          </div>
+        </div>
+        <div class="fight-hint">on a keyboard: A / D / W / S for Player 1 · arrow keys + ↑ / ↓ for Player 2</div>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -2914,7 +3138,8 @@ const CONFIG = {
     { id: "view-notes",     icon: "pin",         label: "Sticky Notes",    sub: "quick handwritten-style notes on a little corkboard", ready: true },
     { id: "view-c4",        icon: "grid",        label: "Connect Four",    sub: "the real one — drop discs, get four in a row, live",  ready: true },
     { id: "view-sudoku",    icon: "grid3",       label: "Sudoku",          sub: "one shared puzzle, five difficulties, fill it in together", ready: true },
-    { id: "view-dateidea",  icon: "compass",     label: "Date Idea",       sub: "tap to roll a random date idea, live for both of you",       ready: true }
+    { id: "view-dateidea",  icon: "compass",     label: "Date Idea",       sub: "tap to roll a random date idea, live for both of you",       ready: true },
+    { id: "view-fight",     icon: "glove",       label: "Sweetheart Showdown", sub: "2-player boxing, pass one phone back and forth",         ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -3208,6 +3433,7 @@ const SVG_ICONS = {
   card: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.2"/><path d="M3 9.5h18"/><path d="M12 13.6s-2.4-1.5-2.4-3.1a1.5 1.5 0 0 1 2.4-1.2 1.5 1.5 0 0 1 2.4 1.2c0 1.6-2.4 3.1-2.4 3.1Z" fill="currentColor" stroke="none"/></svg>`,
   dice: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.3" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>`,
   compass: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-1.6 4.4-4.4 1.6 1.6-4.4z"/></svg>`,
+  glove: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12.5V7a2.2 2.2 0 0 1 4.4 0v3.2M11.4 10.2V6a2.1 2.1 0 0 1 4.2 0v4.2M15.6 10.3V7.3a2 2 0 0 1 4 0V14c0 3.6-2.6 6.5-6.6 6.5H11c-2 0-3.2-.7-4.4-2.1L3.5 15a1.6 1.6 0 0 1 2.2-2.3L7 14"/></svg>`,
   seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`,
   grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>`,
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
@@ -8031,17 +8257,17 @@ async function loadTwoLocations() {
     }
   }
 
-  // NOTE: always write to the fixed row (id=1), never game.id. There is only
-  // ever supposed to be ONE shared puzzle — writing by whatever id happened to
-  // be loaded locally is how two people could end up editing two different
-  // boards (see SETUP_ALL_TABLES.sql). Pinning to id=1 makes that impossible.
+  // NOTE: this calls a Postgres function (set_sudoku_cell) that updates exactly
+  // one character server-side. Do NOT go back to "read the board, splice one
+  // char client-side, write the whole board back" — that's what let two
+  // near-simultaneous taps silently erase each other's numbers (see SQL file).
   async function setCell(i, val) {
     if (!game || !sb) return;
     if (game.puzzle[i] !== '0') return;
-    const board = game.board || game.puzzle;
-    const newBoard = board.slice(0, i) + val + board.slice(i + 1);
-    try { await sb.from('sudoku_state').update({ board: newBoard, updated_at: new Date().toISOString() }).eq('id', 1); }
-    catch (err) { console.warn('sudoku cell save failed:', err); }
+    try {
+      const { error } = await sb.rpc('set_sudoku_cell', { p_pos: i, p_val: val });
+      if (error) throw error;
+    } catch (err) { console.warn('sudoku cell save failed:', err); }
     load();
   }
 
@@ -8231,6 +8457,671 @@ async function loadTwoLocations() {
   subscribe();
 })();
 
+// ---------- sweetheart showdown: 2-player boxing, same phone OR live across two phones ----------
+(function () {
+  const setupEl = document.getElementById('fight-setup');
+  const arenaEl = document.getElementById('fight-arena');
+  if (!setupEl || !arenaEl) return;
+
+  const canvas = document.getElementById('fight-canvas');
+  const ctx = canvas.getContext('2d');
+  const wrapEl = document.getElementById('fight-arena-wrap');
+  const nameP1Input = document.getElementById('fight-name-p1');
+  const nameP2Input = document.getElementById('fight-name-p2');
+  const startBtn = document.getElementById('fight-start-btn');
+  const hpFillP1 = document.getElementById('fight-hp-fill-p1');
+  const hpFillP2 = document.getElementById('fight-hp-fill-p2');
+  const hpNameP1El = document.getElementById('fight-hp-name-p1');
+  const hpNameP2El = document.getElementById('fight-hp-name-p2');
+  const roundDotsEl = document.getElementById('fight-round-dots');
+  const msgOverlay = document.getElementById('fight-msg-overlay');
+  const msgMain = document.getElementById('fight-msg-main');
+  const msgSub = document.getElementById('fight-msg-sub');
+  const resultScreen = document.getElementById('fight-result-screen');
+  const resultTitle = document.getElementById('fight-result-title');
+  const resultSub = document.getElementById('fight-result-sub');
+  const rematchBtn = document.getElementById('fight-rematch-btn');
+  const menuBtn = document.getElementById('fight-menu-btn');
+
+  const modeRow = document.getElementById('fight-mode-row');
+  const panelLocal = document.getElementById('fight-panel-local');
+  const panelLive = document.getElementById('fight-panel-live');
+  const liveNameInput = document.getElementById('fight-live-name');
+  const sideP1Btn = document.getElementById('fight-side-p1-btn');
+  const sideP2Btn = document.getElementById('fight-side-p2-btn');
+  const liveStatusEl = document.getElementById('fight-live-status');
+  const liveStartBtn = document.getElementById('fight-live-start-btn');
+  const liveCancelBtn = document.getElementById('fight-live-cancel-btn');
+  const clusterP1 = document.querySelector('.fight-ctrl-cluster.fight-p1');
+  const clusterP2 = document.querySelector('.fight-ctrl-cluster.fight-p2');
+
+  // prefill Player 1 with whatever name they use in Chat, just a nice touch
+  nameP1Input.value = getSharedName() || '';
+  liveNameInput.value = getSharedName() || '';
+
+  // ---- logical coordinate space (canvas is scaled to fit whatever size it renders at) ----
+  const W = 400, H = 250, GROUND_Y = 208;
+  const MOVE_SPEED = 130;        // px/sec
+  const PUNCH_RANGE = 58;
+  const PUNCH_STARTUP = 90, PUNCH_ACTIVE = 70, PUNCH_RECOVER = 150;
+  const PUNCH_TOTAL = PUNCH_STARTUP + PUNCH_ACTIVE + PUNCH_RECOVER;
+  const HITSTUN_MS = 260;
+  const KNOCKBACK = 24;
+  const BLOCK_MULT = 0.15;
+  const MAX_HP = 100;
+  const ROUNDS_TO_WIN = 2;
+  const MIN_SEPARATION = 30;
+  const EDGE_PAD = 24;
+  const STATE_BROADCAST_MS = 45; // ~22/sec — smooth enough, not too chatty
+
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+  let running = false;
+  let rafId = null;
+  let lastT = 0;
+  let shakeT = 0;
+  let particles = [];
+  let match = { p1: 0, p2: 0 };
+  let roundActive = false;
+  let matchOver = false;
+  let netBroadcastAccum = 0;
+
+  // ---- networking state ----
+  // mode: 'local' (one phone, both sides) | 'live' (two phones)
+  // netRole (live only): 'host' (= always Player 1, runs the real simulation)
+  //                    | 'guest' (= always Player 2, sends input, mirrors host's broadcasts)
+  let mode = 'local';
+  let netRole = null;
+  let mySide = null;
+  let sbClient = null;
+  let channel = null;
+  let joinRetryTimer = null;
+  let myLiveName = '';
+  let guestMatchOverShown = false;
+
+  function freshFighter(side, x, color, name) {
+    return { side, x, hp: MAX_HP, state: 'idle', stateT: 0, facing: side === 'p1' ? 1 : -1,
+      color, name, hasHit: false };
+  }
+  let p1 = freshFighter('p1', 100, 'rgb(255,77,109)', 'Player 1');
+  let p2 = freshFighter('p2', 300, 'rgb(78,205,196)', 'Player 2');
+
+  const controls = {
+    p1: { left: false, right: false, block: false },
+    p2: { left: false, right: false, block: false }
+  };
+
+  // ================= networking =================
+  function sendNet(payload) {
+    if (!channel) return;
+    channel.send({ type: 'broadcast', event: 'msg', payload });
+  }
+
+  function setLiveStatus(text) { liveStatusEl.textContent = text; }
+
+  function resetLivePicker() {
+    netRole = null; mySide = null;
+    if (joinRetryTimer) { clearInterval(joinRetryTimer); joinRetryTimer = null; }
+    sideP1Btn.disabled = false; sideP2Btn.disabled = false;
+    sideP1Btn.classList.remove('picked'); sideP2Btn.classList.remove('picked');
+    liveStartBtn.style.display = 'none';
+    liveCancelBtn.style.display = 'none';
+    setLiveStatus('\u00A0');
+    if (channel && sbClient) { try { sbClient.removeChannel(channel); } catch (e) {} }
+    channel = null;
+    guestMatchOverShown = false;
+  }
+
+  function pickSide(side) {
+    const sb = getSb();
+    if (!sb) { setLiveStatus("Live mode needs the app's shared connection — check Supabase is set up."); return; }
+    sbClient = sb;
+    myLiveName = (liveNameInput.value || '').trim() || (side === 'p1' ? 'Player 1' : 'Player 2');
+    mySide = side;
+    netRole = side === 'p1' ? 'host' : 'guest';
+    if (netRole === 'host') p1.name = myLiveName; else p2.name = myLiveName;
+
+    sideP1Btn.disabled = true; sideP2Btn.disabled = true;
+    (side === 'p1' ? sideP1Btn : sideP2Btn).classList.add('picked');
+    liveCancelBtn.style.display = 'block';
+    setLiveStatus(side === 'p1' ? 'Connecting...' : 'Looking for Player 1...');
+
+    channel = sb.channel('sweetheart_showdown_live_room');
+    channel.on('broadcast', { event: 'msg' }, ({ payload }) => handleNetMessage(payload));
+    channel.subscribe((status) => {
+      if (status !== 'SUBSCRIBED') return;
+      if (netRole === 'host') {
+        setLiveStatus('Waiting for your partner to open this and tap "I\'m Player 2"...');
+      } else {
+        sendNet({ t: 'join', name: myLiveName });
+        joinRetryTimer = setInterval(() => sendNet({ t: 'join', name: myLiveName }), 1500);
+      }
+    });
+  }
+
+  sideP1Btn.addEventListener('click', () => pickSide('p1'));
+  sideP2Btn.addEventListener('click', () => pickSide('p2'));
+  liveCancelBtn.addEventListener('click', resetLivePicker);
+
+  liveStartBtn.addEventListener('click', () => {
+    if (netRole !== 'host') return;
+    sendNet({ t: 'go' });
+    enterArenaLive();
+    newMatch();
+  });
+
+  function handleNetMessage(payload) {
+    if (!payload || !payload.t) return;
+
+    if (netRole === 'host') {
+      if (payload.t === 'join') {
+        p2.name = payload.name || 'Player 2';
+        setLiveStatus('🎉 ' + p2.name + ' connected! tap Start when you\'re ready.');
+        liveStartBtn.style.display = 'block';
+        sendNet({ t: 'ack', name: myLiveName });
+      } else if (payload.t === 'ctrl' && payload.side && payload.side !== mySide) {
+        const c = controls[payload.side];
+        if (!c) return;
+        if ('left' in payload) c.left = payload.left;
+        if ('right' in payload) c.right = payload.right;
+        if ('block' in payload) c.block = payload.block;
+      } else if (payload.t === 'punch' && payload.side && payload.side !== mySide) {
+        tryPunch(payload.side);
+      } else if (payload.t === 'rematchRequest') {
+        newMatch();
+      }
+      return;
+    }
+
+    if (netRole === 'guest') {
+      if (payload.t === 'ack') {
+        if (joinRetryTimer) { clearInterval(joinRetryTimer); joinRetryTimer = null; }
+        p1.name = payload.name || 'Player 1';
+        setLiveStatus('Connected to ' + p1.name + '! waiting for them to start the fight...');
+      } else if (payload.t === 'go') {
+        enterArenaLive();
+      } else if (payload.t === 'state') {
+        Object.assign(p1, payload.p1);
+        Object.assign(p2, payload.p2);
+        if (match.p1 !== payload.match.p1 || match.p2 !== payload.match.p2) {
+          match = payload.match; renderDots();
+        } else {
+          match = payload.match;
+        }
+        roundActive = payload.roundActive;
+        const wasOver = matchOver;
+        matchOver = payload.matchOver;
+        updateHpBars();
+        hpNameP1El.textContent = p1.name; hpNameP2El.textContent = p2.name;
+        if (matchOver && !guestMatchOverShown) {
+          guestMatchOverShown = true;
+          showMatchResult(match.p1 >= ROUNDS_TO_WIN ? 'p1' : 'p2');
+        } else if (!matchOver && wasOver) {
+          guestMatchOverShown = false;
+          resultScreen.classList.remove('show');
+        }
+      } else if (payload.t === 'hit') {
+        spawnParticles(payload.x, GROUND_Y - 70, payload.blocked ? '🛡' : '💥', payload.blocked ? 3 : 5);
+        if (!payload.blocked) shakeT = 140;
+      } else if (payload.t === 'msg') {
+        showMsg(payload.main, payload.sub, payload.hideAfter);
+      }
+    }
+  }
+
+  function hostMsg(main, sub, hideAfter) {
+    showMsg(main, sub, hideAfter);
+    if (netRole === 'host') sendNet({ t: 'msg', main, sub, hideAfter });
+  }
+
+  function snapshotFighter(f) {
+    return { x: f.x, hp: f.hp, state: f.state, stateT: f.stateT, facing: f.facing, name: f.name };
+  }
+  function broadcastState() {
+    sendNet({ t: 'state', p1: snapshotFighter(p1), p2: snapshotFighter(p2), match, roundActive, matchOver });
+  }
+
+  function enterArenaLive() {
+    setupEl.style.display = 'none';
+    arenaEl.style.display = 'block';
+    clusterP1.style.display = mySide === 'p1' ? 'flex' : 'none';
+    clusterP2.style.display = mySide === 'p2' ? 'flex' : 'none';
+    hpNameP1El.textContent = p1.name; hpNameP2El.textContent = p2.name;
+    fitCanvas();
+    startLoop();
+  }
+
+  // ---------------- mode picker ----------------
+  modeRow.querySelectorAll('.fight-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newMode = btn.dataset.mode;
+      if (newMode === mode) return;
+      if (mode === 'live') resetLivePicker();
+      mode = newMode;
+      modeRow.querySelectorAll('.fight-mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+      panelLocal.style.display = mode === 'local' ? 'block' : 'none';
+      panelLive.style.display = mode === 'live' ? 'block' : 'none';
+    });
+  });
+
+  // ---------------- input (routes to local state or over the network) ----------------
+  function doPress(side, kind) {
+    if (mode === 'live' && side !== mySide) return; // can't touch your partner's side
+    if (mode === 'live' && netRole === 'guest') {
+      if (kind === 'punch') sendNet({ t: 'punch', side });
+      else sendNet({ t: 'ctrl', side, [kind]: true });
+      return;
+    }
+    if (kind === 'punch') tryPunch(side);
+    else controls[side][kind] = true;
+  }
+  function doRelease(side, kind) {
+    if (mode === 'live' && side !== mySide) return;
+    if (kind === 'punch') return; // discrete action, nothing to release
+    if (mode === 'live' && netRole === 'guest') { sendNet({ t: 'ctrl', side, [kind]: false }); return; }
+    controls[side][kind] = false;
+  }
+
+  function tryPunch(side) {
+    if (!roundActive || matchOver) return;
+    const f = side === 'p1' ? p1 : p2;
+    if (f.state === 'punch' || f.state === 'hitstun' || f.state === 'ko') return;
+    f.state = 'punch'; f.stateT = 0; f.hasHit = false;
+  }
+
+  document.querySelectorAll('#view-fight [data-act]').forEach(btn => {
+    const act = btn.dataset.act; // e.g. "p1-left"
+    const [side, kind] = act.split('-');
+    const down = (e) => { e.preventDefault(); doPress(side, kind); btn.classList.add('active'); };
+    const up = (e) => { if (e) e.preventDefault(); btn.classList.remove('active'); doRelease(side, kind); };
+    btn.addEventListener('pointerdown', down);
+    btn.addEventListener('pointerup', up);
+    btn.addEventListener('pointerleave', up);
+    btn.addEventListener('pointercancel', up);
+  });
+
+  const KEY_MAP = {
+    a: ['p1', 'left'], d: ['p1', 'right'], w: ['p1', 'punch'], s: ['p1', 'block'],
+    arrowleft: ['p2', 'left'], arrowright: ['p2', 'right'], arrowup: ['p2', 'punch'], arrowdown: ['p2', 'block']
+  };
+  window.addEventListener('keydown', (e) => {
+    if (!isViewActive('view-fight') || arenaEl.style.display === 'none') return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const map = KEY_MAP[e.key.toLowerCase()];
+    if (!map) return;
+    e.preventDefault();
+    doPress(map[0], map[1]);
+  });
+  window.addEventListener('keyup', (e) => {
+    const map = KEY_MAP[e.key.toLowerCase()];
+    if (!map) return;
+    doRelease(map[0], map[1]);
+  });
+
+  // ---------------- game flow (drives locally, or on the host — guest only mirrors) ----------------
+  function resetFighters() {
+    p1.x = 100; p1.hp = MAX_HP; p1.state = 'idle'; p1.stateT = 0; p1.hasHit = false;
+    p2.x = 300; p2.hp = MAX_HP; p2.state = 'idle'; p2.stateT = 0; p2.hasHit = false;
+    particles = [];
+    updateHpBars();
+  }
+
+  function updateHpBars() {
+    hpFillP1.style.width = Math.max(0, (p1.hp / MAX_HP * 100)) + '%';
+    hpFillP2.style.width = Math.max(0, (p2.hp / MAX_HP * 100)) + '%';
+  }
+
+  // round dots: left cluster = p1 wins, right cluster = p2 wins
+  function renderDots() {
+    roundDotsEl.innerHTML = '';
+    const make = (won) => { const d = document.createElement('div'); d.className = 'fight-round-dot' + (won ? ' won' : ''); return d; };
+    for (let i = 0; i < ROUNDS_TO_WIN; i++) roundDotsEl.appendChild(make(i < match.p1));
+    const gap = document.createElement('div'); gap.style.width = '10px'; roundDotsEl.appendChild(gap);
+    for (let i = 0; i < ROUNDS_TO_WIN; i++) roundDotsEl.appendChild(make(i < match.p2));
+  }
+
+  function showMsg(main, sub, hideAfter) {
+    msgMain.textContent = main;
+    msgSub.textContent = sub || '';
+    msgOverlay.classList.add('show');
+    if (hideAfter) setTimeout(() => msgOverlay.classList.remove('show'), hideAfter);
+  }
+
+  function startRound(roundNum) {
+    resetFighters();
+    renderDots();
+    roundActive = false;
+    hostMsg('Round ' + roundNum, '', 900);
+    setTimeout(() => {
+      hostMsg('FIGHT! 💘', '', 550);
+      roundActive = true;
+    }, 900);
+  }
+
+  function endRound(winner) {
+    roundActive = false;
+    const winFighter = winner === 'p1' ? p1 : p2;
+    match[winner]++;
+    renderDots();
+    if (match[winner] >= ROUNDS_TO_WIN) {
+      matchOver = true;
+      setTimeout(() => showMatchResult(winner), 900);
+    } else {
+      hostMsg((winFighter.name || (winner === 'p1' ? 'Player 1' : 'Player 2')) + ' wins the round!', 'next round starting...', 1600);
+      setTimeout(() => startRound(match.p1 + match.p2 + 1), 1700);
+    }
+  }
+
+  function showMatchResult(winner) {
+    const winFighter = winner === 'p1' ? p1 : p2;
+    const winName = winFighter.name || (winner === 'p1' ? 'Player 1' : 'Player 2');
+    resultTitle.textContent = winName + ' wins! 🏆';
+    resultSub.textContent = 'gg — kiss and make up?';
+    resultScreen.classList.add('show');
+  }
+
+  function newMatch() {
+    match = { p1: 0, p2: 0 };
+    matchOver = false;
+    guestMatchOverShown = false;
+    resultScreen.classList.remove('show');
+    msgOverlay.classList.remove('show');
+    startRound(1);
+  }
+
+  startBtn.addEventListener('click', () => {
+    mode = 'local'; netRole = null; mySide = null;
+    p1.name = (nameP1Input.value || '').trim() || 'Player 1';
+    p2.name = (nameP2Input.value || '').trim() || 'Player 2';
+    hpNameP1El.textContent = p1.name;
+    hpNameP2El.textContent = p2.name;
+    clusterP1.style.display = 'flex';
+    clusterP2.style.display = 'flex';
+    setupEl.style.display = 'none';
+    arenaEl.style.display = 'block';
+    fitCanvas();
+    newMatch();
+    startLoop();
+  });
+
+  rematchBtn.addEventListener('click', () => {
+    if (mode === 'live' && netRole === 'guest') { sendNet({ t: 'rematchRequest' }); return; }
+    newMatch();
+  });
+  menuBtn.addEventListener('click', () => {
+    stopLoop();
+    resultScreen.classList.remove('show');
+    arenaEl.style.display = 'none';
+    clusterP1.style.display = 'flex';
+    clusterP2.style.display = 'flex';
+    setupEl.style.display = 'block';
+    resetLivePicker();
+  });
+
+  // ---------------- physics / hit resolution (host or local only) ----------------
+  function applyHit(attacker, defender) {
+    if (defender.state === 'ko') return;
+    const blocked = defender.state === 'block';
+    const dmg = (8 + Math.random() * 6) * (blocked ? BLOCK_MULT : 1);
+    defender.hp = Math.max(0, defender.hp - dmg);
+    updateHpBars();
+    const dir = defender.x >= attacker.x ? 1 : -1;
+    defender.x += dir * KNOCKBACK * (blocked ? 0.3 : 1);
+    clampPositions();
+    spawnParticles(defender.x, GROUND_Y - 70, blocked ? '🛡' : '💥', blocked ? 3 : 5);
+    if (!blocked) { shakeT = 140; defender.state = 'hitstun'; defender.stateT = 0; }
+    if (netRole === 'host') sendNet({ t: 'hit', x: defender.x, blocked });
+    if (defender.hp <= 0) { defender.state = 'ko'; defender.stateT = 0; endRound(attacker.side); }
+  }
+
+  function clampPositions() {
+    p1.x = Math.max(EDGE_PAD, Math.min(W - EDGE_PAD, p1.x));
+    p2.x = Math.max(EDGE_PAD, Math.min(W - EDGE_PAD, p2.x));
+    if (p1.x > p2.x - MIN_SEPARATION) {
+      const mid = (p1.x + p2.x) / 2;
+      p1.x = mid - MIN_SEPARATION / 2;
+      p2.x = mid + MIN_SEPARATION / 2;
+    }
+  }
+
+  function spawnParticles(x, y, char, count) {
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: x + (Math.random() - 0.5) * 20, y: y + (Math.random() - 0.5) * 10,
+        vx: (Math.random() - 0.5) * 60, vy: -40 - Math.random() * 40,
+        life: 0, maxLife: 450 + Math.random() * 200, char, size: 13 + Math.random() * 8
+      });
+    }
+  }
+
+  // ---------------- update ----------------
+  function updateFighter(f, dt, ctrl) {
+    if (f.state === 'ko') return;
+    if (f.state === 'hitstun') {
+      f.stateT += dt;
+      if (f.stateT >= HITSTUN_MS) { f.state = 'idle'; f.stateT = 0; }
+      return;
+    }
+    if (!roundActive) return;
+
+    if (f.state === 'punch') {
+      f.stateT += dt;
+      const opp = f.side === 'p1' ? p2 : p1;
+      if (!f.hasHit && f.stateT >= PUNCH_STARTUP && f.stateT < PUNCH_STARTUP + PUNCH_ACTIVE) {
+        if (Math.abs(opp.x - f.x) <= PUNCH_RANGE) { f.hasHit = true; applyHit(f, opp); }
+      }
+      if (f.stateT >= PUNCH_TOTAL) { f.state = 'idle'; f.stateT = 0; f.hasHit = false; }
+      return;
+    }
+
+    const blocking = ctrl.block;
+    if (blocking) {
+      f.state = 'block';
+    } else {
+      const moveDir = (ctrl.right ? 1 : 0) - (ctrl.left ? 1 : 0);
+      f.x += moveDir * MOVE_SPEED * dt / 1000;
+      f.state = moveDir !== 0 ? 'walk' : 'idle';
+    }
+    clampPositions();
+    const opp = f.side === 'p1' ? p2 : p1;
+    f.facing = opp.x >= f.x ? 1 : -1;
+  }
+
+  function update(dt) {
+    // guest never simulates fighters — those come from the host's broadcasts.
+    // particles/screenshake stay local on both sides purely for smooth visuals.
+    if (!(mode === 'live' && netRole === 'guest')) {
+      updateFighter(p1, dt, controls.p1);
+      updateFighter(p2, dt, controls.p2);
+    }
+    if (shakeT > 0) shakeT = Math.max(0, shakeT - dt);
+    particles = particles.filter(p => {
+      p.life += dt;
+      p.x += p.vx * dt / 1000; p.y += p.vy * dt / 1000; p.vy += 90 * dt / 1000;
+      return p.life < p.maxLife;
+    });
+  }
+
+  // ---------------- render ----------------
+  function fitCanvas() {
+    const rect = wrapEl.getBoundingClientRect();
+    if (rect.width < 1) return;
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    const scaleX = (rect.width * dpr) / W;
+    const scaleY = (rect.height * dpr) / H;
+    ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+  }
+  window.addEventListener('resize', () => { if (arenaEl.style.display !== 'none') fitCanvas(); });
+
+  function drawArena() {
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#3a0d18'); g.addColorStop(0.6, '#5c1a29'); g.addColorStop(1, '#7a2740');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = 'rgba(0,0,0,0.28)';
+    ctx.fillRect(0, GROUND_Y + 6, W, H - GROUND_Y - 6);
+    ctx.fillStyle = 'rgba(255,255,255,0.05)';
+    for (let x = -20; x < W + 20; x += 24) {
+      ctx.beginPath(); ctx.moveTo(x, GROUND_Y + 6); ctx.lineTo(x - 14, H); ctx.lineTo(x - 4, H); ctx.lineTo(x + 10, GROUND_Y + 6); ctx.fill();
+    }
+    ctx.strokeStyle = 'rgba(255,182,201,0.35)'; ctx.lineWidth = 2;
+    [40, 58, 76].forEach(y => { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); });
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillRect(6, 30, 8, 60); ctx.fillRect(W - 14, 30, 8, 60);
+  }
+
+  function drawFighter(f) {
+    const flash = f.state === 'hitstun' && Math.floor(f.stateT / 40) % 2 === 0;
+    const x = f.x, groundY = GROUND_Y;
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath(); ctx.ellipse(x, groundY + 4, 18, 5, 0, 0, Math.PI * 2); ctx.fill();
+
+    if (f.state === 'ko') {
+      ctx.translate(x, groundY - 8);
+      ctx.rotate(f.facing * Math.PI / 2 * -1);
+      drawBody(0, 0, f, false, 0);
+      ctx.restore();
+      ctx.save();
+      ctx.font = '13px sans-serif'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff';
+      ctx.fillText('✨', x - 12, groundY - 44); ctx.fillText('✨', x + 12, groundY - 50);
+      ctx.restore();
+      return;
+    }
+
+    let bob = 0;
+    if (f.state === 'walk') bob = Math.sin(performance.now() / 90) * 2.5;
+    const punchT = f.state === 'punch' ? f.stateT : 0;
+    let punchExtend = 0;
+    if (f.state === 'punch') {
+      if (punchT < PUNCH_STARTUP) punchExtend = (punchT / PUNCH_STARTUP);
+      else if (punchT < PUNCH_STARTUP + PUNCH_ACTIVE) punchExtend = 1;
+      else punchExtend = 1 - (punchT - PUNCH_STARTUP - PUNCH_ACTIVE) / PUNCH_RECOVER;
+      punchExtend = Math.max(0, Math.min(1, punchExtend));
+    }
+
+    ctx.translate(x, groundY + bob);
+    if (flash) ctx.filter = 'brightness(2.4)';
+    drawBody(0, 0, f, f.state === 'block', punchExtend);
+    ctx.restore();
+  }
+
+  function drawBody(x, y, f, blocking, punchExtend) {
+    const dir = f.facing;
+    const skin = '#ffd9b8';
+    ctx.strokeStyle = f.color; ctx.lineWidth = 7; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x - 6, y - 34); ctx.lineTo(x - 9, y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x + 6, y - 34); ctx.lineTo(x + 9, y); ctx.stroke();
+    ctx.fillStyle = f.color;
+    roundRect(x - 13, y - 66, 26, 34, 9); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    roundRect(x - 13, y - 38, 26, 9, 4); ctx.fill();
+    ctx.fillStyle = skin;
+    ctx.beginPath(); ctx.arc(x, y - 78, 12, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = f.color;
+    ctx.fillRect(x - 12, y - 84, 24, 5);
+    ctx.fillStyle = '#2c1a22';
+    ctx.beginPath(); ctx.arc(x + dir * 4, y - 78, 1.6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(x + dir * 9, y - 78, 1.6, 0, Math.PI * 2); ctx.fill();
+
+    const backArmX = x - dir * 9;
+    ctx.strokeStyle = skin; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(x - dir * 6, y - 60); ctx.lineTo(backArmX, y - 46); ctx.stroke();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(backArmX, y - 44, 6, 0, Math.PI * 2); ctx.fill();
+
+    if (blocking) {
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(x + dir * 8, y - 78, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(x + dir * 14, y - 70, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = f.color; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(x + dir * 8, y - 78, 9, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      const ext = 10 + (punchExtend || 0) * 22;
+      const frontArmX = x + dir * ext;
+      ctx.strokeStyle = skin; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(x + dir * 6, y - 58); ctx.lineTo(frontArmX, y - 52); ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(frontArmX, y - 52, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = f.color; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(frontArmX, y - 52, 7, 0, Math.PI * 2); ctx.stroke();
+      if (punchExtend > 0.85) {
+        ctx.save(); ctx.globalAlpha = 0.5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(frontArmX + dir * 4, y - 52, 11, -0.8, 0.8); ctx.stroke(); ctx.restore();
+      }
+    }
+  }
+
+  function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function drawParticles() {
+    ctx.textAlign = 'center';
+    particles.forEach(p => {
+      const t = p.life / p.maxLife;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - t);
+      ctx.font = p.size + 'px sans-serif';
+      ctx.fillText(p.char, p.x, p.y);
+      ctx.restore();
+    });
+  }
+
+  function render() {
+    ctx.save();
+    if (shakeT > 0) {
+      ctx.translate((Math.random() - 0.5) * 6 * (shakeT / 140), (Math.random() - 0.5) * 6 * (shakeT / 140));
+    }
+    drawArena();
+    drawFighter(p1);
+    drawFighter(p2);
+    drawParticles();
+    ctx.restore();
+  }
+
+  function frame(t) {
+    if (!running) return;
+    const dt = Math.min(50, t - (lastT || t));
+    lastT = t;
+    update(dt);
+    render();
+    if (netRole === 'host') {
+      netBroadcastAccum += dt;
+      if (netBroadcastAccum >= STATE_BROADCAST_MS) { netBroadcastAccum = 0; broadcastState(); }
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function startLoop() {
+    if (running) return;
+    running = true; lastT = 0;
+    rafId = requestAnimationFrame(frame);
+  }
+  function stopLoop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    controls.p1 = { left: false, right: false, block: false };
+    controls.p2 = { left: false, right: false, block: false };
+    document.querySelectorAll('#view-fight [data-act]').forEach(b => b.classList.remove('active'));
+  }
+
+  window.addEventListener('viewchange', (e) => {
+    if (e.detail.id === 'view-fight') {
+      if (arenaEl.style.display !== 'none') { fitCanvas(); startLoop(); }
+    } else {
+      stopLoop();
+    }
+  });
+})();
 // ---------- MISS YOU button: live ping + real push notification ----------
 (function () {
   const fab = document.getElementById('miss-you-fab');
