@@ -688,6 +688,11 @@
     touch-action:none; user-select:none;
   }
   .fight-canvas { width:100%; height:100%; display:block; }
+  .fight-flash {
+    position:absolute; inset:0; pointer-events:none; opacity:0; z-index:2; mix-blend-mode:screen;
+  }
+  .fight-flash.pop { animation:fightFlashPop 0.5s ease-out; }
+  @keyframes fightFlashPop { 0% { opacity:0.6; } 100% { opacity:0; } }
 
   .fight-hud {
     position:absolute; top:0; left:0; right:0; padding:10px 10px 0; display:flex;
@@ -707,6 +712,8 @@
     height:100%; width:100%; background:linear-gradient(90deg, var(--fc), #fff8);
     transition:width .25s ease;
   }
+  .fight-hp-track.hit-flash { animation:fightHpHit 0.3s ease; }
+  @keyframes fightHpHit { 0% { box-shadow:0 0 0 2px rgba(255,255,255,0.9) inset; } 100% { box-shadow:0 0 0 0 rgba(255,255,255,0) inset; } }
   .fight-p2 .fight-hp-fill { margin-left:auto; background:linear-gradient(270deg, var(--fc), #fff8); }
   .fight-round-dots {
     position:absolute; top:34px; left:50%; transform:translateX(-50%);
@@ -718,7 +725,7 @@
   .fight-msg-overlay {
     position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     flex-direction:column; gap:6px; pointer-events:none; opacity:0; transition:opacity .2s ease;
-    text-align:center; padding:0 20px;
+    text-align:center; padding:0 20px; z-index:3;
   }
   .fight-msg-overlay.show { opacity:1; }
   .fight-msg-main {
@@ -824,14 +831,26 @@
     font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px; color:#fff;
     background:rgba(0,0,0,0.35); border-radius:10px; padding:5px 10px;
   }
+  .fb-flash {
+    position:absolute; inset:0; pointer-events:none; opacity:0; z-index:2;
+    mix-blend-mode:screen;
+  }
+  .fb-flash.pop { animation:fbFlashPop 0.55s ease-out; }
+  @keyframes fbFlashPop { 0% { opacity:0.65; } 100% { opacity:0; } }
   .fb-msg-overlay {
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    pointer-events:none; opacity:0; transition:opacity .2s ease; text-align:center; padding:0 20px;
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    pointer-events:none; opacity:0; transition:opacity .2s ease; text-align:center; padding:0 20px; gap:4px; z-index:3;
   }
   .fb-msg-overlay.show { opacity:1; }
+  .fb-msg-overlay.goal .fb-msg-main { animation:fbGoalPop 0.45s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes fbGoalPop { 0% { transform:scale(0.4); opacity:0; } 60% { transform:scale(1.15); } 100% { transform:scale(1); opacity:1; } }
   .fb-msg-main {
     font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
     font-size:24px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.6);
+  }
+  .fb-msg-sub {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px; color:rgba(255,255,255,0.85);
+    background:rgba(0,0,0,0.35); border-radius:8px; padding:4px 12px;
   }
   .fb-result-screen {
     position:absolute; inset:0; background:rgba(6,12,7,0.88); backdrop-filter:blur(3px);
@@ -2804,15 +2823,16 @@
       <div id="fight-arena" style="display:none;">
         <div class="fight-arena-wrap" id="fight-arena-wrap">
           <canvas class="fight-canvas" id="fight-canvas"></canvas>
+          <div class="fight-flash" id="fight-flash"></div>
 
           <div class="fight-hud">
             <div class="fight-hp-box fight-p1">
               <div class="fight-hp-name" id="fight-hp-name-p1">Player 1</div>
-              <div class="fight-hp-track"><div class="fight-hp-fill" id="fight-hp-fill-p1"></div></div>
+              <div class="fight-hp-track" id="fight-hp-track-p1"><div class="fight-hp-fill" id="fight-hp-fill-p1"></div></div>
             </div>
             <div class="fight-hp-box fight-p2">
               <div class="fight-hp-name" id="fight-hp-name-p2">Player 2</div>
-              <div class="fight-hp-track"><div class="fight-hp-fill" id="fight-hp-fill-p2"></div></div>
+              <div class="fight-hp-track" id="fight-hp-track-p2"><div class="fight-hp-fill" id="fight-hp-fill-p2"></div></div>
             </div>
           </div>
           <div class="fight-round-dots" id="fight-round-dots"></div>
@@ -2906,11 +2926,12 @@
       <div id="fb-arena" style="display:none;">
         <div class="fb-arena-wrap" id="fb-arena-wrap">
           <canvas class="fb-canvas" id="fb-canvas"></canvas>
+          <div class="fb-flash" id="fb-flash"></div>
           <div class="fb-hud">
             <div class="fb-hud-score" id="fb-hud-score">0 – 0</div>
             <div class="fb-hud-timer" id="fb-hud-timer">2:00</div>
           </div>
-          <div class="fb-msg-overlay" id="fb-msg-overlay"><div class="fb-msg-main" id="fb-msg-main"></div></div>
+          <div class="fb-msg-overlay" id="fb-msg-overlay"><div class="fb-msg-main" id="fb-msg-main"></div><div class="fb-msg-sub" id="fb-msg-sub" style="display:none;"></div></div>
 
           <div class="fight-controls">
             <div class="fight-ctrl-cluster fight-p1" id="fb-cluster-p1">
@@ -2948,7 +2969,7 @@
             </div>
           </div>
         </div>
-        <div class="fight-hint">on a keyboard: WASD + Space for Player 1 · arrows + Enter for Player 2. Control auto-switches to whoever's closest to the ball — press Q (Player 1) or Shift (Player 2), or tap 🔁, to manually switch to a different teammate instead.</div>
+        <div class="fight-hint">on a keyboard: WASD + Space for Player 1 · arrows + Enter for Player 2. Control auto-switches to whoever's closest to the ball — press Q (P1) or Shift (P2), or tap 🔁, to manually switch teammate. Tap shoot for a normal strike, hold briefly and release for a curled finesse shot into the far corner, hold longer for a trivela screamer.</div>
       </div>
     </div>
   </div>
@@ -8660,6 +8681,9 @@ async function loadTwoLocations() {
   const msgOverlay = document.getElementById('fight-msg-overlay');
   const msgMain = document.getElementById('fight-msg-main');
   const msgSub = document.getElementById('fight-msg-sub');
+  const flashEl = document.getElementById('fight-flash');
+  const hpTrackP1 = document.getElementById('fight-hp-track-p1');
+  const hpTrackP2 = document.getElementById('fight-hp-track-p2');
   const resultScreen = document.getElementById('fight-result-screen');
   const resultTitle = document.getElementById('fight-result-title');
   const resultSub = document.getElementById('fight-result-sub');
@@ -8707,6 +8731,59 @@ async function loadTwoLocations() {
   let roundActive = false;
   let matchOver = false;
   let netBroadcastAccum = 0;
+
+  // ---------------- juice: synthesized sound effects (no audio files needed) ----------------
+  let audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function playTone(freq, duration, type, gainStart, delay) {
+    const actx = getAudioCtx(); if (!actx) return;
+    const t0 = actx.currentTime + (delay || 0);
+    const osc = actx.createOscillator(), gain = actx.createGain();
+    osc.type = type || 'sine'; osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(gainStart || 0.2, t0);
+    gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+    osc.connect(gain); gain.connect(actx.destination);
+    osc.start(t0); osc.stop(t0 + duration);
+  }
+  function playNoiseBurst(duration, gainStart, delay) {
+    const actx = getAudioCtx(); if (!actx) return;
+    const t0 = actx.currentTime + (delay || 0);
+    const bufSize = Math.max(1, Math.floor(actx.sampleRate * duration));
+    const buffer = actx.createBuffer(1, bufSize, actx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+    const noise = actx.createBufferSource(); noise.buffer = buffer;
+    const gain = actx.createGain(); gain.gain.setValueAtTime(gainStart || 0.15, t0);
+    noise.connect(gain); gain.connect(actx.destination);
+    noise.start(t0);
+  }
+  function playWhoosh() { playNoiseBurst(0.09, 0.06); }
+  function playImpact(blocked) {
+    if (blocked) { playTone(520, 0.09, 'square', 0.16); playNoiseBurst(0.05, 0.1); }
+    else { playNoiseBurst(0.09, 0.22); playTone(90, 0.13, 'square', 0.22); }
+  }
+  function playBell() {
+    [1, 0.35].forEach((g, i) => playTone(1500, 0.5, 'sine', g * 0.16, i * 0.55));
+  }
+  function playRoundWinChime() {
+    [880, 1108.7].forEach((f, i) => playTone(f, 0.3, 'triangle', 0.16, i * 0.1));
+  }
+  function playMatchWinFanfare() {
+    [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => playTone(f, 0.42, 'triangle', 0.2, i * 0.1));
+    playNoiseBurst(0.7, 0.09, 0);
+  }
+  function popFlash(color) {
+    flashEl.style.background = color;
+    flashEl.classList.remove('pop'); void flashEl.offsetWidth; flashEl.classList.add('pop');
+  }
+  function pulseHpTrack(side) {
+    const el = side === 'p1' ? hpTrackP1 : hpTrackP2;
+    el.classList.remove('hit-flash'); void el.offsetWidth; el.classList.add('hit-flash');
+  }
 
   // ---- networking state ----
   // mode: 'local' (one phone, both sides) | 'live' (two phones)
@@ -8845,6 +8922,8 @@ async function loadTwoLocations() {
       } else if (payload.t === 'hit') {
         spawnParticles(payload.x, GROUND_Y - 70, payload.blocked ? '🛡' : '💥', payload.blocked ? 3 : 5);
         if (!payload.blocked) shakeT = 140;
+        if (payload.side) pulseHpTrack(payload.side);
+        playImpact(payload.blocked);
       } else if (payload.t === 'msg') {
         showMsg(payload.main, payload.sub, payload.hideAfter);
       }
@@ -8888,9 +8967,10 @@ async function loadTwoLocations() {
 
   // ---------------- input (routes to local state or over the network) ----------------
   function doPress(side, kind) {
+    getAudioCtx();
     if (mode === 'live' && side !== mySide) return; // can't touch your partner's side
     if (mode === 'live' && netRole === 'guest') {
-      if (kind === 'punch') sendNet({ t: 'punch', side });
+      if (kind === 'punch') { sendNet({ t: 'punch', side }); playWhoosh(); }
       else sendNet({ t: 'ctrl', side, [kind]: true });
       return;
     }
@@ -8909,6 +8989,7 @@ async function loadTwoLocations() {
     const f = side === 'p1' ? p1 : p2;
     if (f.state === 'punch' || f.state === 'hitstun' || f.state === 'ko') return;
     f.state = 'punch'; f.stateT = 0; f.hasHit = false;
+    playWhoosh();
   }
 
   document.querySelectorAll('#view-fight [data-act]').forEach(btn => {
@@ -8978,6 +9059,7 @@ async function loadTwoLocations() {
     setTimeout(() => {
       hostMsg('FIGHT! 💘', '', 550);
       roundActive = true;
+      playBell();
     }, 900);
   }
 
@@ -8990,6 +9072,7 @@ async function loadTwoLocations() {
       matchOver = true;
       setTimeout(() => showMatchResult(winner), 900);
     } else {
+      playRoundWinChime();
       hostMsg((winFighter.name || (winner === 'p1' ? 'Player 1' : 'Player 2')) + ' wins the round!', 'next round starting...', 1600);
       setTimeout(() => startRound(match.p1 + match.p2 + 1), 1700);
     }
@@ -9001,6 +9084,8 @@ async function loadTwoLocations() {
     resultTitle.textContent = winName + ' wins! 🏆';
     resultSub.textContent = 'gg — kiss and make up?';
     resultScreen.classList.add('show');
+    playMatchWinFanfare();
+    spawnParticles(W / 2, GROUND_Y - 90, '🎉', 10);
   }
 
   function newMatch() {
@@ -9048,13 +9133,21 @@ async function loadTwoLocations() {
     const dmg = (8 + Math.random() * 6) * (blocked ? BLOCK_MULT : 1);
     defender.hp = Math.max(0, defender.hp - dmg);
     updateHpBars();
+    pulseHpTrack(defender.side);
+    playImpact(blocked);
     const dir = defender.x >= attacker.x ? 1 : -1;
     defender.x += dir * KNOCKBACK * (blocked ? 0.3 : 1);
     clampPositions();
     spawnParticles(defender.x, GROUND_Y - 70, blocked ? '🛡' : '💥', blocked ? 3 : 5);
     if (!blocked) { shakeT = 140; defender.state = 'hitstun'; defender.stateT = 0; }
-    if (netRole === 'host') sendNet({ t: 'hit', x: defender.x, blocked });
-    if (defender.hp <= 0) { defender.state = 'ko'; defender.stateT = 0; endRound(attacker.side); }
+    if (netRole === 'host') sendNet({ t: 'hit', x: defender.x, blocked, side: defender.side });
+    if (defender.hp <= 0) {
+      defender.state = 'ko'; defender.stateT = 0;
+      shakeT = 260;
+      popFlash(attacker.color);
+      spawnParticles(defender.x, GROUND_Y - 90, '⭐', 6);
+      endRound(attacker.side);
+    }
   }
 
   function clampPositions() {
@@ -9378,6 +9471,8 @@ async function loadTwoLocations() {
   const hudTimer = document.getElementById('fb-hud-timer');
   const msgOverlay = document.getElementById('fb-msg-overlay');
   const msgMain = document.getElementById('fb-msg-main');
+  const msgSub = document.getElementById('fb-msg-sub');
+  const flashEl = document.getElementById('fb-flash');
   const resultScreen = document.getElementById('fb-result-screen');
   const resultTitle = document.getElementById('fb-result-title');
   const resultSub = document.getElementById('fb-result-sub');
@@ -9486,10 +9581,85 @@ async function loadTwoLocations() {
   let matchOver = false;
   let goalPause = 0;
   let kickCooldown = 0;
-  let ball = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+  let ball = { x: W / 2, y: H / 2, vx: 0, vy: 0, spin: 0 };
   let teamA = null, teamB = null;
   let score = { a: 0, b: 0 };
   let kickingSide = 'a'; // which side takes the current kickoff
+
+  // ---------------- juice: fx state ----------------
+  let shakeT = 0, shakeMag = 0;
+  let particles = [];
+  let ballTrail = [];
+  let lastShotBy = null; // { player, team, type } — for goal credit + announcements
+  const chargeStart = { p1: null, p2: null };
+  const CHARGE_FINESSE_MS = 160;
+  const CHARGE_TRIVELA_MS = 480;
+
+  function shotTypeForHold(ms) {
+    if (ms >= CHARGE_TRIVELA_MS) return 'trivela';
+    if (ms >= CHARGE_FINESSE_MS) return 'finesse';
+    return 'normal';
+  }
+
+  function spawnParticles(x, y, color, n) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, sp = 60 + Math.random() * 140;
+      particles.push({
+        x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40,
+        life: 500 + Math.random() * 350, maxLife: 850, color, size: 2 + Math.random() * 2.5
+      });
+    }
+  }
+
+  function updateParticles(dt) {
+    particles.forEach(pt => {
+      pt.x += pt.vx * dt / 1000; pt.y += pt.vy * dt / 1000;
+      pt.vy += 260 * dt / 1000; pt.life -= dt;
+    });
+    particles = particles.filter(pt => pt.life > 0);
+  }
+
+  function triggerShake(mag, dur) { shakeMag = Math.max(shakeMag, mag); shakeT = Math.max(shakeT, dur); }
+
+  // ---------------- juice: sound (synth, no audio files needed) ----------------
+  let audioCtx = null;
+  function getAudioCtx() {
+    if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return null; } }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  function playTone(freq, duration, type, gainStart, delay) {
+    const actx = getAudioCtx(); if (!actx) return;
+    const t0 = actx.currentTime + (delay || 0);
+    const osc = actx.createOscillator(), gain = actx.createGain();
+    osc.type = type || 'sine'; osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(gainStart || 0.2, t0);
+    gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+    osc.connect(gain); gain.connect(actx.destination);
+    osc.start(t0); osc.stop(t0 + duration);
+  }
+  function playNoiseBurst(duration, gainStart, delay) {
+    const actx = getAudioCtx(); if (!actx) return;
+    const t0 = actx.currentTime + (delay || 0);
+    const bufSize = Math.max(1, Math.floor(actx.sampleRate * duration));
+    const buffer = actx.createBuffer(1, bufSize, actx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufSize);
+    const noise = actx.createBufferSource(); noise.buffer = buffer;
+    const gain = actx.createGain(); gain.gain.setValueAtTime(gainStart || 0.15, t0);
+    noise.connect(gain); gain.connect(actx.destination);
+    noise.start(t0);
+  }
+  function playKickSound(type) {
+    playNoiseBurst(0.06, type === 'trivela' ? 0.22 : 0.14);
+    playTone(type === 'trivela' ? 130 : 100, 0.1, 'square', type === 'trivela' ? 0.22 : 0.15);
+  }
+  function playWhistle() { playTone(2100, 0.16, 'sine', 0.12); playTone(2100, 0.1, 'sine', 0.1, 0.2); }
+  function playSwitchBlip() { playTone(760, 0.05, 'square', 0.07); }
+  function playGoalFanfare() {
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => playTone(f, 0.4, 'triangle', 0.2, i * 0.09));
+    playNoiseBurst(0.7, 0.1, 0);
+  }
 
   const ctrlP1 = { up: false, down: false, left: false, right: false };
   const ctrlP2 = { up: false, down: false, left: false, right: false };
@@ -9589,10 +9759,12 @@ async function loadTwoLocations() {
   }
 
   function kickoff() {
-    ball = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+    ball = { x: W / 2, y: H / 2, vx: 0, vy: 0, spin: 0 };
+    ballTrail = [];
     resetKickoff(teamA, kickingSide === 'a');
     resetKickoff(teamB, kickingSide === 'b');
     kickCooldown = 0;
+    playWhistle();
   }
 
   function getHumanTeam(side) {
@@ -9644,7 +9816,9 @@ async function loadTwoLocations() {
       // enough, instead of just standing over the ball.
       const dGoal = Math.hypot(goalX - p.x, goalY - p.y);
       if (dGoal <= SHOOT_RANGE + 14) {
-        shoot(p, team);
+        const r = Math.random();
+        const type = r < 0.1 ? 'trivela' : r < 0.35 ? 'finesse' : 'normal';
+        shoot(p, team, type);
       } else {
         const dx = goalX - p.x, dy = goalY - p.y;
         const len = Math.hypot(dx, dy) || 1;
@@ -9690,23 +9864,49 @@ async function loadTwoLocations() {
     }
   }
 
-  function shoot(p, team) {
+  // Three shot types, chosen by how long the shoot control was held:
+  //  - normal: quick tap — decent power, aims center-ish, no curl.
+  //  - finesse: short hold — placed into the far corner with a gentle curl in.
+  //  - trivela: long hold — outside-of-the-boot strike, big power, heavy curl
+  //    that swerves away from goal before bending back in.
+  function shoot(p, team, type) {
     if (kickCooldown > 0) return;
+    type = type || 'normal';
     const goalX = team.attackDir > 0 ? FIELD_RIGHT : FIELD_LEFT;
-    const goalY = (GOAL_TOP + GOAL_BOTTOM) / 2 + (Math.random() - 0.5) * 30;
+    const goalMid = (GOAL_TOP + GOAL_BOTTOM) / 2;
+    // which post is "far" from the shooter's current side of the goal mouth
+    const farPost = p.y < goalMid ? GOAL_BOTTOM - 10 : GOAL_TOP + 10;
+    let goalY, power, spin;
+    if (type === 'trivela') {
+      goalY = farPost + (Math.random() - 0.5) * 14;
+      power = SHOOT_POWER * 1.18;
+      spin = (p.y < goalMid ? -1 : 1) * (150 + Math.random() * 40);
+    } else if (type === 'finesse') {
+      goalY = farPost + (Math.random() - 0.5) * 8;
+      power = SHOOT_POWER * 0.82;
+      spin = (p.y < goalMid ? 1 : -1) * (70 + Math.random() * 20);
+    } else {
+      goalY = goalMid + (Math.random() - 0.5) * 34;
+      power = SHOOT_POWER;
+      spin = 0;
+    }
     const dx = goalX - ball.x, dy = goalY - ball.y;
     const len = Math.hypot(dx, dy) || 1;
-    ball.vx = (dx / len) * SHOOT_POWER;
-    ball.vy = (dy / len) * SHOOT_POWER;
+    ball.vx = (dx / len) * power;
+    ball.vy = (dy / len) * power;
+    ball.spin = spin;
     kickCooldown = 350;
+    lastShotBy = { player: p, team, type };
+    playKickSound(type);
+    if (type === 'trivela') triggerShake(3, 120);
   }
 
-  function attemptPlayerShoot(side) {
+  function attemptPlayerShoot(side, type) {
     if (!running || matchOver || goalPause > 0) return;
     const team = getHumanTeam(side);
     if (!team) return;
     const active = controlledPlayer(team);
-    if (dist(active, ball) <= SHOOT_RANGE + 6) shoot(active, team);
+    if (dist(active, ball) <= SHOOT_RANGE + 6) shoot(active, team, type);
   }
 
   function dribble(p) {
@@ -9735,10 +9935,21 @@ async function loadTwoLocations() {
   }
 
   function updateBallPhysics(dt) {
+    if (ball.spin) {
+      const speed = Math.hypot(ball.vx, ball.vy) || 1;
+      const perpX = -ball.vy / speed, perpY = ball.vx / speed;
+      ball.vx += perpX * ball.spin * dt / 1000;
+      ball.vy += perpY * ball.spin * dt / 1000;
+    }
     ball.x += ball.vx * dt / 1000;
     ball.y += ball.vy * dt / 1000;
     const decay = Math.pow(0.4, dt / 1000);
     ball.vx *= decay; ball.vy *= decay;
+    ball.spin *= decay; // curl fades as the shot loses pace, like a real ball
+    if (Math.hypot(ball.vx, ball.vy) > 40) {
+      ballTrail.push({ x: ball.x, y: ball.y, life: 260 });
+      if (ballTrail.length > 14) ballTrail.shift();
+    }
     if (ball.y < FIELD_TOP + BALL_R) { ball.y = FIELD_TOP + BALL_R; ball.vy *= -0.6; }
     if (ball.y > FIELD_BOTTOM - BALL_R) { ball.y = FIELD_BOTTOM - BALL_R; ball.vy *= -0.6; }
     const inGoalMouth = ball.y > GOAL_TOP && ball.y < GOAL_BOTTOM;
@@ -9754,13 +9965,38 @@ async function loadTwoLocations() {
   function onGoal(who) {
     score[who]++;
     updateHud();
-    showMsg((who === 'a' ? teamA.name : teamB.name) + ' scores! ⚽', 1400);
-    goalPause = 1200;
+    const scoringTeam = who === 'a' ? teamA : teamB;
+    const shotWasTheirs = lastShotBy && lastShotBy.team === scoringTeam;
+    const scorerName = shotWasTheirs ? lastShotBy.player.name.split(' ').pop() : null;
+    const scorerNum = shotWasTheirs ? lastShotBy.player.number : null;
+    const shotType = shotWasTheirs ? lastShotBy.type : 'normal';
+
+    msgMain.textContent = scorerName ? ('⚽ ' + scorerName + '!') : (scoringTeam.name + ' scores! ⚽');
+    if (shotType === 'trivela') { msgSub.textContent = 'TRIVELA — outside-of-the-boot screamer' + (scorerNum ? ' (#' + scorerNum + ')' : ''); msgSub.style.display = 'inline-block'; }
+    else if (shotType === 'finesse') { msgSub.textContent = 'Finesse finish, top corner' + (scorerNum ? ' (#' + scorerNum + ')' : ''); msgSub.style.display = 'inline-block'; }
+    else { msgSub.textContent = scoringTeam.name; msgSub.style.display = 'inline-block'; }
+    msgOverlay.classList.add('goal', 'show');
+    setTimeout(() => { msgOverlay.classList.remove('goal', 'show'); msgSub.style.display = 'none'; }, 1600);
+
+    const netX = who === 'a' ? FIELD_RIGHT + 4 : FIELD_LEFT - 4;
+    spawnParticles(netX, ball.y, scoringTeam.color, 28);
+    spawnParticles(netX, ball.y, '#ffd54a', 14);
+    triggerShake(shotType === 'trivela' ? 9 : 6, 320);
+    flashEl.style.background = scoringTeam.color;
+    flashEl.classList.remove('pop'); void flashEl.offsetWidth; flashEl.classList.add('pop');
+    playGoalFanfare();
+
+    lastShotBy = null;
+    goalPause = 1500;
     kickingSide = who === 'a' ? 'b' : 'a'; // the team that conceded restarts play
     kickoff();
   }
 
   function update(dt) {
+    updateParticles(dt);
+    ballTrail.forEach(t => t.life -= dt);
+    ballTrail = ballTrail.filter(t => t.life > 0);
+    if (shakeT > 0) { shakeT = Math.max(0, shakeT - dt); if (shakeT === 0) shakeMag = 0; }
     if (matchOver) return;
     if (goalPause > 0) { goalPause = Math.max(0, goalPause - dt); return; }
     const allOutfield = [...outfieldOf(teamA), ...outfieldOf(teamB)];
@@ -9850,13 +10086,33 @@ async function loadTwoLocations() {
   });
 
   // ---------------- input ----------------
+  // Shoot is a hold-to-charge control: tap = normal shot, short hold =
+  // finesse (curled into the far corner), long hold = trivela (big swerving
+  // power strike). Switch instantly hands control to the next-nearest teammate.
+  function shootDown(side) {
+    if (chargeStart[side]) return;
+    chargeStart[side] = performance.now();
+  }
+  function shootUp(side) {
+    if (!chargeStart[side]) return;
+    const held = performance.now() - chargeStart[side];
+    chargeStart[side] = null;
+    attemptPlayerShoot(side, shotTypeForHold(held));
+  }
+
   document.querySelectorAll('#view-football [data-fb]').forEach(btn => {
     const parts = btn.dataset.fb.split('-');
     const side = parts[0], kind = parts[1];
     const ctrl = side === 'p1' ? ctrlP1 : ctrlP2;
-    if (kind === 'shoot' || kind === 'switch') {
-      const action = kind === 'shoot' ? () => attemptPlayerShoot(side) : () => switchPlayer(side);
-      const down = (e) => { e.preventDefault(); action(); btn.classList.add('active'); };
+    if (kind === 'shoot') {
+      const down = (e) => { e.preventDefault(); getAudioCtx(); shootDown(side); btn.classList.add('active'); };
+      const up = (e) => { if (e) e.preventDefault(); shootUp(side); btn.classList.remove('active'); };
+      btn.addEventListener('pointerdown', down);
+      btn.addEventListener('pointerup', up);
+      btn.addEventListener('pointerleave', up);
+      btn.addEventListener('pointercancel', up);
+    } else if (kind === 'switch') {
+      const down = (e) => { e.preventDefault(); getAudioCtx(); switchPlayer(side); playSwitchBlip(); btn.classList.add('active'); };
       const up = (e) => { if (e) e.preventDefault(); btn.classList.remove('active'); };
       btn.addEventListener('pointerdown', down);
       btn.addEventListener('pointerup', up);
@@ -9885,8 +10141,8 @@ async function loadTwoLocations() {
     if (!map) return;
     e.preventDefault();
     const side = map[0], kind = map[1];
-    if (kind === 'shoot') { if (!e.repeat) attemptPlayerShoot(side); }
-    else if (kind === 'switch') { if (!e.repeat) switchPlayer(side); }
+    if (kind === 'shoot') { if (!e.repeat) { getAudioCtx(); shootDown(side); } }
+    else if (kind === 'switch') { if (!e.repeat) { getAudioCtx(); switchPlayer(side); playSwitchBlip(); } }
     else (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = true;
   });
   window.addEventListener('keyup', (e) => {
@@ -9894,8 +10150,10 @@ async function loadTwoLocations() {
     const map = FB_KEY_MAP[key];
     if (!map) return;
     const side = map[0], kind = map[1];
-    if (kind !== 'shoot' && kind !== 'switch') (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = false;
+    if (kind === 'shoot') shootUp(side);
+    else if (kind !== 'switch') (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = false;
   });
+
 
 
   // ---------------- render ----------------
@@ -9977,7 +10235,18 @@ async function loadTwoLocations() {
   }
 
   function render() {
+    ctx.save();
+    if (shakeT > 0) {
+      const m = shakeMag * (shakeT / 320);
+      ctx.translate((Math.random() - 0.5) * m, (Math.random() - 0.5) * m);
+    }
     drawPitch();
+    // fading curl trail behind the ball
+    ballTrail.forEach((t, i) => {
+      const a = (t.life / 260) * 0.35 * (i / ballTrail.length);
+      ctx.fillStyle = 'rgba(255,255,255,' + a.toFixed(2) + ')';
+      ctx.beginPath(); ctx.arc(t.x, t.y, BALL_R * 0.55, 0, Math.PI * 2); ctx.fill();
+    });
     // Every player always shows their shirt number; name tags only appear
     // over the player each side is actually controlling right now (their
     // manual pick, or whoever's nearest the ball by default), so the pitch
@@ -9986,7 +10255,33 @@ async function loadTwoLocations() {
     const activeB = teamB.human ? controlledPlayer(teamB) : nearestToBall(outfieldOf(teamB));
     teamA.players.forEach(p => drawPlayer(p, teamA.color, p === activeA, p === activeA));
     teamB.players.forEach(p => drawPlayer(p, teamB.color, p === activeB, p === activeB));
+    drawChargeRing('p1', activeA, teamA);
+    drawChargeRing('p2', activeB, teamB);
     drawBall();
+    particles.forEach(pt => {
+      const a = Math.max(0, pt.life / pt.maxLife);
+      ctx.fillStyle = pt.color; ctx.globalAlpha = a;
+      ctx.fillRect(pt.x - pt.size / 2, pt.y - pt.size / 2, pt.size, pt.size);
+      ctx.globalAlpha = 1;
+    });
+    ctx.restore();
+  }
+
+  // Ring around a human-controlled player that fills up while the shoot
+  // control is held, showing which shot type will fire on release.
+  function drawChargeRing(side, activePlayer, team) {
+    if (!team || team.human !== side) return;
+    const start = chargeStart[side];
+    if (!start) return;
+    const held = performance.now() - start;
+    const type = shotTypeForHold(held);
+    const color = type === 'trivela' ? '#ff5252' : type === 'finesse' ? '#4fc3f7' : 'rgba(255,255,255,0.7)';
+    const frac = Math.min(1, held / CHARGE_TRIVELA_MS);
+    ctx.save();
+    ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.arc(activePlayer.x, activePlayer.y, PLAYER_R + 7, -Math.PI / 2, -Math.PI / 2 + frac * Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
   }
 
   function frame(t) {
@@ -10009,6 +10304,7 @@ async function loadTwoLocations() {
     if (rafId) cancelAnimationFrame(rafId);
     ctrlP1.up = ctrlP1.down = ctrlP1.left = ctrlP1.right = false;
     ctrlP2.up = ctrlP2.down = ctrlP2.left = ctrlP2.right = false;
+    chargeStart.p1 = null; chargeStart.p2 = null;
     document.querySelectorAll('#view-football [data-fb]').forEach(b => b.classList.remove('active'));
   }
 
