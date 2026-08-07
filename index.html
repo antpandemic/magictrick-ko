@@ -258,7 +258,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea, #view-fight, #view-football {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea, #view-fight, #view-football, #view-herorun {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -766,6 +766,114 @@
   .fight-result-btns { display:flex; gap:10px; margin-top:6px; }
 
   .fight-hint { text-align:center; font-size:11.5px; color:rgba(255,255,255,0.4); margin-top:2px; }
+
+  /* ---- hero dash (co-op obstacle runner) ---- */
+  .hr-p1 { --hc: #ff8a3d; --hc-rgb:255,138,61; }
+  .hr-p2 { --hc: #4ecdc4; --hc-rgb:78,205,196; }
+  .hr-setup-title {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:24px; color:#fff; text-align:center; margin:6px 0 4px;
+  }
+  .hr-setup-sub {
+    font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px;
+    color:rgba(255,255,255,0.7); text-align:center; margin-bottom:20px;
+  }
+  .hr-hero-row { display:flex; gap:10px; margin-bottom:18px; }
+  .hr-hero-btn {
+    flex:1; padding:14px 8px; border-radius:14px; text-align:center;
+    background:rgba(255,255,255,0.06); border:1.5px solid rgba(255,255,255,0.14);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .hr-hero-btn .hr-hero-emoji { font-size:26px; }
+  .hr-hero-btn .hr-hero-name { font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px; color:#fff; }
+  .hr-hero-btn .hr-hero-desc { font-size:10.5px; color:rgba(255,255,255,0.55); line-height:1.3; }
+  .hr-hero-btn.picked { box-shadow:0 0 0 2px #fff inset; background:rgba(255,255,255,0.12); }
+  .hr-hero-btn.taken { opacity:0.4; }
+  .hr-side-row { display:flex; gap:10px; }
+  .hr-side-btn { transition:transform .1s ease, opacity .15s ease; }
+  .hr-side-btn.picked { box-shadow:0 0 0 2px #fff inset; }
+  .hr-side-btn:disabled { opacity:0.35; }
+  .hr-live-status {
+    text-align:center; min-height:20px; margin:14px 0; font-family:'Quicksand', sans-serif;
+    font-size:13px; color:rgba(255,255,255,0.75); font-weight:600;
+  }
+  .hr-live-cancel {
+    display:block; margin:10px auto 0; font-family:'Quicksand', sans-serif; font-size:12px;
+    color:rgba(255,255,255,0.45); text-decoration:underline;
+  }
+  .hr-rules {
+    display:flex; flex-direction:column; gap:6px; margin:16px 0 20px;
+    font-size:12.5px; color:rgba(255,255,255,0.6); line-height:1.5;
+  }
+  .hr-rules b { color:rgba(255,255,255,0.85); }
+  .hr-name-input { width:100%; margin-bottom:10px; }
+
+  .hr-arena-wrap {
+    position:relative; width:100%; aspect-ratio:9/13; max-height:72vh; border-radius:18px; overflow:hidden;
+    background:#0c1522; box-shadow:0 6px 24px rgba(0,0,0,0.35); margin-bottom:14px;
+    touch-action:none; user-select:none;
+  }
+  .hr-canvas { width:100%; height:100%; display:block; }
+  .hr-hud {
+    position:absolute; top:0; left:0; right:0; padding:10px 10px 0; display:flex;
+    align-items:flex-start; justify-content:space-between; gap:8px; pointer-events:none; z-index:2;
+  }
+  .hr-score-box { flex:1; min-width:0; background:rgba(0,0,0,0.32); border-radius:10px; padding:6px 10px; backdrop-filter:blur(3px); }
+  .hr-score-box.hr-p2 { text-align:right; }
+  .hr-score-name {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:10.5px; color:var(--hc);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .hr-score-val { font-family:'Quicksand', sans-serif; font-weight:700; font-size:16px; color:#fff; }
+  .hr-timer-box {
+    background:rgba(0,0,0,0.32); border-radius:10px; padding:6px 12px; backdrop-filter:blur(3px);
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:14px; color:#fff; white-space:nowrap;
+  }
+  .hr-timer-box.low { color:#ff5c72; }
+
+  .hr-toast-overlay {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:6px; pointer-events:none; opacity:0; transition:opacity .2s ease;
+    text-align:center; padding:0 20px; z-index:3;
+  }
+  .hr-toast-overlay.show { opacity:1; }
+  .hr-toast-main {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:24px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.6);
+  }
+  .hr-toast-sub {
+    font-family:'Quicksand', sans-serif; font-weight:600; font-size:13px;
+    color:rgba(255,255,255,0.85); text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  }
+
+  .hr-controls { position:absolute; bottom:10px; left:10px; right:10px; display:flex; justify-content:space-between; z-index:2; }
+  .hr-ctrl-cluster { display:flex; align-items:flex-end; gap:8px; }
+  .hr-ctrl-btn {
+    width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.14); backdrop-filter:blur(4px); border:1.5px solid rgba(255,255,255,0.28);
+    color:#fff; font-size:18px; -webkit-tap-highlight-color:transparent;
+  }
+  .hr-ctrl-btn:active { transform:scale(0.88); background:rgba(255,255,255,0.28); }
+  .hr-ctrl-btn.hr-jump { width:56px; height:56px; font-size:22px; background:rgba(var(--hc-rgb),0.35); border-color:var(--hc); }
+
+  .hr-result-screen {
+    position:absolute; inset:0; background:rgba(6,10,18,0.9); backdrop-filter:blur(3px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    opacity:0; pointer-events:none; transition:opacity .25s ease; text-align:center; padding:0 24px; z-index:4;
+  }
+  .hr-result-screen.show { opacity:1; pointer-events:auto; }
+  .hr-result-title {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:28px; color:#fff;
+  }
+  .hr-result-sub { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:16px; color:rgba(255,255,255,0.75); }
+  .hr-result-scores { display:flex; gap:18px; margin:4px 0; }
+  .hr-result-score-item { text-align:center; }
+  .hr-result-score-item .n { font-family:'Quicksand', sans-serif; font-weight:700; font-size:22px; color:#fff; display:block; }
+  .hr-result-score-item .l { font-size:11px; color:rgba(255,255,255,0.55); }
+  .hr-result-btns { display:flex; gap:10px; margin-top:6px; }
+
+  .hr-hint { text-align:center; font-size:11.5px; color:rgba(255,255,255,0.4); margin-top:2px; }
 
   /* ---- street football ---- */
   .fb-team-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px; }
@@ -3252,6 +3360,96 @@
     </div>
   </div>
 
+  <!-- ============================ HERO DASH (co-op obstacle runner, subpage) ============================ -->
+  <div class="view" id="view-herorun">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Hero Dash</div>
+          <div class="page-sub" style="margin-bottom:0;">live, both phones connected — dodge, jump, rack up points together</div>
+        </div>
+      </div>
+
+      <div id="hr-setup">
+        <div class="hr-setup-title">Ready to run? 🦸</div>
+        <div class="hr-setup-sub">pick your hero, one of you hosts</div>
+
+        <input type="text" id="hr-live-name" class="map-edit-input hr-name-input" maxlength="14" placeholder="Your name" />
+
+        <div class="hr-hero-row" id="hr-hero-row">
+          <button class="hr-hero-btn" data-hero="ironman">
+            <span class="hr-hero-emoji">🦾</span>
+            <span class="hr-hero-name">ironman</span>
+            <span class="hr-hero-desc">armored flyer — steady jumps</span>
+          </button>
+          <button class="hr-hero-btn" data-hero="spiderman">
+            <span class="hr-hero-emoji">🕸️</span>
+            <span class="hr-hero-name">spiderman/span>
+            <span class="hr-hero-desc">acrobatic swinger — snappy turns</span>
+          </button>
+        </div>
+
+        <div class="hr-rules">
+          <div>One of you <b>hosts</b> the run, the other <b>joins</b>. Doesn't matter who's who — just pick different ones on each phone.</div>
+          <div><b>Swipe or tap left/right</b> to switch lanes, <b>tap the jump button</b> to hop obstacles. Grab ⚡ boosts and 🛡 shields, dodge the rest. 5 minutes on the clock — most points wins.</div>
+        </div>
+
+        <div class="hr-side-row">
+          <button class="draw-btn hr-side-btn hr-p1" id="hr-side-host-btn" style="flex:1;">Host the run</button>
+          <button class="draw-btn hr-side-btn hr-p2" id="hr-side-guest-btn" style="flex:1; background:rgba(78,205,196,0.22);">Join a run</button>
+        </div>
+        <div class="hr-live-status" id="hr-live-status">&nbsp;</div>
+        <button class="draw-btn" id="hr-live-start-btn" style="width:100%; display:none;">Start the dash</button>
+        <button class="hr-live-cancel" id="hr-live-cancel-btn" style="display:none;">cancel</button>
+      </div>
+
+      <div id="hr-arena" style="display:none;">
+        <div class="hr-arena-wrap" id="hr-arena-wrap">
+          <canvas class="hr-canvas" id="hr-canvas"></canvas>
+
+          <div class="hr-hud">
+            <div class="hr-score-box hr-p1">
+              <div class="hr-score-name" id="hr-score-name-p1">Player 1</div>
+              <div class="hr-score-val" id="hr-score-val-p1">0</div>
+            </div>
+            <div class="hr-timer-box" id="hr-timer-box">5:00</div>
+            <div class="hr-score-box hr-p2">
+              <div class="hr-score-name" id="hr-score-name-p2">Player 2</div>
+              <div class="hr-score-val" id="hr-score-val-p2">0</div>
+            </div>
+          </div>
+
+          <div class="hr-toast-overlay" id="hr-toast-overlay">
+            <div class="hr-toast-main" id="hr-toast-main"></div>
+            <div class="hr-toast-sub" id="hr-toast-sub"></div>
+          </div>
+
+          <div class="hr-controls">
+            <div class="hr-ctrl-cluster">
+              <button class="hr-ctrl-btn" data-hr="left" aria-label="switch lane left">◀</button>
+              <button class="hr-ctrl-btn hr-jump" data-hr="jump" aria-label="jump">⤴</button>
+              <button class="hr-ctrl-btn" data-hr="right" aria-label="switch lane right">▶</button>
+            </div>
+          </div>
+
+          <div class="hr-result-screen" id="hr-result-screen">
+            <div class="hr-result-title" id="hr-result-title"></div>
+            <div class="hr-result-sub" id="hr-result-sub"></div>
+            <div class="hr-result-scores" id="hr-result-scores"></div>
+            <div class="hr-result-btns">
+              <button class="draw-btn" id="hr-rematch-btn">Run it back</button>
+              <button class="draw-btn" id="hr-menu-btn" style="background:rgba(255,255,255,0.14);">Change hero</button>
+            </div>
+          </div>
+        </div>
+        <div class="hr-hint">on a keyboard: A / D to switch lanes, W to jump</div>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -3621,7 +3819,8 @@ const CONFIG = {
     { id: "view-sudoku",    icon: "grid3",       label: "Sudoku",          sub: "one shared puzzle, five difficulties, fill it in together", ready: true },
     { id: "view-dateidea",  icon: "compass",     label: "Date Idea",       sub: "tap to roll a random date idea, live for both of you",       ready: true },
     { id: "view-fight",     icon: "glove",       label: "Sweetheart Showdown", sub: "2-player boxing, pass one phone back and forth",         ready: true },
-    { id: "view-football",  icon: "football",    label: "Street Football",    sub: "11v11 arcade — Real Madrid, Barça, Bayern, Arsenal",          ready: true }
+    { id: "view-football",  icon: "football",    label: "Street Football",    sub: "11v11 arcade — Real Madrid, Barça, Bayern, Arsenal",          ready: true },
+    { id: "view-herorun",   icon: "herorun",     label: "Hero Dash",          sub: "co-op obstacle run, live — dodge, jump, chase the high score",  ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -3967,6 +4166,7 @@ const SVG_ICONS = {
   compass: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-1.6 4.4-4.4 1.6 1.6-4.4z"/></svg>`,
   glove: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12.5V7a2.2 2.2 0 0 1 4.4 0v3.2M11.4 10.2V6a2.1 2.1 0 0 1 4.2 0v4.2M15.6 10.3V7.3a2 2 0 0 1 4 0V14c0 3.6-2.6 6.5-6.6 6.5H11c-2 0-3.2-.7-4.4-2.1L3.5 15a1.6 1.6 0 0 1 2.2-2.3L7 14"/></svg>`,
   football: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.2l3.4 2.5-1.3 4h-4.2l-1.3-4z"/><path d="M12 8.2V4.3M15.4 10.7l3.6-1.2M13.9 14.7l2.2 3.3M10.1 14.7l-2.2 3.3M8.6 10.7l-3.6-1.2" stroke-linecap="round"/></svg>`,
+  herorun: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z"/><path d="M12 9v4.5M12 13.5l-3.5 6M12 13.5l3.5 6M12 10.5 7.5 8M12 10.5 16.5 8"/><path d="M4 19h16" stroke-dasharray="1.5 2.5"/></svg>`,
   seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`,
   grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>`,
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
@@ -10904,6 +11104,478 @@ async function loadTwoLocations() {
     }
   });
 })();
+
+// ---------- hero dash: co-op 3-lane obstacle runner, live across two phones ----------
+(function () {
+  const setupEl = document.getElementById('hr-setup');
+  const arenaEl = document.getElementById('hr-arena');
+  const heroRow = document.getElementById('hr-hero-row');
+  const nameInput = document.getElementById('hr-live-name');
+  const hostBtn = document.getElementById('hr-side-host-btn');
+  const guestBtn = document.getElementById('hr-side-guest-btn');
+  const cancelBtn = document.getElementById('hr-live-cancel-btn');
+  const statusEl = document.getElementById('hr-live-status');
+  const startBtn = document.getElementById('hr-live-start-btn');
+  const wrapEl = document.getElementById('hr-arena-wrap');
+  const canvas = document.getElementById('hr-canvas');
+  if (!setupEl || !canvas) return;
+  const ctx = canvas.getContext('2d');
+  const scoreNameP1 = document.getElementById('hr-score-name-p1');
+  const scoreNameP2 = document.getElementById('hr-score-name-p2');
+  const scoreValP1 = document.getElementById('hr-score-val-p1');
+  const scoreValP2 = document.getElementById('hr-score-val-p2');
+  const timerBox = document.getElementById('hr-timer-box');
+  const toastOverlay = document.getElementById('hr-toast-overlay');
+  const toastMain = document.getElementById('hr-toast-main');
+  const toastSub = document.getElementById('hr-toast-sub');
+  const resultScreen = document.getElementById('hr-result-screen');
+  const resultTitle = document.getElementById('hr-result-title');
+  const resultSub = document.getElementById('hr-result-sub');
+  const resultScores = document.getElementById('hr-result-scores');
+  const rematchBtn = document.getElementById('hr-rematch-btn');
+  const menuBtn = document.getElementById('hr-menu-btn');
+
+  const HEROES = {
+    ironman:      { name: 'Iron Man',      emoji: '🦾', color: '#ff8a3d' },
+    spiderman: { name: 'Spiderman', emoji: '🕸️', color: '#4ecdc4' }
+  };
+  const MATCH_SECONDS = 300;
+  const ROW_GAP = 150;
+  const BASE_SPEED = 190, RAMP = 3.4, MAX_SPEED = 340;
+  const JUMP_MS = 480;
+  const HIT_INVULN_MS = 900;
+  const BOOST_MS = 5000;
+  const START_ROW = 4;
+
+  let myHero = 'ironman', myName = '';
+  let netRole = null, netChannel = null, joinRetryTimer = null, opponentInfo = null;
+
+  function pickHero(id) {
+    myHero = id;
+    heroRow.querySelectorAll('.hr-hero-btn').forEach(b => b.classList.toggle('picked', b.dataset.hero === id));
+  }
+  heroRow.querySelectorAll('.hr-hero-btn').forEach(b => b.addEventListener('click', () => pickHero(b.dataset.hero)));
+  pickHero('ironman');
+
+  function resetLivePicker() {
+    if (joinRetryTimer) clearInterval(joinRetryTimer);
+    joinRetryTimer = null;
+    if (netChannel) { try { netChannel.unsubscribe(); } catch (e) {} netChannel = null; }
+    netRole = null; opponentInfo = null;
+    hostBtn.disabled = false; guestBtn.disabled = false;
+    hostBtn.classList.remove('picked'); guestBtn.classList.remove('picked');
+    cancelBtn.style.display = 'none';
+    startBtn.style.display = 'none';
+    statusEl.textContent = '\u00a0';
+  }
+  resetLivePicker();
+
+  function setLiveStatus(text) { statusEl.textContent = text; }
+  function sendNet(payload) { if (netChannel) netChannel.send({ type: 'broadcast', event: 'msg', payload }); }
+
+  function pickLiveSide(side) {
+    const sb = getSb();
+    if (!sb) { setLiveStatus('Live play needs Supabase connected — check the Theme setup.'); return; }
+    myName = (nameInput.value || '').trim() || 'Player';
+    netRole = side;
+    hostBtn.disabled = true; guestBtn.disabled = true;
+    (side === 'host' ? hostBtn : guestBtn).classList.add('picked');
+    cancelBtn.style.display = 'block';
+    setLiveStatus(side === 'host' ? "Waiting for your partner to open this and tap \"Join a run\"..." : 'Looking for the host...');
+
+    netChannel = sb.channel('hero_dash_live_room');
+    netChannel.on('broadcast', { event: 'msg' }, ({ payload }) => handleNetMessage(payload));
+    netChannel.subscribe((status) => {
+      if (status !== 'SUBSCRIBED') return;
+      if (netRole === 'guest') {
+        sendNet({ t: 'join', name: myName, hero: myHero });
+        joinRetryTimer = setInterval(() => sendNet({ t: 'join', name: myName, hero: myHero }), 1500);
+      }
+    });
+  }
+  hostBtn.addEventListener('click', () => pickLiveSide('host'));
+  guestBtn.addEventListener('click', () => pickLiveSide('guest'));
+  cancelBtn.addEventListener('click', resetLivePicker);
+
+  startBtn.addEventListener('click', () => {
+    if (netRole !== 'host' || !opponentInfo) return;
+    const seed = Math.floor(Math.random() * 1e9);
+    const startAt = Date.now() + 900;
+    sendNet({ t: 'go', seed, startAt, hostName: myName, hostHero: myHero, guestName: opponentInfo.name, guestHero: opponentInfo.hero });
+    beginMatch(seed, startAt);
+  });
+
+  function doRematch() {
+    const seed = Math.floor(Math.random() * 1e9);
+    const startAt = Date.now() + 900;
+    sendNet({ t: 'rematchGo', seed, startAt });
+    beginMatch(seed, startAt);
+  }
+
+  function handleNetMessage(payload) {
+    if (!payload || !payload.t) return;
+    if (netRole === 'host') {
+      if (payload.t === 'join') {
+        opponentInfo = { name: payload.name || 'Player 2', hero: payload.hero || 'spiderman' };
+        setLiveStatus('🎉 ' + opponentInfo.name + ' connected as ' + HEROES[opponentInfo.hero].name + '! tap Start when ready.');
+        startBtn.style.display = 'block';
+        sendNet({ t: 'ack', name: myName, hero: myHero });
+      } else if (payload.t === 'state') {
+        applyOppState(payload);
+      } else if (payload.t === 'final') {
+        applyOppFinal(payload.score);
+      } else if (payload.t === 'rematchRequest') {
+        doRematch();
+      }
+      return;
+    }
+    if (netRole === 'guest') {
+      if (payload.t === 'ack') {
+        opponentInfo = { name: payload.name || 'Player 1', hero: payload.hero || 'ironman' };
+        setLiveStatus('🎉 connected with ' + opponentInfo.name + ' — waiting for them to start...');
+        if (joinRetryTimer) { clearInterval(joinRetryTimer); joinRetryTimer = null; }
+      } else if (payload.t === 'go') {
+        opponentInfo = { name: payload.hostName, hero: payload.hostHero };
+        beginMatch(payload.seed, payload.startAt);
+      } else if (payload.t === 'rematchGo') {
+        beginMatch(payload.seed, payload.startAt);
+      } else if (payload.t === 'state') {
+        applyOppState(payload);
+      } else if (payload.t === 'final') {
+        applyOppFinal(payload.score);
+      }
+    }
+  }
+
+  // ---------------- deterministic track ----------------
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = (t + Math.imul(t ^ t >>> 7, 61 | t)) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  function rowLanes(seed, rowIndex) {
+    if (rowIndex < START_ROW) return [0, 0, 0];
+    const s = (seed ^ Math.imul(rowIndex + 0x9e3779b9, 0x85ebca6b)) >>> 0;
+    const rng = mulberry32(s);
+    const roll = rng();
+    const lanes = [0, 0, 0];
+    if (roll < 0.5) {
+      lanes[Math.floor(rng() * 3)] = 1;
+    } else if (roll < 0.64) {
+      const safe = Math.floor(rng() * 3);
+      for (let i = 0; i < 3; i++) if (i !== safe) lanes[i] = 1;
+    } else if (roll < 0.78) {
+      lanes[Math.floor(rng() * 3)] = rng() < 0.55 ? 3 : 4; // 3=boost 4=shield
+    }
+    return lanes;
+  }
+  function speedAt(t) { return Math.min(BASE_SPEED + RAMP * t, MAX_SPEED); }
+  function scrollDistAt(t) {
+    const tRamp = (MAX_SPEED - BASE_SPEED) / RAMP;
+    if (t <= tRamp) return BASE_SPEED * t + 0.5 * RAMP * t * t;
+    const distAtRamp = BASE_SPEED * tRamp + 0.5 * RAMP * tRamp * tRamp;
+    return distAtRamp + MAX_SPEED * (t - tRamp);
+  }
+
+  // ---------------- match state ----------------
+  let seed = 0, startAt = 0, mySlot = null; // 'p1' host, 'p2' guest
+  let myLane = 1, myLaneX = 1, jumpUntil = 0, invulnUntil = 0, shielded = false, boostUntil = 0;
+  let myScore = 0, lastResolvedRow = -1;
+  let oppLane = 1, oppScore = 0, oppJumping = false, oppName = '', oppHero = 'spiderman';
+  let myFinalSent = false, oppFinalScore = null, ended = false;
+  let running = false, rafId = null, lastNetSend = 0, W = 0, H = 0, dpr = 1;
+  let toastTimer = null;
+
+  function laneX(i) { return W * (i + 0.5) / 3; }
+
+  function showToast(main, sub) {
+    toastMain.textContent = main; toastSub.textContent = sub || '';
+    toastOverlay.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastOverlay.classList.remove('show'), 900);
+  }
+
+  function beginMatch(sd, sAt) {
+    seed = sd; startAt = sAt;
+    mySlot = netRole === 'host' ? 'p1' : 'p2';
+    const oppSlot = mySlot === 'p1' ? 'p2' : 'p1';
+    const myH = HEROES[myHero], oppH = HEROES[opponentInfo.hero] || HEROES.spiderman;
+    oppName = opponentInfo.name; oppHero = opponentInfo.hero;
+    (mySlot === 'p1' ? scoreNameP1 : scoreNameP2).textContent = myName + ' ' + myH.emoji;
+    (oppSlot === 'p1' ? scoreNameP1 : scoreNameP2).textContent = oppName + ' ' + oppH.emoji;
+    myLane = 1; myLaneX = laneX(1); jumpUntil = 0; invulnUntil = 0; shielded = false; boostUntil = 0;
+    myScore = 0; lastResolvedRow = START_ROW - 1;
+    oppLane = 1; oppScore = 0; oppJumping = false;
+    myFinalSent = false; oppFinalScore = null; ended = false;
+    scoreValP1.textContent = '0'; scoreValP2.textContent = '0';
+    timerBox.classList.remove('low');
+    resultScreen.classList.remove('show');
+    setupEl.style.display = 'none';
+    arenaEl.style.display = 'block';
+    fitCanvas();
+    startLoop();
+  }
+
+  function applyOppState(p) {
+    oppLane = p.lane; oppJumping = !!p.jumping; oppScore = p.score;
+    (mySlot === 'p1' ? scoreValP2 : scoreValP1).textContent = String(oppScore);
+  }
+  function applyOppFinal(score) {
+    oppFinalScore = score;
+    if (myFinalSent) showResult();
+  }
+
+  function setLane(delta) {
+    if (ended) return;
+    myLane = Math.max(0, Math.min(2, myLane + delta));
+  }
+  function doJump() {
+    if (ended) return;
+    jumpUntil = performance.now() + JUMP_MS;
+  }
+
+  wrapEl.querySelectorAll('[data-hr]').forEach(btn => {
+    const act = btn.dataset.hr;
+    btn.addEventListener('click', () => {
+      if (act === 'left') setLane(-1);
+      else if (act === 'right') setLane(1);
+      else if (act === 'jump') doJump();
+    });
+  });
+
+  // swipe on canvas
+  let touchX = 0, touchY = 0, touchT = 0;
+  wrapEl.addEventListener('touchstart', (e) => {
+    const t = e.changedTouches[0];
+    touchX = t.clientX; touchY = t.clientY; touchT = Date.now();
+  }, { passive: true });
+  wrapEl.addEventListener('touchend', (e) => {
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchX, dy = t.clientY - touchY, dt = Date.now() - touchT;
+    if (dt > 600) return;
+    if (Math.abs(dx) > 32 && Math.abs(dx) > Math.abs(dy)) { setLane(dx > 0 ? 1 : -1); }
+    else if (Math.abs(dx) < 20 && Math.abs(dy) < 20) { doJump(); }
+  }, { passive: true });
+
+  function onKey(e) {
+    if (!isViewActive('view-herorun') || arenaEl.style.display === 'none') return;
+    const k = e.key.toLowerCase();
+    if (k === 'a' || k === 'arrowleft') setLane(-1);
+    else if (k === 'd' || k === 'arrowright') setLane(1);
+    else if (k === 'w' || k === 'arrowup' || k === ' ') doJump();
+  }
+  window.addEventListener('keydown', onKey);
+
+  // ---------------- update / resolve rows ----------------
+  function update(t) {
+    myLaneX += (laneX(myLane) - myLaneX) * 0.28;
+    const isJumping = performance.now() < jumpUntil;
+
+    const dist = scrollDistAt(t);
+    const currentRow = Math.floor((dist + 0) / ROW_GAP);
+    // resolve any newly-crossed rows one at a time
+    while (lastResolvedRow < currentRow) {
+      lastResolvedRow++;
+      const rowIdx = lastResolvedRow;
+      if (rowIdx < START_ROW) continue;
+      const lanes = rowLanes(seed, rowIdx);
+      const content = lanes[myLane];
+      const mult = performance.now() < boostUntil ? 2 : 1;
+      if (content === 1) {
+        const jumpingNow = performance.now() < jumpUntil || (rowIdx === currentRow && isJumping);
+        if (jumpingNow) {
+          myScore += 2 * mult;
+        } else if (performance.now() > invulnUntil) {
+          if (shielded) { shielded = false; showToast('🛡 Shield used!', 'saved you that time'); }
+          else { myScore = Math.max(0, myScore - 5); showToast('💥 Ouch!', '-5 points'); invulnUntil = performance.now() + HIT_INVULN_MS; }
+        }
+      } else if (content === 3) {
+        myScore += 8 * mult;
+        boostUntil = performance.now() + BOOST_MS;
+        showToast('⚡ Boost!', '2x points for 5s');
+      } else if (content === 4) {
+        myScore += 6 * mult;
+        shielded = true;
+        showToast('🛡 Shield up', 'absorbs your next hit');
+      } else {
+        myScore += 1 * mult;
+      }
+    }
+    scoreValP1.textContent = mySlot === 'p1' ? String(myScore) : scoreValP1.textContent;
+    scoreValP2.textContent = mySlot === 'p2' ? String(myScore) : scoreValP2.textContent;
+    (mySlot === 'p1' ? scoreValP1 : scoreValP2).textContent = String(myScore);
+
+    const remain = Math.max(0, MATCH_SECONDS - t);
+    const mm = Math.floor(remain / 60), ss = Math.floor(remain % 60);
+    timerBox.textContent = mm + ':' + String(ss).padStart(2, '0');
+    timerBox.classList.toggle('low', remain <= 30);
+
+    if (t >= MATCH_SECONDS && !ended) {
+      ended = true;
+      if (!myFinalSent) { sendNet({ t: 'final', score: myScore }); myFinalSent = true; }
+      if (oppFinalScore !== null) showResult();
+      else setTimeout(() => { if (oppFinalScore === null) { oppFinalScore = oppScore; showResult(); } }, 1600);
+    }
+  }
+
+  function showResult() {
+    stopLoop();
+    const mine = myScore, theirs = oppFinalScore;
+    let title, sub;
+    if (mine > theirs) { title = 'You had the higher score! 🏆'; sub = myName + ' takes it this round'; }
+    else if (theirs > mine) { title = oppName + ' had the higher score 🏆'; sub = 'good run — go again?'; }
+    else { title = "It's a tie! 🤝"; sub = 'evenly matched, as usual'; }
+    resultTitle.textContent = title;
+    resultSub.textContent = sub;
+    const p1Score = mySlot === 'p1' ? mine : theirs;
+    const p2Score = mySlot === 'p1' ? theirs : mine;
+    resultScores.innerHTML = `
+      <div class="hr-result-score-item"><span class="n">${p1Score}</span><span class="l">${scoreNameP1.textContent}</span></div>
+      <div class="hr-result-score-item"><span class="n">${p2Score}</span><span class="l">${scoreNameP2.textContent}</span></div>`;
+    resultScreen.classList.add('show');
+  }
+  rematchBtn.addEventListener('click', () => {
+    resultScreen.classList.remove('show');
+    if (netRole === 'host') doRematch();
+    else { sendNet({ t: 'rematchRequest' }); setLiveStatus('Asked your partner to start a new run...'); }
+  });
+  menuBtn.addEventListener('click', () => {
+    stopLoop();
+    resultScreen.classList.remove('show');
+    arenaEl.style.display = 'none';
+    setupEl.style.display = 'block';
+    resetLivePicker();
+  });
+
+  // ---------------- render ----------------
+  function fitCanvas() {
+    const rect = wrapEl.getBoundingClientRect();
+    if (rect.width < 1) return;
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    W = rect.width; H = rect.height;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', () => { if (arenaEl.style.display !== 'none') fitCanvas(); });
+
+  function drawHero(x, y, hero, jumping, isMe) {
+    const h = HEROES[hero] || HEROES.ironman;
+    const lift = jumping ? -22 : 0;
+    ctx.save();
+    ctx.translate(x, y + lift);
+    ctx.fillStyle = 'rgba(0,0,0,0.32)';
+    ctx.beginPath(); ctx.ellipse(0, -lift + 4, 14, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '30px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(h.emoji, 0, 0);
+    if (!isMe) { ctx.globalAlpha = 0.55; }
+    ctx.strokeStyle = h.color; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 19, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawObstacle(x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = '#ff5c72';
+    ctx.beginPath(); ctx.moveTo(0, -16); ctx.lineTo(15, 12); ctx.lineTo(-15, 12); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.restore();
+  }
+  function drawBoost(x, y) {
+    ctx.save(); ctx.translate(x, y);
+    ctx.font = '22px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = '#ffd23f'; ctx.shadowBlur = 12;
+    ctx.fillText('⚡', 0, 0);
+    ctx.restore();
+  }
+  function drawShield(x, y) {
+    ctx.save(); ctx.translate(x, y);
+    ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = '#6fb8ff'; ctx.shadowBlur = 12;
+    ctx.fillText('🛡', 0, 0);
+    ctx.restore();
+  }
+
+  function render(t) {
+    ctx.clearRect(0, 0, W, H);
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#0c1522'); g.addColorStop(1, '#1b2c42');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    // lane dividers
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 2;
+    for (let i = 1; i < 3; i++) { ctx.beginPath(); ctx.moveTo(W * i / 3, 0); ctx.lineTo(W * i / 3, H); ctx.stroke(); }
+
+    const playerY = H * 0.84;
+    const dist = scrollDistAt(t);
+    const rowMin = Math.floor((dist - playerY) / ROW_GAP) - 1;
+    const rowMax = Math.floor((dist + H) / ROW_GAP) + 1;
+    for (let r = Math.max(START_ROW, rowMin); r <= rowMax; r++) {
+      const rowWorldY = r * ROW_GAP;
+      const y = playerY - (rowWorldY - dist);
+      if (y < -30 || y > H + 30) continue;
+      const lanes = rowLanes(seed, r);
+      for (let i = 0; i < 3; i++) {
+        if (lanes[i] === 1) drawObstacle(laneX(i), y);
+        else if (lanes[i] === 3) drawBoost(laneX(i), y);
+        else if (lanes[i] === 4) drawShield(laneX(i), y);
+      }
+    }
+
+    const isJumping = performance.now() < jumpUntil;
+    const meFirst = mySlot === 'p1';
+    if (meFirst) {
+      drawHero(laneX(oppLane), playerY, oppHero, oppJumping, false);
+      drawHero(myLaneX, playerY, myHero, isJumping, true);
+    } else {
+      drawHero(myLaneX, playerY, myHero, isJumping, true);
+      drawHero(laneX(oppLane), playerY, oppHero, oppJumping, false);
+    }
+
+    if (performance.now() < boostUntil) {
+      ctx.fillStyle = 'rgba(255,210,63,0.12)';
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  function frame(now) {
+    if (!running) return;
+    const t = Math.max(0, (Date.now() - startAt) / 1000);
+    if (t > 0 || Date.now() >= startAt) {
+      update(Math.min(t, MATCH_SECONDS));
+      render(Math.min(t, MATCH_SECONDS));
+      if (now - lastNetSend > 150) {
+        lastNetSend = now;
+        sendNet({ t: 'state', lane: myLane, jumping: performance.now() < jumpUntil, score: myScore });
+      }
+    } else {
+      render(0);
+    }
+    rafId = requestAnimationFrame(frame);
+  }
+  function startLoop() {
+    if (running) return;
+    running = true;
+    rafId = requestAnimationFrame(frame);
+  }
+  function stopLoop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+  }
+
+  window.addEventListener('viewchange', (e) => {
+    if (e.detail.id === 'view-herorun') {
+      if (arenaEl.style.display !== 'none') { fitCanvas(); startLoop(); }
+    } else {
+      stopLoop();
+    }
+  });
+})();
+
 // ---------- MISS YOU button: live ping + real push notification ----------
 (function () {
   const fab = document.getElementById('miss-you-fab');
