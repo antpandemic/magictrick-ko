@@ -15,10 +15,9 @@
   Scroll down there first. Sections below (CSS) are for colors/spacing if
   you want to go deeper, but you can personalize 90% of this site just by
   editing CONFIG. Read the comment block right above CONFIG for exact
-  instructions on how to space the love letter
+  instructions on how to space the love letter.
 ============================================================================
 -->
-
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Quicksand:wght@500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
@@ -259,7 +258,7 @@
   .page-sub {
     font-size:13.5px; color:rgba(255,255,255,0.6); margin-bottom:32px;
   }
-  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea, #view-fight {
+  #view-story, #view-reasons, #view-quiz, #view-playlist, #view-gallery, #view-kitty, #view-surprises, #view-draw, #view-map, #view-someday, #view-more, #view-repair, #view-capsule, #view-journal, #view-voice, #view-weather, #view-watchlist, #view-distance, #view-song, #view-milestones, #view-theme, #view-currently, #view-movienight, #view-lovelang, #view-duel, #view-card, #view-thisorthat, #view-plant, #view-pixelart, #view-wordchain, #view-ttt, #view-moodring, #view-notes, #view-c4, #view-sudoku, #view-dateidea, #view-fight, #view-football {
     min-height:100svh;
     background:linear-gradient(180deg, var(--bg-from), var(--bg-mid) 55%, var(--bg-to));
   }
@@ -760,6 +759,89 @@
   .fight-result-btns { display:flex; gap:10px; margin-top:6px; }
 
   .fight-hint { text-align:center; font-size:11.5px; color:rgba(255,255,255,0.4); margin-top:2px; }
+
+  /* ---- street football ---- */
+  .fb-team-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:6px; }
+  .fb-team-card {
+    border-radius:14px; padding:12px 10px; text-align:left; border:2px solid transparent;
+    background:rgba(255,255,255,0.06); position:relative; overflow:hidden;
+  }
+  .fb-team-card.picked { border-color:#fff; background:rgba(255,255,255,0.14); }
+  .fb-team-card .fb-swatch { width:26px; height:26px; border-radius:7px; margin-bottom:8px; box-shadow:0 0 0 2px rgba(255,255,255,0.25) inset; }
+  .fb-team-card .fb-team-name { font-family:'Quicksand', sans-serif; font-weight:700; font-size:13.5px; color:#fff; }
+  .fb-team-card .fb-team-formation { font-size:11px; color:rgba(255,255,255,0.55); margin-top:1px; }
+  .fb-team-card:disabled { opacity:0.3; }
+
+  .fb-lineup-card { margin-top:4px; }
+  .fb-lineup-head { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .fb-lineup-swatch { width:20px; height:20px; border-radius:6px; flex-shrink:0; box-shadow:0 0 0 2px rgba(255,255,255,0.25) inset; }
+  .fb-lineup-title { font-family:'Quicksand', sans-serif; font-weight:700; font-size:14.5px; color:#fff; }
+  .fb-lineup-note { font-size:11px; color:rgba(255,255,255,0.45); margin-top:1px; }
+  .fb-lineup-group { margin-bottom:10px; }
+  .fb-lineup-group-label {
+    font-size:10.5px; font-weight:700; letter-spacing:.06em; color:rgba(255,255,255,0.4);
+    text-transform:uppercase; margin-bottom:5px;
+  }
+  .fb-lineup-num {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; margin-right:8px; border-radius:5px;
+    background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85);
+    font-size:10px; font-weight:700; flex-shrink:0;
+  }
+  .fb-lineup-player {
+    font-size:13.5px; color:rgba(255,255,255,0.88); padding:4px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .fb-lineup-player:last-child { border-bottom:none; }
+  .fb-squad3-note {
+    font-size:11.5px; color:rgba(255,255,255,0.55); line-height:1.5; margin-top:10px;
+    padding-top:10px; border-top:1px dashed rgba(255,255,255,0.12);
+  }
+
+  .fb-mode-row { display:flex; gap:8px; margin:14px 0 12px; }
+
+  .fb-vs-row { display:flex; align-items:center; justify-content:center; gap:14px; margin:16px 0; }
+  .fb-vs-team { text-align:center; }
+  .fb-vs-swatch { width:38px; height:38px; border-radius:10px; margin:0 auto 6px; box-shadow:0 0 0 2px rgba(255,255,255,0.25) inset; }
+  .fb-vs-name { font-family:'Quicksand', sans-serif; font-weight:700; font-size:12.5px; color:#fff; max-width:90px; }
+  .fb-vs-text { font-family:'Playfair Display', serif; font-style:italic; color:rgba(255,255,255,0.5); font-size:15px; }
+
+  .fb-arena-wrap {
+    position:relative; width:100%; aspect-ratio:16/10; border-radius:18px; overflow:hidden;
+    background:#0d2b12; box-shadow:0 6px 24px rgba(0,0,0,0.35); margin-bottom:14px;
+    touch-action:none; user-select:none;
+  }
+  .fb-canvas { width:100%; height:100%; display:block; }
+  .fb-hud {
+    position:absolute; top:0; left:0; right:0; padding:10px 12px 0; display:flex;
+    align-items:center; justify-content:space-between; pointer-events:none;
+  }
+  .fb-hud-score {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:15px; color:#fff;
+    background:rgba(0,0,0,0.35); border-radius:10px; padding:5px 12px; text-shadow:0 1px 4px rgba(0,0,0,0.5);
+  }
+  .fb-hud-timer {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:13px; color:#fff;
+    background:rgba(0,0,0,0.35); border-radius:10px; padding:5px 10px;
+  }
+  .fb-msg-overlay {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    pointer-events:none; opacity:0; transition:opacity .2s ease; text-align:center; padding:0 20px;
+  }
+  .fb-msg-overlay.show { opacity:1; }
+  .fb-msg-main {
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size:24px; color:#fff; text-shadow:0 2px 10px rgba(0,0,0,0.6);
+  }
+  .fb-result-screen {
+    position:absolute; inset:0; background:rgba(6,12,7,0.88); backdrop-filter:blur(3px);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    opacity:0; pointer-events:none; transition:opacity .25s ease; text-align:center; padding:0 24px;
+  }
+  .fb-result-screen.show { opacity:1; pointer-events:auto; }
+  .fb-result-title { font-family:'Playfair Display', serif; font-style:italic; font-weight:700; font-size:26px; color:#fff; }
+  .fb-result-sub { font-family:'Cormorant Garamond', serif; font-style:italic; font-size:15.5px; color:rgba(255,255,255,0.75); }
+  .fb-result-btns { display:flex; gap:10px; margin-top:6px; }
 
   /* ---- more hub ---- */
   .hub-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -2773,6 +2855,104 @@
     </div>
   </div>
 
+  <!-- ============================ STREET FOOTBALL (subpage) ============================ -->
+  <div class="view" id="view-football">
+    <div class="page">
+      <div class="subpage-header">
+        <button class="subpage-back" data-back aria-label="Back to More">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div>
+          <div class="page-title" style="margin-bottom:2px;">Street Football</div>
+          <div class="page-sub" style="margin-bottom:0;">11v11 arcade, FC26 Volta-style — full squads, numbers &amp; names on the pitch</div>
+        </div>
+      </div>
+
+      <div id="fb-setup">
+        <div id="fb-step-p1team">
+          <div class="surprise-label">pick your club</div>
+          <div class="fb-team-grid" id="fb-p1-grid"></div>
+          <div class="fb-lineup-card surprise-card" id="fb-p1-lineup" style="display:none;"></div>
+        </div>
+
+        <div id="fb-step-mode" style="display:none;">
+          <div class="fb-mode-row" id="fb-mode-row">
+            <button class="fight-mode-btn active" data-mode="ai">🤖 Vs computer</button>
+            <button class="fight-mode-btn" data-mode="local">📱 Same phone, 2P</button>
+          </div>
+
+          <div id="fb-step-p2team">
+            <div class="surprise-label" id="fb-p2-label">opponent</div>
+            <div class="fb-team-grid" id="fb-p2-grid"></div>
+            <div class="fb-lineup-card surprise-card" id="fb-p2-lineup" style="display:none;"></div>
+          </div>
+
+          <div class="fb-vs-row" id="fb-vs-row" style="display:none;">
+            <div class="fb-vs-team">
+              <div class="fb-vs-swatch" id="fb-vs-swatch1"></div>
+              <div class="fb-vs-name" id="fb-vs-name1"></div>
+            </div>
+            <div class="fb-vs-text">vs</div>
+            <div class="fb-vs-team">
+              <div class="fb-vs-swatch" id="fb-vs-swatch2"></div>
+              <div class="fb-vs-name" id="fb-vs-name2"></div>
+            </div>
+          </div>
+
+          <button class="draw-btn" id="fb-start-btn" style="width:100%;" disabled>Kick off</button>
+        </div>
+      </div>
+
+      <div id="fb-arena" style="display:none;">
+        <div class="fb-arena-wrap" id="fb-arena-wrap">
+          <canvas class="fb-canvas" id="fb-canvas"></canvas>
+          <div class="fb-hud">
+            <div class="fb-hud-score" id="fb-hud-score">0 – 0</div>
+            <div class="fb-hud-timer" id="fb-hud-timer">2:00</div>
+          </div>
+          <div class="fb-msg-overlay" id="fb-msg-overlay"><div class="fb-msg-main" id="fb-msg-main"></div></div>
+
+          <div class="fight-controls">
+            <div class="fight-ctrl-cluster fight-p1" id="fb-cluster-p1">
+              <div class="fight-ctrl-dpad" style="flex-direction:column; gap:6px;">
+                <button class="fight-ctrl-btn" data-fb="p1-up" aria-label="up">▲</button>
+                <div style="display:flex; gap:6px;">
+                  <button class="fight-ctrl-btn" data-fb="p1-left" aria-label="left">◀</button>
+                  <button class="fight-ctrl-btn" data-fb="p1-down" aria-label="down">▼</button>
+                  <button class="fight-ctrl-btn" data-fb="p1-right" aria-label="right">▶</button>
+                </div>
+              </div>
+              <button class="fight-ctrl-btn fight-punch" data-fb="p1-shoot" aria-label="shoot" style="align-self:center;">⚽</button>
+              <button class="fight-ctrl-btn" data-fb="p1-switch" aria-label="switch player" style="align-self:center; font-size:16px;">🔁</button>
+            </div>
+            <div class="fight-ctrl-cluster fight-p2" id="fb-cluster-p2" style="display:none;">
+              <div class="fight-ctrl-dpad" style="flex-direction:column; gap:6px;">
+                <button class="fight-ctrl-btn" data-fb="p2-up" aria-label="up">▲</button>
+                <div style="display:flex; gap:6px;">
+                  <button class="fight-ctrl-btn" data-fb="p2-left" aria-label="left">◀</button>
+                  <button class="fight-ctrl-btn" data-fb="p2-down" aria-label="down">▼</button>
+                  <button class="fight-ctrl-btn" data-fb="p2-right" aria-label="right">▶</button>
+                </div>
+              </div>
+              <button class="fight-ctrl-btn fight-punch" data-fb="p2-shoot" aria-label="shoot" style="align-self:center;">⚽</button>
+              <button class="fight-ctrl-btn" data-fb="p2-switch" aria-label="switch player" style="align-self:center; font-size:16px;">🔁</button>
+            </div>
+          </div>
+
+          <div class="fb-result-screen" id="fb-result-screen">
+            <div class="fb-result-title" id="fb-result-title"></div>
+            <div class="fb-result-sub" id="fb-result-sub"></div>
+            <div class="fb-result-btns">
+              <button class="draw-btn" id="fb-rematch-btn">Rematch</button>
+              <button class="draw-btn" id="fb-menu-btn" style="background:rgba(255,255,255,0.14);">Change teams</button>
+            </div>
+          </div>
+        </div>
+        <div class="fight-hint">on a keyboard: WASD + Space for Player 1 · arrows + Enter for Player 2. Control auto-switches to whoever's closest to the ball — press Q (Player 1) or Shift (Player 2), or tap 🔁, to manually switch to a different teammate instead.</div>
+      </div>
+    </div>
+  </div>
+
   <!-- floating background music toggle (separate from the Playlist tab) -->
   <audio id="bg-music" loop></audio>
   <button class="bgmusic-btn" id="bgmusic-btn" style="display:none;" aria-label="Toggle background music">
@@ -3140,7 +3320,8 @@ const CONFIG = {
     { id: "view-c4",        icon: "grid",        label: "Connect Four",    sub: "the real one — drop discs, get four in a row, live",  ready: true },
     { id: "view-sudoku",    icon: "grid3",       label: "Sudoku",          sub: "one shared puzzle, five difficulties, fill it in together", ready: true },
     { id: "view-dateidea",  icon: "compass",     label: "Date Idea",       sub: "tap to roll a random date idea, live for both of you",       ready: true },
-    { id: "view-fight",     icon: "glove",       label: "Sweetheart Showdown", sub: "2-player boxing, pass one phone back and forth",         ready: true }
+    { id: "view-fight",     icon: "glove",       label: "Sweetheart Showdown", sub: "2-player boxing, pass one phone back and forth",         ready: true },
+    { id: "view-football",  icon: "football",    label: "Street Football",    sub: "11v11 arcade — Real Madrid, Barça, Bayern, Arsenal",          ready: true }
   ],
 
   // --------------------------------------------------------------------
@@ -3323,7 +3504,7 @@ const CONFIG = {
   // reference it by filename. Leave src empty to hide the toggle.
   // --------------------------------------------------------------------
   bgMusic: {
-    src: "music/song.mp3" // e.g. "music/our-song.mp3"
+    src: "music/our-song.mp3" // e.g. "music/our-song.mp3"
   },
 
   // --------------------------------------------------------------------
@@ -3435,6 +3616,7 @@ const SVG_ICONS = {
   dice: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.3" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="8.3" r="1.1" fill="currentColor" stroke="none"/><circle cx="8.3" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.7" cy="15.7" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none"/></svg>`,
   compass: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2l-1.6 4.4-4.4 1.6 1.6-4.4z"/></svg>`,
   glove: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 12.5V7a2.2 2.2 0 0 1 4.4 0v3.2M11.4 10.2V6a2.1 2.1 0 0 1 4.2 0v4.2M15.6 10.3V7.3a2 2 0 0 1 4 0V14c0 3.6-2.6 6.5-6.6 6.5H11c-2 0-3.2-.7-4.4-2.1L3.5 15a1.6 1.6 0 0 1 2.2-2.3L7 14"/></svg>`,
+  football: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8.2l3.4 2.5-1.3 4h-4.2l-1.3-4z"/><path d="M12 8.2V4.3M15.4 10.7l3.6-1.2M13.9 14.7l2.2 3.3M10.1 14.7l-2.2 3.3M8.6 10.7l-3.6-1.2" stroke-linecap="round"/></svg>`,
   seedling: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-3 -2.2-5-6-5 0 3.5 2 5.5 6 5Z"/><path d="M12 10c0-3.2 2.3-5.4 6.2-5.4 0 3.7-2.1 5.8-6.2 5.4Z"/><path d="M8.5 21h7"/></svg>`,
   grid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><rect x="14.5" y="14.5" width="6" height="6" rx="1"/></svg>`,
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
@@ -9117,6 +9299,721 @@ async function loadTwoLocations() {
 
   window.addEventListener('viewchange', (e) => {
     if (e.detail.id === 'view-fight') {
+      if (arenaEl.style.display !== 'none') { fitCanvas(); startLoop(); }
+    } else {
+      stopLoop();
+    }
+  });
+})();
+// ---------- street football: 11v11 arcade (FC26 Volta-style) ----------
+(function () {
+  // Expected starting XIs for the 2026/27 season, as of early August 2026 preseason.
+  // Official lineups aren't confirmed until roughly an hour before kickoff and change
+  // week to week — treat this as "who's currently expected to start", not a guarantee.
+  // Each player is [name, shirt number].
+  const FB_TEAMS = {
+    real_madrid: {
+      name: 'Real Madrid', formation: '4-3-3', primary: '#f5f5f5', secondary: '#4b2e83',
+      xi: {
+        GK: [['Thibaut Courtois', 1]],
+        DEF: [['Denzel Dumfries', 2], ['Ibrahima Konaté', 4], ['Dean Huijsen', 24], ['Marc Cucurella', 23]],
+        MID: [['Federico Valverde', 8], ['Jude Bellingham', 5], ['Aurélien Tchouaméni', 18]],
+        FWD: [['Arda Güler', 15], ['Kylian Mbappé', 9], ['Vinícius Júnior', 7]]
+      }
+    },
+    barcelona: {
+      name: 'Barcelona', formation: '4-4-2', primary: '#a50044', secondary: '#004d98',
+      xi: {
+        GK: [['Joan García', 25]],
+        DEF: [['Jules Koundé', 23], ['Pau Cubarsí', 2], ['Eric García', 24], ['Gerard Martín', 3]],
+        MID: [['Frenkie de Jong', 21], ['Pedri', 8], ['Dani Olmo', 20], ['Anthony Gordon', 17]],
+        FWD: [['Raphinha', 11], ['Lamine Yamal', 19]]
+      }
+    },
+    bayern: {
+      name: 'Bayern Munich', formation: '4-2-3-1', primary: '#dc052d', secondary: '#0d1633',
+      xi: {
+        GK: [['Manuel Neuer', 1]],
+        DEF: [['Konrad Laimer', 27], ['Dayot Upamecano', 2], ['Jonathan Tah', 4], ['Josip Stanišić', 22]],
+        MID: [['Joshua Kimmich', 6], ['Aleksandar Pavlović', 25], ['Michael Olise', 17], ['Luis Díaz', 7], ['Jamal Musiala', 42]],
+        FWD: [['Harry Kane', 9]]
+      }
+    },
+    arsenal: {
+      name: 'Arsenal', formation: '4-3-3', primary: '#ef0107', secondary: '#063672',
+      xi: {
+        GK: [['David Raya', 1]],
+        DEF: [['Jurriën Timber', 12], ['Gabriel Magalhães', 6], ['William Saliba', 2], ['Piero Hincapié', 3]],
+        MID: [['Martín Zubimendi', 36], ['Declan Rice', 41], ['Martin Ødegaard', 8], ['Eberechi Eze', 10]],
+        FWD: [['Viktor Gyökeres', 14], ['Bukayo Saka', 7]]
+      }
+    }
+  };
+  const TEAM_IDS = Object.keys(FB_TEAMS);
+  const ROW_ORDER = ['GK', 'DEF', 'MID', 'FWD'];
+  const ROW_DEPTH = { GK: 0.06, DEF: 0.26, MID: 0.54, FWD: 0.82 };
+
+  const setupEl = document.getElementById('fb-setup');
+  const arenaEl = document.getElementById('fb-arena');
+  if (!setupEl || !arenaEl) return;
+
+  const p1GridEl = document.getElementById('fb-p1-grid');
+  const p1LineupEl = document.getElementById('fb-p1-lineup');
+  const stepModeEl = document.getElementById('fb-step-mode');
+  const modeRow = document.getElementById('fb-mode-row');
+  const p2Label = document.getElementById('fb-p2-label');
+  const p2GridEl = document.getElementById('fb-p2-grid');
+  const p2LineupEl = document.getElementById('fb-p2-lineup');
+  const vsRow = document.getElementById('fb-vs-row');
+  const vsSwatch1 = document.getElementById('fb-vs-swatch1');
+  const vsName1 = document.getElementById('fb-vs-name1');
+  const vsSwatch2 = document.getElementById('fb-vs-swatch2');
+  const vsName2 = document.getElementById('fb-vs-name2');
+  const startBtn = document.getElementById('fb-start-btn');
+
+  const canvas = document.getElementById('fb-canvas');
+  const ctx = canvas.getContext('2d');
+  const wrapEl = document.getElementById('fb-arena-wrap');
+  const hudScore = document.getElementById('fb-hud-score');
+  const hudTimer = document.getElementById('fb-hud-timer');
+  const msgOverlay = document.getElementById('fb-msg-overlay');
+  const msgMain = document.getElementById('fb-msg-main');
+  const resultScreen = document.getElementById('fb-result-screen');
+  const resultTitle = document.getElementById('fb-result-title');
+  const resultSub = document.getElementById('fb-result-sub');
+  const rematchBtn = document.getElementById('fb-rematch-btn');
+  const menuBtn = document.getElementById('fb-menu-btn');
+  const clusterP1 = document.getElementById('fb-cluster-p1');
+  const clusterP2 = document.getElementById('fb-cluster-p2');
+
+  // ---------------- team pick / setup ----------------
+  let mode = 'ai';
+  let p1TeamId = null, p2TeamId = null;
+
+  function teamCardHtml(id, team) {
+    return '<button class="fb-team-card" data-team="' + id + '">' +
+      '<div class="fb-swatch" style="background:' + team.primary + ';"></div>' +
+      '<div class="fb-team-name">' + team.name + '</div>' +
+      '<div class="fb-team-formation">' + team.formation + '</div>' +
+      '</button>';
+  }
+
+  function lineupHtml(team) {
+    const groups = ['GK', 'DEF', 'MID', 'FWD'];
+    const labels = { GK: 'Goalkeeper', DEF: 'Defenders', MID: 'Midfielders', FWD: 'Forwards' };
+    let html = '<div class="fb-lineup-head">' +
+      '<div class="fb-lineup-swatch" style="background:' + team.primary + ';"></div>' +
+      '<div><div class="fb-lineup-title">' + team.name + ' — ' + team.formation + '</div>' +
+      '<div class="fb-lineup-note">expected starting XI, 2026/27 season</div></div></div>';
+    groups.forEach(g => {
+      html += '<div class="fb-lineup-group"><div class="fb-lineup-group-label">' + labels[g] + '</div>' +
+        team.xi[g].map(pl => '<div class="fb-lineup-player"><span class="fb-lineup-num">' + pl[1] + '</span>' + pl[0] + '</div>').join('') + '</div>';
+    });
+    html += '<div class="fb-squad3-note">You\'ll control the full XI — whoever\'s closest to the ball each moment. ' +
+      'Official lineups aren\'t locked until right before kickoff, so treat this as the current expected XI, not a guarantee.</div>';
+    return html;
+  }
+
+  function renderP1Grid() {
+    p1GridEl.innerHTML = TEAM_IDS.map(id => teamCardHtml(id, FB_TEAMS[id])).join('');
+    p1GridEl.querySelectorAll('.fb-team-card').forEach(btn => {
+      btn.addEventListener('click', () => pickP1(btn.dataset.team));
+    });
+  }
+
+  function pickP1(id) {
+    p1TeamId = id;
+    p1GridEl.querySelectorAll('.fb-team-card').forEach(b => b.classList.toggle('picked', b.dataset.team === id));
+    p1LineupEl.innerHTML = lineupHtml(FB_TEAMS[id]);
+    p1LineupEl.style.display = 'block';
+    stepModeEl.style.display = 'block';
+    if (p2TeamId === id) { p2TeamId = null; p2LineupEl.style.display = 'none'; }
+    renderP2Grid();
+    updateVsRow();
+  }
+
+  function renderP2Grid() {
+    const ids = TEAM_IDS.filter(id => id !== p1TeamId);
+    p2GridEl.innerHTML = ids.map(id => teamCardHtml(id, FB_TEAMS[id])).join('');
+    p2GridEl.querySelectorAll('.fb-team-card').forEach(btn => {
+      btn.addEventListener('click', () => pickP2(btn.dataset.team));
+      if (btn.dataset.team === p2TeamId) btn.classList.add('picked');
+    });
+  }
+
+  function pickP2(id) {
+    p2TeamId = id;
+    p2GridEl.querySelectorAll('.fb-team-card').forEach(b => b.classList.toggle('picked', b.dataset.team === id));
+    p2LineupEl.innerHTML = lineupHtml(FB_TEAMS[id]);
+    p2LineupEl.style.display = 'block';
+    updateVsRow();
+  }
+
+  function updateVsRow() {
+    if (!p1TeamId || !p2TeamId) { vsRow.style.display = 'none'; startBtn.disabled = true; return; }
+    vsRow.style.display = 'flex';
+    vsSwatch1.style.background = FB_TEAMS[p1TeamId].primary;
+    vsName1.textContent = FB_TEAMS[p1TeamId].name;
+    vsSwatch2.style.background = FB_TEAMS[p2TeamId].primary;
+    vsName2.textContent = FB_TEAMS[p2TeamId].name;
+    startBtn.disabled = false;
+  }
+
+  modeRow.querySelectorAll('.fight-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      mode = btn.dataset.mode;
+      modeRow.querySelectorAll('.fight-mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+      p2Label.textContent = mode === 'local' ? "Player 2, pick your club" : 'opponent';
+    });
+  });
+
+  renderP1Grid();
+
+  // ---------------- match engine ----------------
+  const W = 400, H = 250;
+  const FIELD_LEFT = 16, FIELD_RIGHT = 384, FIELD_TOP = 16, FIELD_BOTTOM = 234;
+  const GOAL_TOP = 100, GOAL_BOTTOM = 150;
+  const PLAYER_R = 8, BALL_R = 4;
+  const MOVE_SPEED = 95;
+  const DRIBBLE_R = 14;
+  const SHOOT_RANGE = 22;
+  const SHOOT_POWER = 210;
+  const MATCH_SECONDS = 120;
+
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+  let running = false, rafId = null, lastT = 0;
+  let matchTimeLeft = MATCH_SECONDS;
+  let matchOver = false;
+  let goalPause = 0;
+  let kickCooldown = 0;
+  let ball = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+  let teamA = null, teamB = null;
+  let score = { a: 0, b: 0 };
+  let kickingSide = 'a'; // which side takes the current kickoff
+
+  const ctrlP1 = { up: false, down: false, left: false, right: false };
+  const ctrlP2 = { up: false, down: false, left: false, right: false };
+
+  function dist(a, b) { const dx = a.x - b.x, dy = a.y - b.y; return Math.sqrt(dx * dx + dy * dy); }
+  function nearestToBall(players) {
+    let best = players[0], bestD = Infinity;
+    players.forEach(p => { const d = dist(p, ball); if (d < bestD) { bestD = d; best = p; } });
+    return best;
+  }
+  function clampPlayer(p) {
+    p.x = Math.max(FIELD_LEFT + PLAYER_R, Math.min(FIELD_RIGHT - PLAYER_R, p.x));
+    p.y = Math.max(FIELD_TOP + PLAYER_R, Math.min(FIELD_BOTTOM - PLAYER_R, p.y));
+  }
+
+  // Lays out a full XI on the pitch by formation row (GK/DEF/MID/FWD), evenly
+  // spread vertically within each row, with row depth mirrored per side. This
+  // is the "home shape" players drift back toward during open play — it does
+  // NOT change during the match, so forwards pushing into the final third is
+  // the target shape, not where anyone actually starts.
+  function formationPositions(attackDir) {
+    const positions = [];
+    ROW_ORDER.forEach(row => {
+      const depth = ROW_DEPTH[row];
+      const x = attackDir > 0
+        ? FIELD_LEFT + depth * (FIELD_RIGHT - FIELD_LEFT)
+        : FIELD_RIGHT - depth * (FIELD_RIGHT - FIELD_LEFT);
+      positions.push({ row, x });
+    });
+    return positions;
+  }
+
+  // Real kickoffs: everyone stays in their own half until the ball is
+  // touched. Rows are compressed so the deepest attacking row sits just
+  // behind the halfway line instead of near the opposite penalty box.
+  const KICKOFF_DEPTH = { GK: 0.05, DEF: 0.30, MID: 0.58, FWD: 0.85 };
+  function kickoffPositions(attackDir) {
+    const ownEdge = attackDir > 0 ? FIELD_LEFT : FIELD_RIGHT;
+    const span = Math.abs(W / 2 - ownEdge);
+    return ROW_ORDER.map(row => {
+      const depth = KICKOFF_DEPTH[row];
+      const x = attackDir > 0 ? ownEdge + depth * span : ownEdge - depth * span;
+      return { row, x };
+    });
+  }
+
+  function buildTeam(teamId, side, human) {
+    const team = FB_TEAMS[teamId];
+    const attackDir = side === 'a' ? 1 : -1;
+    const rowDepths = formationPositions(attackDir);
+    const players = [];
+    rowDepths.forEach(({ row, x }) => {
+      const group = team.xi[row];
+      group.forEach(([name, number], i) => {
+        const y = FIELD_TOP + ((i + 1) / (group.length + 1)) * (FIELD_BOTTOM - FIELD_TOP);
+        players.push({ name, number, isGK: row === 'GK', x, y, homeX: x, homeY: y });
+      });
+    });
+    return { id: teamId, name: team.name, color: team.primary, attackDir, human, players, manualPick: null };
+  }
+
+  // players[] is stored in GK/DEF/MID/FWD order (see buildTeam), so it can be
+  // re-sliced back into rows whenever we need to reposition a team.
+  function groupPlayersByRow(team) {
+    const groups = { GK: [], DEF: [], MID: [], FWD: [] };
+    const teamDef = FB_TEAMS[team.id];
+    let idx = 0;
+    ROW_ORDER.forEach(row => {
+      const count = teamDef.xi[row].length;
+      groups[row] = team.players.slice(idx, idx + count);
+      idx += count;
+    });
+    return groups;
+  }
+
+  // Puts a team into proper kickoff shape: everyone onside in their own
+  // half. The kicking team's most central attacker steps up to the center
+  // spot to actually take the kickoff.
+  function resetKickoff(team, isKicker) {
+    const rowDepths = kickoffPositions(team.attackDir);
+    const groups = groupPlayersByRow(team);
+    rowDepths.forEach(({ row, x }) => {
+      const group = groups[row];
+      group.forEach((p, i) => {
+        const y = FIELD_TOP + ((i + 1) / (group.length + 1)) * (FIELD_BOTTOM - FIELD_TOP);
+        p.x = x; p.y = y;
+      });
+    });
+    team.manualPick = null;
+    if (isKicker) {
+      const takers = groups.FWD.length ? groups.FWD : groups.MID;
+      let kicker = takers[0], bestDy = Infinity;
+      takers.forEach(p => { const dy = Math.abs(p.y - H / 2); if (dy < bestDy) { bestDy = dy; kicker = p; } });
+      kicker.x = W / 2 + (team.attackDir > 0 ? -7 : 7);
+      kicker.y = H / 2;
+    }
+  }
+
+  function kickoff() {
+    ball = { x: W / 2, y: H / 2, vx: 0, vy: 0 };
+    resetKickoff(teamA, kickingSide === 'a');
+    resetKickoff(teamB, kickingSide === 'b');
+    kickCooldown = 0;
+  }
+
+  function getHumanTeam(side) {
+    if (teamA && teamA.human === side) return teamA;
+    if (teamB && teamB.human === side) return teamB;
+    return null;
+  }
+
+  // The player a human side is actually piloting: their manual pick if one
+  // is active, otherwise whoever's closest to the ball (the default).
+  function controlledPlayer(team) {
+    const outfield = outfieldOf(team);
+    if (team.manualPick && outfield.includes(team.manualPick)) return team.manualPick;
+    return nearestToBall(outfield);
+  }
+
+  // Manually hand control to the next-nearest teammate (by distance to the
+  // ball), cycling through the outfield XI — lets you peel off to make a run
+  // instead of always puppeting whoever's nearest the ball.
+  function switchPlayer(side) {
+    const team = getHumanTeam(side);
+    if (!team) return;
+    const outfield = outfieldOf(team);
+    const sorted = outfield.slice().sort((a, b) => dist(a, ball) - dist(b, ball));
+    const current = controlledPlayer(team);
+    const idx = sorted.indexOf(current);
+    team.manualPick = sorted[(idx + 1) % sorted.length];
+  }
+
+
+  function moveByControl(p, ctrl, dt) {
+    const dx = (ctrl.right ? 1 : 0) - (ctrl.left ? 1 : 0);
+    const dy = (ctrl.down ? 1 : 0) - (ctrl.up ? 1 : 0);
+    if (dx || dy) {
+      const len = Math.hypot(dx, dy) || 1;
+      p.x += (dx / len) * MOVE_SPEED * dt / 1000;
+      p.y += (dy / len) * MOVE_SPEED * dt / 1000;
+    }
+    clampPlayer(p);
+  }
+
+  function aiActive(p, team, dt) {
+    const d = dist(p, ball);
+    const hasBall = d <= DRIBBLE_R;
+    const goalX = team.attackDir > 0 ? FIELD_RIGHT : FIELD_LEFT;
+    const goalY = (GOAL_TOP + GOAL_BOTTOM) / 2;
+    if (hasBall) {
+      // Has the ball at their feet — drive at the goal and shoot once close
+      // enough, instead of just standing over the ball.
+      const dGoal = Math.hypot(goalX - p.x, goalY - p.y);
+      if (dGoal <= SHOOT_RANGE + 14) {
+        shoot(p, team);
+      } else {
+        const dx = goalX - p.x, dy = goalY - p.y;
+        const len = Math.hypot(dx, dy) || 1;
+        p.x += (dx / len) * MOVE_SPEED * 0.85 * dt / 1000;
+        p.y += (dy / len) * MOVE_SPEED * 0.85 * dt / 1000;
+      }
+    } else {
+      // Doesn't have it yet — close down the ball itself.
+      const dx = ball.x - p.x, dy = ball.y - p.y;
+      const len = Math.hypot(dx, dy) || 1;
+      p.x += (dx / len) * MOVE_SPEED * 0.95 * dt / 1000;
+      p.y += (dy / len) * MOVE_SPEED * 0.95 * dt / 1000;
+    }
+    clampPlayer(p);
+  }
+
+  // Outfield players hold their formation shape, drifting toward the ball's
+  // side of the pitch rather than swarming it directly.
+  function supportMove(p, team, hasBall, dt) {
+    const shiftX = (ball.x - W / 2) * (hasBall ? 0.4 : 0.16) * team.attackDir;
+    const shiftY = (ball.y - p.homeY) * 0.22;
+    const targetX = Math.max(FIELD_LEFT + PLAYER_R, Math.min(FIELD_RIGHT - PLAYER_R, p.homeX + shiftX));
+    const targetY = Math.max(FIELD_TOP + PLAYER_R, Math.min(FIELD_BOTTOM - PLAYER_R, p.homeY + shiftY));
+    const dx = targetX - p.x, dy = targetY - p.y;
+    const d = Math.hypot(dx, dy);
+    if (d > 2) { p.x += dx / d * MOVE_SPEED * 0.5 * dt / 1000; p.y += dy / d * MOVE_SPEED * 0.5 * dt / 1000; }
+    clampPlayer(p);
+  }
+
+  // Goalkeepers never chase the ball upfield — they hold the goal line and
+  // track the ball vertically, clearing it away if it gets too close.
+  function goalkeeperMove(p, team, dt) {
+    const lineX = team.attackDir > 0 ? FIELD_LEFT + 14 : FIELD_RIGHT - 14;
+    const targetY = Math.max(GOAL_TOP + 8, Math.min(GOAL_BOTTOM - 8, ball.y));
+    const dx = lineX - p.x, dy = targetY - p.y;
+    const d = Math.hypot(dx, dy);
+    if (d > 1) { p.x += dx / d * MOVE_SPEED * 0.6 * dt / 1000; p.y += dy / d * MOVE_SPEED * 0.6 * dt / 1000; }
+    clampPlayer(p);
+    if (kickCooldown <= 0 && dist(p, ball) <= DRIBBLE_R) {
+      ball.vx = team.attackDir * 160 + (Math.random() - 0.5) * 40;
+      ball.vy = (Math.random() - 0.5) * 130;
+      kickCooldown = 400;
+    }
+  }
+
+  function shoot(p, team) {
+    if (kickCooldown > 0) return;
+    const goalX = team.attackDir > 0 ? FIELD_RIGHT : FIELD_LEFT;
+    const goalY = (GOAL_TOP + GOAL_BOTTOM) / 2 + (Math.random() - 0.5) * 30;
+    const dx = goalX - ball.x, dy = goalY - ball.y;
+    const len = Math.hypot(dx, dy) || 1;
+    ball.vx = (dx / len) * SHOOT_POWER;
+    ball.vy = (dy / len) * SHOOT_POWER;
+    kickCooldown = 350;
+  }
+
+  function attemptPlayerShoot(side) {
+    if (!running || matchOver || goalPause > 0) return;
+    const team = getHumanTeam(side);
+    if (!team) return;
+    const active = controlledPlayer(team);
+    if (dist(active, ball) <= SHOOT_RANGE + 6) shoot(active, team);
+  }
+
+  function dribble(p) {
+    if (kickCooldown > 0) return;
+    if (dist(p, ball) > DRIBBLE_R) return;
+    ball.x += (p.x - ball.x) * 0.18;
+    ball.y += (p.y - ball.y) * 0.18;
+    ball.vx *= 0.8; ball.vy *= 0.8;
+  }
+
+  function outfieldOf(team) { return team.players.filter(p => !p.isGK); }
+
+  function updateTeamFrame(team, hasBall, dt) {
+    const gk = team.players.find(p => p.isGK);
+    if (gk) goalkeeperMove(gk, team, dt);
+    const outfield = outfieldOf(team);
+    const active = team.human ? controlledPlayer(team) : nearestToBall(outfield);
+    outfield.forEach(p => {
+      if (p === active) {
+        if (team.human) moveByControl(p, team.human === 'p1' ? ctrlP1 : ctrlP2, dt);
+        else aiActive(p, team, dt);
+      } else {
+        supportMove(p, team, hasBall, dt);
+      }
+    });
+  }
+
+  function updateBallPhysics(dt) {
+    ball.x += ball.vx * dt / 1000;
+    ball.y += ball.vy * dt / 1000;
+    const decay = Math.pow(0.4, dt / 1000);
+    ball.vx *= decay; ball.vy *= decay;
+    if (ball.y < FIELD_TOP + BALL_R) { ball.y = FIELD_TOP + BALL_R; ball.vy *= -0.6; }
+    if (ball.y > FIELD_BOTTOM - BALL_R) { ball.y = FIELD_BOTTOM - BALL_R; ball.vy *= -0.6; }
+    const inGoalMouth = ball.y > GOAL_TOP && ball.y < GOAL_BOTTOM;
+    if (ball.x < FIELD_LEFT + BALL_R && !inGoalMouth) { ball.x = FIELD_LEFT + BALL_R; ball.vx *= -0.6; }
+    if (ball.x > FIELD_RIGHT - BALL_R && !inGoalMouth) { ball.x = FIELD_RIGHT - BALL_R; ball.vx *= -0.6; }
+  }
+
+  function checkGoal() {
+    if (ball.x < FIELD_LEFT - 6 && ball.y > GOAL_TOP && ball.y < GOAL_BOTTOM) onGoal('b');
+    else if (ball.x > FIELD_RIGHT + 6 && ball.y > GOAL_TOP && ball.y < GOAL_BOTTOM) onGoal('a');
+  }
+
+  function onGoal(who) {
+    score[who]++;
+    updateHud();
+    showMsg((who === 'a' ? teamA.name : teamB.name) + ' scores! ⚽', 1400);
+    goalPause = 1200;
+    kickingSide = who === 'a' ? 'b' : 'a'; // the team that conceded restarts play
+    kickoff();
+  }
+
+  function update(dt) {
+    if (matchOver) return;
+    if (goalPause > 0) { goalPause = Math.max(0, goalPause - dt); return; }
+    const allOutfield = [...outfieldOf(teamA), ...outfieldOf(teamB)];
+    const overallActive = nearestToBall(allOutfield);
+    const teamAHasBall = teamA.players.includes(overallActive);
+
+    updateTeamFrame(teamA, teamAHasBall, dt);
+    updateTeamFrame(teamB, !teamAHasBall, dt);
+
+    dribble(overallActive);
+    if (kickCooldown > 0) kickCooldown = Math.max(0, kickCooldown - dt);
+    updateBallPhysics(dt);
+    checkGoal();
+  }
+
+  function tickTimer(dt) {
+    if (matchOver || goalPause > 0) return;
+    matchTimeLeft = Math.max(0, matchTimeLeft - dt / 1000);
+    updateHudTimer();
+    if (matchTimeLeft <= 0) endMatch();
+  }
+
+  function endMatch() {
+    matchOver = true;
+    let title, sub;
+    if (score.a === score.b) { title = "It's a draw! 🤝"; sub = score.a + ' – ' + score.b; }
+    else {
+      const winner = score.a > score.b ? teamA : teamB;
+      title = winner.name + ' wins! 🏆';
+      sub = score.a + ' – ' + score.b;
+    }
+    resultTitle.textContent = title;
+    resultSub.textContent = sub;
+    resultScreen.classList.add('show');
+  }
+
+  function updateHud() { hudScore.textContent = score.a + ' – ' + score.b; }
+  function updateHudTimer() {
+    const m = Math.floor(matchTimeLeft / 60), s = Math.floor(matchTimeLeft % 60);
+    hudTimer.textContent = m + ':' + String(s).padStart(2, '0');
+  }
+  function showMsg(text, hideAfter) {
+    msgMain.textContent = text;
+    msgOverlay.classList.add('show');
+    if (hideAfter) setTimeout(() => msgOverlay.classList.remove('show'), hideAfter);
+  }
+
+  startBtn.addEventListener('click', () => {
+    teamA = buildTeam(p1TeamId, 'a', 'p1');
+    teamB = buildTeam(p2TeamId, 'b', mode === 'local' ? 'p2' : null);
+    score = { a: 0, b: 0 };
+    matchTimeLeft = MATCH_SECONDS;
+    matchOver = false;
+    goalPause = 0;
+    kickingSide = Math.random() < 0.5 ? 'a' : 'b';
+    kickoff();
+    updateHud();
+    updateHudTimer();
+    clusterP1.style.display = 'flex';
+    clusterP2.style.display = mode === 'local' ? 'flex' : 'none';
+    setupEl.style.display = 'none';
+    arenaEl.style.display = 'block';
+    resultScreen.classList.remove('show');
+    fitCanvas();
+    showMsg('Kick off! ⚽', 1200);
+    startLoop();
+  });
+
+  rematchBtn.addEventListener('click', () => {
+    score = { a: 0, b: 0 };
+    matchTimeLeft = MATCH_SECONDS;
+    matchOver = false;
+    goalPause = 0;
+    kickingSide = Math.random() < 0.5 ? 'a' : 'b';
+    kickoff();
+    updateHud();
+    updateHudTimer();
+    resultScreen.classList.remove('show');
+    msgOverlay.classList.remove('show');
+    showMsg('Kick off! ⚽', 1200);
+  });
+  menuBtn.addEventListener('click', () => {
+    stopLoop();
+    resultScreen.classList.remove('show');
+    arenaEl.style.display = 'none';
+    setupEl.style.display = 'block';
+  });
+
+  // ---------------- input ----------------
+  document.querySelectorAll('#view-football [data-fb]').forEach(btn => {
+    const parts = btn.dataset.fb.split('-');
+    const side = parts[0], kind = parts[1];
+    const ctrl = side === 'p1' ? ctrlP1 : ctrlP2;
+    if (kind === 'shoot' || kind === 'switch') {
+      const action = kind === 'shoot' ? () => attemptPlayerShoot(side) : () => switchPlayer(side);
+      const down = (e) => { e.preventDefault(); action(); btn.classList.add('active'); };
+      const up = (e) => { if (e) e.preventDefault(); btn.classList.remove('active'); };
+      btn.addEventListener('pointerdown', down);
+      btn.addEventListener('pointerup', up);
+      btn.addEventListener('pointerleave', up);
+      btn.addEventListener('pointercancel', up);
+    } else {
+      const down = (e) => { e.preventDefault(); ctrl[kind] = true; btn.classList.add('active'); };
+      const up = (e) => { if (e) e.preventDefault(); ctrl[kind] = false; btn.classList.remove('active'); };
+      btn.addEventListener('pointerdown', down);
+      btn.addEventListener('pointerup', up);
+      btn.addEventListener('pointerleave', up);
+      btn.addEventListener('pointercancel', up);
+    }
+  });
+
+  const FB_KEY_MAP = {
+    w: ['p1', 'up'], s: ['p1', 'down'], a: ['p1', 'left'], d: ['p1', 'right'], ' ': ['p1', 'shoot'], q: ['p1', 'switch'],
+    arrowup: ['p2', 'up'], arrowdown: ['p2', 'down'], arrowleft: ['p2', 'left'], arrowright: ['p2', 'right'], enter: ['p2', 'shoot'], shift: ['p2', 'switch']
+  };
+  window.addEventListener('keydown', (e) => {
+    if (!isViewActive('view-football') || arenaEl.style.display === 'none') return;
+    const tag = (document.activeElement && document.activeElement.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const key = e.key === ' ' ? ' ' : e.key.toLowerCase();
+    const map = FB_KEY_MAP[key];
+    if (!map) return;
+    e.preventDefault();
+    const side = map[0], kind = map[1];
+    if (kind === 'shoot') { if (!e.repeat) attemptPlayerShoot(side); }
+    else if (kind === 'switch') { if (!e.repeat) switchPlayer(side); }
+    else (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = true;
+  });
+  window.addEventListener('keyup', (e) => {
+    const key = e.key === ' ' ? ' ' : e.key.toLowerCase();
+    const map = FB_KEY_MAP[key];
+    if (!map) return;
+    const side = map[0], kind = map[1];
+    if (kind !== 'shoot' && kind !== 'switch') (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = false;
+  });
+
+
+  // ---------------- render ----------------
+  function fitCanvas() {
+    const rect = wrapEl.getBoundingClientRect();
+    if (rect.width < 1) return;
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    canvas.width = Math.round(rect.width * dpr);
+    canvas.height = Math.round(rect.height * dpr);
+    const scaleX = (rect.width * dpr) / W;
+    const scaleY = (rect.height * dpr) / H;
+    ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+  }
+  window.addEventListener('resize', () => { if (arenaEl.style.display !== 'none') fitCanvas(); });
+
+  function drawPitch() {
+    ctx.fillStyle = '#0d2b12';
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = 'rgba(255,255,255,0.025)';
+    for (let x = FIELD_LEFT, i = 0; x < FIELD_RIGHT; x += 24, i++) {
+      if (i % 2 === 0) ctx.fillRect(x, FIELD_TOP, 24, FIELD_BOTTOM - FIELD_TOP);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)'; ctx.lineWidth = 2;
+    ctx.strokeRect(FIELD_LEFT, FIELD_TOP, FIELD_RIGHT - FIELD_LEFT, FIELD_BOTTOM - FIELD_TOP);
+    ctx.beginPath(); ctx.moveTo(W / 2, FIELD_TOP); ctx.lineTo(W / 2, FIELD_BOTTOM); ctx.stroke();
+    ctx.beginPath(); ctx.arc(W / 2, H / 2, 26, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(FIELD_LEFT, GOAL_TOP); ctx.lineTo(FIELD_LEFT - 10, GOAL_TOP); ctx.lineTo(FIELD_LEFT - 10, GOAL_BOTTOM); ctx.lineTo(FIELD_LEFT, GOAL_BOTTOM); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(FIELD_RIGHT, GOAL_TOP); ctx.lineTo(FIELD_RIGHT + 10, GOAL_TOP); ctx.lineTo(FIELD_RIGHT + 10, GOAL_BOTTOM); ctx.lineTo(FIELD_RIGHT, GOAL_BOTTOM); ctx.stroke();
+  }
+
+  function textColorFor(bg) {
+    // crude luminance check so numbers stay legible on light or dark kits
+    const hex = bg.replace('#', '');
+    if (hex.length !== 6) return '#fff';
+    const r = parseInt(hex.slice(0, 2), 16), g = parseInt(hex.slice(2, 4), 16), b = parseInt(hex.slice(4, 6), 16);
+    return (r * 0.299 + g * 0.587 + b * 0.114) > 165 ? '#1a1a1a' : '#fff';
+  }
+
+  function drawPlayer(p, color, isActive, showName) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath(); ctx.ellipse(p.x, p.y + PLAYER_R * 0.8, PLAYER_R * 0.9, PLAYER_R * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+    if (isActive) {
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(p.x, p.y, PLAYER_R + 4, 0, Math.PI * 2); ctx.stroke();
+    }
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, PLAYER_R, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
+    // shirt number, always visible
+    ctx.fillStyle = textColorFor(color);
+    ctx.font = '700 7px Quicksand, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(String(p.number), p.x, p.y + 0.5);
+    ctx.restore();
+    if (showName) {
+      ctx.save();
+      const label = p.name.split(' ').pop();
+      ctx.font = '700 8px Quicksand, sans-serif';
+      const tw = ctx.measureText(label).width;
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.fillRect(p.x - tw / 2 - 3, p.y - PLAYER_R - 13, tw + 6, 11);
+      ctx.fillStyle = '#fff';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(label, p.x, p.y - PLAYER_R - 7.5);
+      ctx.restore();
+    }
+  }
+
+  function drawBall() {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.25)';
+    ctx.beginPath(); ctx.ellipse(ball.x, ball.y + BALL_R * 0.7, BALL_R * 0.9, BALL_R * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 1; ctx.stroke();
+    ctx.restore();
+  }
+
+  function render() {
+    drawPitch();
+    // Every player always shows their shirt number; name tags only appear
+    // over the player each side is actually controlling right now (their
+    // manual pick, or whoever's nearest the ball by default), so the pitch
+    // doesn't get cluttered with 22 name labels at once.
+    const activeA = teamA.human ? controlledPlayer(teamA) : nearestToBall(outfieldOf(teamA));
+    const activeB = teamB.human ? controlledPlayer(teamB) : nearestToBall(outfieldOf(teamB));
+    teamA.players.forEach(p => drawPlayer(p, teamA.color, p === activeA, p === activeA));
+    teamB.players.forEach(p => drawPlayer(p, teamB.color, p === activeB, p === activeB));
+    drawBall();
+  }
+
+  function frame(t) {
+    if (!running) return;
+    const dt = Math.min(50, t - (lastT || t));
+    lastT = t;
+    update(dt);
+    tickTimer(dt);
+    render();
+    rafId = requestAnimationFrame(frame);
+  }
+
+  function startLoop() {
+    if (running) return;
+    running = true; lastT = 0;
+    rafId = requestAnimationFrame(frame);
+  }
+  function stopLoop() {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    ctrlP1.up = ctrlP1.down = ctrlP1.left = ctrlP1.right = false;
+    ctrlP2.up = ctrlP2.down = ctrlP2.left = ctrlP2.right = false;
+    document.querySelectorAll('#view-football [data-fb]').forEach(b => b.classList.remove('active'));
+  }
+
+  window.addEventListener('viewchange', (e) => {
+    if (e.detail.id === 'view-football') {
       if (arenaEl.style.display !== 'none') { fitCanvas(); startLoop(); }
     } else {
       stopLoop();
