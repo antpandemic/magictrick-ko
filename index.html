@@ -1278,6 +1278,161 @@
   }
   .draw-btn:active { transform:scale(0.94); }
 
+  /* ========================================================================
+     JARVIS / MARVEL CORNER — Iron Man + Spider-Man themed tab. Defaults
+     to an arc-reactor cyan; the hero toggle below flips the accent to
+     gold/red (Iron Man) or red/blue (Spider-Man) via [data-hero].
+  ======================================================================== */
+  #view-jarvis {
+    --jv-accent:#4ce0ff; --jv-accent-rgb:76,224,255; --jv-accent-2:#ffb238; --jv-bg-deep:#05070c;
+  }
+  #view-jarvis[data-hero="ironman"]   { --jv-accent:#ffb238; --jv-accent-rgb:255,178,56; --jv-accent-2:#d92332; }
+  #view-jarvis[data-hero="spiderman"] { --jv-accent:#e23636; --jv-accent-rgb:226,54,54;  --jv-accent-2:#1c3fa8; }
+  #view-jarvis.active {
+    display:flex; flex-direction:column;
+    height:calc(100svh - 66px - env(safe-area-inset-bottom, 0px));
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(var(--jv-accent-rgb),0.16), transparent 55%),
+      linear-gradient(180deg, var(--jv-bg-deep), #0a0f1a 55%, #05070c);
+    transition:background .3s ease;
+  }
+  #view-jarvis .chat-header { background:linear-gradient(180deg, var(--jv-bg-deep) 55%, rgba(5,7,12,0)); gap:14px; }
+  .jarvis-reactor { position:relative; width:42px; height:42px; flex-shrink:0; }
+  .jarvis-ring { position:absolute; inset:0; border-radius:50%; border:2px solid transparent; transition:border-color .3s ease; }
+  .jarvis-ring-1 { animation:jvSpin 6s linear infinite; border-top-color:var(--jv-accent); border-right-color:rgba(var(--jv-accent-rgb),0.3); }
+  .jarvis-ring-2 { inset:8px; animation:jvSpin 4s linear infinite reverse; border-bottom-color:var(--jv-accent); border-left-color:rgba(var(--jv-accent-rgb),0.3); }
+  .jarvis-core {
+    position:absolute; inset:15px; border-radius:50%;
+    background:radial-gradient(circle, #fff, var(--jv-accent) 60%, transparent 100%);
+    box-shadow:0 0 14px 3px rgba(var(--jv-accent-rgb),0.75);
+    animation:jvPulse 1.8s ease-in-out infinite; transition:background .3s ease;
+  }
+  @keyframes jvSpin { to { transform:rotate(360deg); } }
+  @keyframes jvPulse { 0%,100% { opacity:.75; transform:scale(0.9); } 50% { opacity:1; transform:scale(1.05); } }
+  .jarvis-title { font-style:normal !important; letter-spacing:.05em; font-size:19px; text-shadow:0 0 12px rgba(var(--jv-accent-rgb),0.5); }
+  .jarvis-subtitle { display:flex; align-items:center; gap:6px; }
+  .jarvis-status-dot {
+    width:7px; height:7px; border-radius:50%; background:var(--jv-accent); flex-shrink:0;
+    box-shadow:0 0 0 3px rgba(var(--jv-accent-rgb),0.25); animation:jvPulse 1.8s ease-in-out infinite; transition:background .3s ease;
+  }
+  .jarvis-hero-toggle { display:flex; gap:8px; padding:0 20px 14px; flex-shrink:0; }
+  .jarvis-hero-btn {
+    flex:1; font-family:'Quicksand', sans-serif; font-weight:700; font-size:11.5px;
+    padding:8px 6px; border-radius:14px; border:1.5px solid rgba(255,255,255,0.15);
+    color:rgba(255,255,255,0.6); background:rgba(255,255,255,0.04);
+    transition:all .18s ease; touch-action:manipulation;
+  }
+  .jarvis-hero-btn.active { color:#fff; background:rgba(var(--jv-accent-rgb),0.22); border-color:rgba(var(--jv-accent-rgb),0.55); }
+  .jarvis-hero-btn:active { transform:scale(0.95); }
+
+  /* -- suit badges: 3D arc reactor (Iron Man) + 3D web-shooter (Spider-Man) -- */
+  .jarvis-suit-badge { display:flex; justify-content:center; align-items:flex-end; gap:26px; padding:2px 20px 20px; flex-shrink:0; }
+  .jv-badge { display:flex; flex-direction:column; align-items:center; gap:9px; }
+  .jv-badge-label {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:10px; letter-spacing:.1em;
+    color:rgba(255,255,255,0.42); text-transform:uppercase; transition:font-size .3s ease;
+  }
+  .jv-badge-scene { position:relative; width:104px; height:104px; perspective:640px; cursor:pointer; transition:width .3s ease, height .3s ease; }
+  #view-jarvis[data-hero="both"] .jv-badge-scene { width:66px; height:66px; }
+  #view-jarvis[data-hero="both"] .jv-badge-label { font-size:9px; }
+  #view-jarvis[data-hero="ironman"] .jv-badge-spider { display:none; }
+  #view-jarvis[data-hero="spiderman"] .jv-badge-iron { display:none; }
+
+  .jv-assembly { position:absolute; inset:0; transform-style:preserve-3d; animation:jvTilt 5.5s ease-in-out infinite; }
+  .jv-badge-scene.spin .jv-assembly { animation:jvSpinOnce .8s ease-in-out; }
+  @keyframes jvTilt {
+    0%,100% { transform:rotateY(-16deg) rotateX(6deg); }
+    50%     { transform:rotateY(16deg) rotateX(-4deg); }
+  }
+  @keyframes jvSpinOnce { from { transform:rotateY(0deg) rotateX(0deg); } to { transform:rotateY(360deg) rotateX(0deg); } }
+
+  /* arc reactor: layered rings + triangle + glowing core, each on its own Z depth */
+  .ac-ring { position:absolute; border-radius:50%; border-style:solid; border-color:rgba(var(--jv-accent-rgb),0.6); box-shadow:0 0 10px rgba(var(--jv-accent-rgb),0.25) inset; }
+  .ac-outer { inset:0; border-width:3px; transform:translateZ(-16px); }
+  .ac-mid   { inset:15%; border-width:3px; border-color:rgba(var(--jv-accent-rgb),0.85); transform:translateZ(-4px); }
+  .ac-tri {
+    position:absolute; inset:30%; transform:translateZ(6px);
+    clip-path:polygon(50% 6%, 92% 90%, 8% 90%);
+    background:linear-gradient(180deg, rgba(var(--jv-accent-rgb),0.9), rgba(var(--jv-accent-rgb),0.25));
+  }
+  .ac-core {
+    position:absolute; inset:40%; border-radius:50%; transform:translateZ(18px);
+    background:radial-gradient(circle, #fff, var(--jv-accent) 65%, transparent 100%);
+    box-shadow:0 0 22px 6px rgba(var(--jv-accent-rgb),0.8);
+  }
+
+  /* web-shooter: wrist cuff + raised dial + glowing target reticle */
+  .ws-cuff {
+    position:absolute; left:6%; right:6%; top:28%; bottom:4%; transform:translateZ(-14px);
+    background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+    border:1.5px solid rgba(var(--jv-accent-rgb),0.45); border-radius:16px 16px 32px 32px;
+  }
+  .ws-plate {
+    position:absolute; inset:16%; border-radius:50%; transform:translateZ(0px);
+    background:radial-gradient(circle at 35% 30%, rgba(255,255,255,0.2), rgba(0,0,0,0.3));
+    border:2px solid rgba(var(--jv-accent-rgb),0.6);
+  }
+  .ws-target {
+    position:absolute; inset:32%; border-radius:50%; transform:translateZ(18px);
+    background:rgba(5,7,12,0.85); border:2px solid var(--jv-accent);
+    box-shadow:0 0 16px 4px rgba(var(--jv-accent-rgb),0.6);
+  }
+  .ws-cross-h, .ws-cross-v { position:absolute; background:var(--jv-accent); }
+  .ws-cross-h { left:14%; right:14%; top:50%; height:2px; transform:translateY(-1px); }
+  .ws-cross-v { top:14%; bottom:14%; left:50%; width:2px; transform:translateX(-1px); }
+  .ws-dot { position:absolute; inset:42%; border-radius:50%; background:#fff; box-shadow:0 0 6px 2px rgba(var(--jv-accent-rgb),0.9); }
+  .jarvis-fact-card {
+    position:relative; margin:0 20px 16px; padding:18px 16px 16px; flex-shrink:0;
+    background:rgba(255,255,255,0.04); border:1px solid rgba(var(--jv-accent-rgb),0.35);
+    border-radius:14px; overflow:hidden; transition:border-color .3s ease;
+  }
+  .jarvis-fact-card::before {
+    content:''; position:absolute; left:0; right:0; height:2px; top:-2px;
+    background:linear-gradient(90deg, transparent, rgba(var(--jv-accent-rgb),0.9), transparent);
+    animation:jvScan 3.2s linear infinite;
+  }
+  @keyframes jvScan { 0% { top:-2px; } 100% { top:100%; } }
+  .jarvis-fact-corner { position:absolute; width:14px; height:14px; border-color:rgba(var(--jv-accent-rgb),0.8); transition:border-color .3s ease; }
+  .jarvis-fact-corner.tl { top:6px; left:6px; border-top:2px solid; border-left:2px solid; }
+  .jarvis-fact-corner.tr { top:6px; right:6px; border-top:2px solid; border-right:2px solid; }
+  .jarvis-fact-corner.bl { bottom:6px; left:6px; border-bottom:2px solid; border-left:2px solid; }
+  .jarvis-fact-corner.br { bottom:6px; right:6px; border-bottom:2px solid; border-right:2px solid; }
+  .jarvis-fact-tag {
+    font-family:'Quicksand', sans-serif; font-weight:700; font-size:10.5px; letter-spacing:.12em;
+    color:var(--jv-accent); margin-bottom:8px; text-transform:uppercase; transition:color .3s ease;
+  }
+  .jarvis-fact-text { font-family:'Quicksand', sans-serif; font-size:14px; line-height:1.55; color:rgba(255,255,255,0.92); min-height:58px; }
+  .jarvis-fact-text .jv-cursor { display:inline-block; width:7px; height:14px; background:var(--jv-accent); margin-left:2px; vertical-align:-2px; animation:jvBlink .8s step-end infinite; }
+  @keyframes jvBlink { 50% { opacity:0; } }
+  .jarvis-fact-btn { width:100%; margin-top:14px; border-color:rgba(var(--jv-accent-rgb),0.5) !important; color:#fff !important; background:rgba(var(--jv-accent-rgb),0.14) !important; }
+  .jarvis-chat-label {
+    padding:2px 20px 8px; flex-shrink:0; font-family:'Quicksand', sans-serif; font-weight:700;
+    font-size:11.5px; letter-spacing:.06em; text-transform:uppercase; color:rgba(255,255,255,0.4);
+  }
+  #view-jarvis .chat-msg.theirs .chat-bubble { background:rgba(var(--jv-accent-rgb),0.14); border:1px solid rgba(var(--jv-accent-rgb),0.35); color:#fff; }
+  #view-jarvis .chat-msg.mine .chat-bubble { background:linear-gradient(135deg, var(--jv-accent-2), var(--jv-accent)); color:#04101a; }
+  #view-jarvis .chat-input-row { border-color:rgba(var(--jv-accent-rgb),0.3); }
+  #view-jarvis .chat-input-row:focus-within { border-color:rgba(var(--jv-accent-rgb),0.7); }
+  #view-jarvis .chat-send-btn { background:linear-gradient(135deg, var(--jv-accent-2), var(--jv-accent)); color:#04101a; }
+  #view-jarvis .chat-typing-bubble { background:rgba(var(--jv-accent-rgb),0.14); border-color:rgba(var(--jv-accent-rgb),0.35); }
+  #view-jarvis .chat-typing-bubble span { background:var(--jv-accent); }
+
+  /* -- faded background motifs: abstract web-radial (Spider-Man side) and
+        concentric reactor-glow (Iron Man side). Original geometric shapes,
+        not the actual Marvel logo/helmet — just an homage, sitting very
+        low-opacity behind the content and cross-fading with the toggle. -- */
+  .jarvis-page { position:relative; }
+  .jarvis-bg-motifs { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0; }
+  .jarvis-bg-motifs svg { position:absolute; width:min(88vw, 480px); height:auto; opacity:0; transition:opacity .6s ease; }
+  .jarvis-bg-reactor { top:-4%; left:50%; transform:translateX(-50%); }
+  .jarvis-bg-web { bottom:-8%; left:50%; transform:translateX(-50%); }
+  #view-jarvis[data-hero="ironman"] .jarvis-bg-reactor { opacity:0.1; }
+  #view-jarvis[data-hero="spiderman"] .jarvis-bg-web { opacity:0.1; }
+  #view-jarvis[data-hero="both"] .jarvis-bg-reactor { opacity:0.055; }
+  #view-jarvis[data-hero="both"] .jarvis-bg-web { opacity:0.055; }
+  .jarvis-bg-motifs .bg-line, .jarvis-bg-motifs .bg-ring { stroke:var(--jv-accent); transition:stroke .3s ease; }
+  .jarvis-page > *:not(.jarvis-bg-motifs) { position:relative; z-index:1; }
+
   /* ---- chat ---- */
   #view-chat.active {
     display:flex; flex-direction:column;
@@ -2025,6 +2180,113 @@
       <div class="page-title">Someday</div>
       <div class="page-sub">a running list of the future I want with you — tap what we've already done</div>
       <div id="someday-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================ JARVIS / MARVEL CORNER ============================ -->
+  <div class="view" id="view-jarvis" data-hero="both">
+    <div class="chat-page jarvis-page">
+      <div class="jarvis-bg-motifs" aria-hidden="true">
+        <!-- abstract concentric reactor-glow (Iron Man homage, not the actual helmet) -->
+        <svg class="jarvis-bg-reactor" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle class="bg-ring" cx="200" cy="200" r="170" stroke-width="2"/>
+          <circle class="bg-ring" cx="200" cy="200" r="130" stroke-width="6"/>
+          <circle class="bg-ring" cx="200" cy="200" r="90" stroke-width="2"/>
+          <circle class="bg-ring" cx="200" cy="200" r="50" stroke-width="10"/>
+          <circle cx="200" cy="200" r="26" fill="var(--jv-accent)"/>
+          <g class="bg-line" stroke-width="2">
+            <line x1="200" y1="10" x2="200" y2="55"/>
+            <line x1="200" y1="345" x2="200" y2="390"/>
+            <line x1="10" y1="200" x2="55" y2="200"/>
+            <line x1="345" y1="200" x2="390" y2="200"/>
+            <line x1="68" y1="68" x2="98" y2="98"/>
+            <line x1="302" y1="302" x2="332" y2="332"/>
+            <line x1="68" y1="332" x2="98" y2="302"/>
+            <line x1="302" y1="98" x2="332" y2="68"/>
+          </g>
+        </svg>
+        <!-- abstract radial web pattern (Spider-Man homage, not the actual spider logo) -->
+        <svg class="jarvis-bg-web" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g class="bg-line" stroke-width="1.5">
+            <line x1="200" y1="200" x2="200" y2="0"/>
+            <line x1="200" y1="200" x2="200" y2="400"/>
+            <line x1="200" y1="200" x2="0" y2="200"/>
+            <line x1="200" y1="200" x2="400" y2="200"/>
+            <line x1="200" y1="200" x2="58" y2="58"/>
+            <line x1="200" y1="200" x2="342" y2="342"/>
+            <line x1="200" y1="200" x2="58" y2="342"/>
+            <line x1="200" y1="200" x2="342" y2="58"/>
+          </g>
+          <g class="bg-ring" fill="none" stroke-width="1.5">
+            <polygon points="200,70 320,120 370,200 320,280 200,330 80,280 30,200 80,120"/>
+            <polygon points="200,120 285,155 320,200 285,245 200,280 115,245 80,200 115,155"/>
+            <polygon points="200,155 250,175 270,200 250,225 200,245 150,225 130,200 150,175"/>
+          </g>
+        </svg>
+      </div>
+      <div class="chat-header jarvis-header">
+        <div class="jarvis-reactor" id="jarvis-reactor">
+          <span class="jarvis-ring jarvis-ring-1"></span>
+          <span class="jarvis-ring jarvis-ring-2"></span>
+          <span class="jarvis-core"></span>
+        </div>
+        <div>
+          <div class="page-title jarvis-title" style="margin-bottom:2px;">J.A.R.V.I.S.</div>
+          <div class="chat-subtitle jarvis-subtitle"><span class="jarvis-status-dot"></span><span id="jarvis-status-line">Systems nominal</span></div>
+        </div>
+      </div>
+
+      <div class="jarvis-hero-toggle" id="jarvis-hero-toggle">
+        <button class="jarvis-hero-btn active" data-hero="both" type="button">Both</button>
+        <button class="jarvis-hero-btn" data-hero="ironman" type="button">Iron Man</button>
+        <button class="jarvis-hero-btn" data-hero="spiderman" type="button">Spider-Man</button>
+      </div>
+
+      <div class="jarvis-suit-badge" id="jarvis-suit-badge">
+        <div class="jv-badge jv-badge-iron">
+          <div class="jv-badge-scene" data-tap-spin>
+            <div class="jv-assembly">
+              <div class="ac-ring ac-outer"></div>
+              <div class="ac-ring ac-mid"></div>
+              <div class="ac-tri"></div>
+              <div class="ac-core"></div>
+            </div>
+          </div>
+          <div class="jv-badge-label">Arc Reactor</div>
+        </div>
+        <div class="jv-badge jv-badge-spider">
+          <div class="jv-badge-scene" data-tap-spin>
+            <div class="jv-assembly">
+              <div class="ws-cuff"></div>
+              <div class="ws-plate"></div>
+              <div class="ws-target">
+                <div class="ws-cross-h"></div>
+                <div class="ws-cross-v"></div>
+                <div class="ws-dot"></div>
+              </div>
+            </div>
+          </div>
+          <div class="jv-badge-label">Web-Shooter</div>
+        </div>
+      </div>
+
+      <div class="jarvis-fact-card">
+        <div class="jarvis-fact-corner tl"></div><div class="jarvis-fact-corner tr"></div>
+        <div class="jarvis-fact-corner bl"></div><div class="jarvis-fact-corner br"></div>
+        <div class="jarvis-fact-tag" id="jarvis-fact-tag">FILE #000 &middot; ARCHIVE</div>
+        <div class="jarvis-fact-text" id="jarvis-fact-text">Tap below and I'll pull a file from the archive, sir.</div>
+        <button class="draw-btn jarvis-fact-btn" id="jarvis-fact-btn" type="button">Pull up a file</button>
+      </div>
+
+      <div class="jarvis-chat-label">Ask JARVIS</div>
+      <div class="chat-messages jarvis-chat-messages" id="jarvis-chat-messages"></div>
+      <div class="chat-typing-row" id="jarvis-typing-row"></div>
+      <form class="chat-input-row" id="jarvis-input-row">
+        <input type="text" id="jarvis-input" class="chat-input" placeholder="Ask about Stark tech, spidey-sense, anything..." autocomplete="off" maxlength="220" />
+        <button type="submit" class="chat-send-btn" id="jarvis-send-btn" aria-label="Send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+        </button>
+      </form>
     </div>
   </div>
 
@@ -2899,6 +3161,7 @@
           <div class="fb-mode-row" id="fb-mode-row">
             <button class="fight-mode-btn active" data-mode="ai">🤖 Vs computer</button>
             <button class="fight-mode-btn" data-mode="local">📱 Same phone, 2P</button>
+            <button class="fight-mode-btn" data-mode="live">📡 Different phones</button>
           </div>
 
           <div id="fb-step-p2team">
@@ -2917,6 +3180,21 @@
               <div class="fb-vs-swatch" id="fb-vs-swatch2"></div>
               <div class="fb-vs-name" id="fb-vs-name2"></div>
             </div>
+          </div>
+
+          <!-- ---- live, two separate phones — each picks their own club above, then one hosts / one joins ---- -->
+          <div id="fb-step-live" style="display:none;">
+            <input type="text" id="fb-live-name" class="map-edit-input" maxlength="14" placeholder="Your name" style="margin-bottom:10px;" />
+            <div class="fight-rules" style="margin-bottom:14px;">
+              <div>One of you is <b>Home</b> (hosts the match), the other is <b>Away</b> (joins it). Doesn't matter who's who — just pick different ones on each phone. You'll each play with the club you picked above.</div>
+            </div>
+            <div class="fight-side-row">
+              <button class="draw-btn fight-side-btn fight-p1" id="fb-live-host-btn" style="flex:1;">I'm Home (host)</button>
+              <button class="draw-btn fight-side-btn fight-p2" id="fb-live-guest-btn" style="flex:1; background:rgba(78,205,196,0.22);">I'm Away (join)</button>
+            </div>
+            <div class="fight-live-status" id="fb-live-status">&nbsp;</div>
+            <button class="draw-btn" id="fb-live-start-btn" style="width:100%; display:none;">Kick off</button>
+            <button class="fight-live-cancel" id="fb-live-cancel-btn" style="display:none;">cancel</button>
           </div>
 
           <button class="draw-btn" id="fb-start-btn" style="width:100%;" disabled>Kick off</button>
@@ -3092,7 +3370,7 @@ const CONFIG = {
   // BOTTOM NAV — reorder, rename, or remove tabs. "id" must match one of
   // the view ids in the HTML (view-letter, view-story, view-reasons,
   // view-quiz, view-gallery, view-kitty, view-surprises, view-draw,
-  // view-map, view-playlist, view-someday, view-more).
+  // view-map, view-playlist, view-someday, view-jarvis, view-more).
   //
   // "view-more" is a hub screen, not a regular tab — it's a grid of cards
   // that open sub-pages (Repair Kit, Time Capsule, Journal, Voice Notes,
@@ -3117,6 +3395,7 @@ const CONFIG = {
     { id: "view-playlist", icon: "music",    label: "Playlist" },
     { id: "view-chat",     icon: "chat",     label: "Chat" },
     { id: "view-someday",  icon: "sunrise",  label: "Someday" },
+    { id: "view-jarvis",   icon: "arcreactor", label: "JARVIS" },
     { id: "view-more",     icon: "more",     label: "More" }
   ],
 
@@ -3507,6 +3786,56 @@ const CONFIG = {
   },
 
   // --------------------------------------------------------------------
+  // JARVIS / MARVEL CORNER — an Iron Man + Spider-Man themed tab. "Pull
+  // up a file" surfaces a random fact (mix of MCU + comics trivia, edit
+  // the lists below freely). The chat box under it works out of the box
+  // with ZERO setup — JARVIS answers by matching your question against
+  // the fact bank below, so it's fully functional immediately.
+  //
+  // Want JARVIS to give real, freeform AI answers instead of the
+  // fact-matching fallback? Deploy the "ask-jarvis" Supabase Edge
+  // Function (code + setup steps shipped alongside this file in
+  // jarvis-setup.md — same pattern as the Miss You push function,
+  // so your AI API key stays a server-side secret, never in this
+  // file). Once it's deployed, flip useAI to true below.
+  // --------------------------------------------------------------------
+  jarvis: {
+    useAI: true,                 // flip true after deploying the ask-jarvis edge function
+    edgeFunctionPath: "ask-jarvis", // POSTs to `${supabase.url}/functions/v1/${edgeFunctionPath}`
+    greeting: "Good day. All systems nominal. Ask me anything about Mr. Stark's tech or your friendly neighborhood Spider-Man — or just tap \u201cPull up a file\u201d.",
+    facts: {
+      ironman: [
+        "Tony Stark first appeared in Tales of Suspense #39 back in March 1963, created by Stan Lee, Larry Lieber, Don Heck, and Jack Kirby.",
+        "In the comics, Tony built his very first armor out of scraps in a cave, to keep a chest injury from killing him — the films kept that same bones of an origin.",
+        "Robert Downey Jr.'s closing line \u201cI am Iron Man\u201d was an ad-lib the studio liked so much they kept it in the final cut of the first film.",
+        "The armor has had dozens of numbered marks across comics and film — Mark 85 is the last suit Tony wears in Avengers: Endgame.",
+        "Iron Man (2008) is the film that launched the whole Marvel Cinematic Universe, with Nick Fury's post-credits cameo teasing something bigger.",
+        "JARVIS began as a text-based assistant Tony built to run his workshop, long before that AI became part of the foundation for Vision.",
+        "The \u201cDemon in a Bottle\u201d comic storyline had Tony openly struggling with alcoholism — a genuinely groundbreaking portrayal for a mainstream superhero at the time.",
+        "Tony Stark's brash-genius-industrialist persona is often said to have been loosely inspired by figures like Howard Hughes.",
+        "The Extremis storyline, where Tony merges the armor directly with his own nervous system, heavily influenced the \u201cnanotech\u201d suit seen in later MCU films.",
+        "Don Cheadle took over as James \u201cRhodey\u201d Rhodes / War Machine starting with Iron Man 2, after Terrence Howard played the role in the first film.",
+        "The arc reactor was originally just meant to keep shrapnel away from Tony's heart — in the comics it later grew into a much bigger power source for his suits.",
+        "Iron Man 3 leaned into Tony quietly dealing with panic attacks after the Battle of New York, a rare beat of real vulnerability for the character."
+      ],
+      spiderman: [
+        "Spider-Man swung into his first comic in Amazing Fantasy #15, August 1962, created by Stan Lee and Steve Ditko.",
+        "Stan Lee has said the whole point of Spider-Man was a teenage lead who wasn't just a sidekick — one with real personal problems on top of the powers.",
+        "The wall-crawling and web-slinging were designed to feel spider-like in spirit, not as an accurate depiction of actual spider biology.",
+        "In the original comics Peter builds his own mechanical web-shooters himself — the idea of organic, built-in webbing came later, including in Sam Raimi's films.",
+        "Tom Holland reportedly landed the MCU role partly on the strength of a self-taped audition that showed off his gymnastics background.",
+        "\u201cWith great power comes great responsibility\u201d is the line forever tied to Uncle Ben's death, even though its exact phrasing has shifted slightly across adaptations.",
+        "Miles Morales, introduced in 2011 as a different Spider-Man, reached a much wider audience through Spider-Man: Into the Spider-Verse.",
+        "The black symbiote suit from the 1980s comics later became the basis for the villain Venom.",
+        "Tobey Maguire, Andrew Garfield, and Tom Holland each led their own separate Spider-Man franchise before teaming up in Spider-Man: No Way Home.",
+        "Peter Parker was written as a fairly ordinary high schooler from Queens, a grounded setting compared to a lot of his contemporaries.",
+        "\u201cSpider-sense\u201d gives Peter an early warning of danger, and different versions render it differently — sometimes a visual shimmer, sometimes more of a gut instinct.",
+        "Aunt May's age has swung wildly across adaptations, from an elderly caretaker in the earliest comics and Raimi films to a noticeably younger version in the MCU."
+      ]
+    }
+  },
+
+  // --------------------------------------------------------------------
   // MAP OF US — pins on a stylized (non-literal) map. x/y are percentage
   // positions (0-100) on the map card, so they work on any screen size.
   // Tap a pin to read its story.
@@ -3643,7 +3972,8 @@ const SVG_ICONS = {
   link: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 14.5l5-5"/><path d="M8 16.5l-1.8 1.8a3.2 3.2 0 0 1-4.5-4.5L3.5 12"/><path d="M16 7.5l1.8-1.8a3.2 3.2 0 0 1 4.5 4.5L20.5 12"/></svg>`,
   grid3: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M9.3 3.5v17M14.7 3.5v17M3.5 9.3h17M3.5 14.7h17"/></svg>`,
   ring: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.5" r="6.5"/><circle cx="12" cy="14.5" r="2.8" fill="currentColor" stroke="none"/><path d="M9.5 8L12 3l2.5 5"/></svg>`,
-  pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5l6 6-3 3-1.5-1.5L12 15l1 5-3-1-3.5-3.5-4 4-1-1 4-4L2 11l5-1 4-4-1.5-1.5 3-3Z"/></svg>`
+  pin: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5l6 6-3 3-1.5-1.5L12 15l1 5-3-1-3.5-3.5-4 4-1-1 4-4L2 11l5-1 4-4-1.5-1.5 3-3Z"/></svg>`,
+  arcreactor: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.3"/><circle cx="12" cy="12" r="4.4"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/><path d="M12 2.7v2.1M12 19.2v2.1M2.7 12h2.1M19.2 12h2.1"/></svg>`
 };
 
 // ---------- realistic SVG particle shapes (roses / blooms / hearts) ----------
@@ -9457,12 +9787,22 @@ async function loadTwoLocations() {
   const p2Label = document.getElementById('fb-p2-label');
   const p2GridEl = document.getElementById('fb-p2-grid');
   const p2LineupEl = document.getElementById('fb-p2-lineup');
+  const stepP2TeamEl = document.getElementById('fb-step-p2team');
   const vsRow = document.getElementById('fb-vs-row');
   const vsSwatch1 = document.getElementById('fb-vs-swatch1');
   const vsName1 = document.getElementById('fb-vs-name1');
   const vsSwatch2 = document.getElementById('fb-vs-swatch2');
   const vsName2 = document.getElementById('fb-vs-name2');
   const startBtn = document.getElementById('fb-start-btn');
+
+  // ---- live (two separate phones) setup UI ----
+  const stepLiveEl = document.getElementById('fb-step-live');
+  const liveNameInput = document.getElementById('fb-live-name');
+  const liveHostBtn = document.getElementById('fb-live-host-btn');
+  const liveGuestBtn = document.getElementById('fb-live-guest-btn');
+  const liveStatusEl = document.getElementById('fb-live-status');
+  const liveStartBtn = document.getElementById('fb-live-start-btn');
+  const liveCancelBtn = document.getElementById('fb-live-cancel-btn');
 
   const canvas = document.getElementById('fb-canvas');
   const ctx = canvas.getContext('2d');
@@ -9556,13 +9896,220 @@ async function loadTwoLocations() {
 
   modeRow.querySelectorAll('.fight-mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.mode === mode) return;
+      if (mode === 'live') resetLivePicker();
       mode = btn.dataset.mode;
       modeRow.querySelectorAll('.fight-mode-btn').forEach(b => b.classList.toggle('active', b === btn));
       p2Label.textContent = mode === 'local' ? "Player 2, pick your club" : 'opponent';
+      stepP2TeamEl.style.display = mode === 'live' ? 'none' : 'block';
+      stepLiveEl.style.display = mode === 'live' ? 'block' : 'none';
+      startBtn.style.display = mode === 'live' ? 'none' : 'block';
+      if (mode === 'live') vsRow.style.display = 'none';
+      else updateVsRow();
     });
   });
 
   renderP1Grid();
+
+  // ---------------- live networking (two separate phones) ----------------
+  // netRole: null (ai/local) | 'host' (always side 'a', runs the real simulation,
+  //          controls via ctrlP1) | 'guest' (always side 'b', sends input over
+  //          the network, mirrors the host's broadcasts, controls via ctrlP2)
+  let netRole = null;
+  let sbClient = null;
+  let netChannel = null;
+  let joinRetryTimer = null;
+  let myLiveName = '';
+  let guestOpponentTeamId = null; // host only: the club the guest picked, learned from their 'join'
+  let guestMatchOverShown = false;
+  let netBroadcastAccum = 0;
+  const STATE_BROADCAST_MS = 60; // ~16/sec — smooth enough for a lightweight sync, not too chatty
+
+  function myLiveSide() { return netRole === 'host' ? 'p1' : (netRole === 'guest' ? 'p2' : null); }
+
+  function sendNet(payload) {
+    if (!netChannel) return;
+    netChannel.send({ type: 'broadcast', event: 'msg', payload });
+  }
+  function setLiveStatus(text) { liveStatusEl.textContent = text; }
+
+  function resetLivePicker() {
+    netRole = null; guestOpponentTeamId = null;
+    if (joinRetryTimer) { clearInterval(joinRetryTimer); joinRetryTimer = null; }
+    liveHostBtn.disabled = false; liveGuestBtn.disabled = false;
+    liveHostBtn.classList.remove('picked'); liveGuestBtn.classList.remove('picked');
+    liveStartBtn.style.display = 'none';
+    liveCancelBtn.style.display = 'none';
+    setLiveStatus('\u00A0');
+    if (netChannel && sbClient) { try { sbClient.removeChannel(netChannel); } catch (e) {} }
+    netChannel = null;
+    guestMatchOverShown = false;
+  }
+
+  function pickLiveSide(side) {
+    if (!p1TeamId) { setLiveStatus('Pick your club first!'); return; }
+    const sb = getSb();
+    if (!sb) { setLiveStatus("Live mode needs the app's shared connection — check Supabase is set up."); return; }
+    sbClient = sb;
+    myLiveName = (liveNameInput.value || '').trim() || (side === 'host' ? 'Home' : 'Away');
+    netRole = side;
+
+    liveHostBtn.disabled = true; liveGuestBtn.disabled = true;
+    (side === 'host' ? liveHostBtn : liveGuestBtn).classList.add('picked');
+    liveCancelBtn.style.display = 'block';
+    setLiveStatus(side === 'host' ? "Waiting for your partner to open this and tap \"I'm Away\"..." : 'Looking for the host...');
+
+    netChannel = sb.channel('street_football_live_room');
+    netChannel.on('broadcast', { event: 'msg' }, ({ payload }) => handleNetMessage(payload));
+    netChannel.subscribe((status) => {
+      if (status !== 'SUBSCRIBED') return;
+      if (netRole === 'guest') {
+        sendNet({ t: 'join', name: myLiveName, teamId: p1TeamId });
+        joinRetryTimer = setInterval(() => sendNet({ t: 'join', name: myLiveName, teamId: p1TeamId }), 1500);
+      }
+    });
+  }
+
+  liveHostBtn.addEventListener('click', () => pickLiveSide('host'));
+  liveGuestBtn.addEventListener('click', () => pickLiveSide('guest'));
+  liveCancelBtn.addEventListener('click', resetLivePicker);
+
+  liveStartBtn.addEventListener('click', () => {
+    if (netRole !== 'host') return;
+    sendNet({ t: 'go', hostTeamId: p1TeamId, guestTeamId: guestOpponentTeamId });
+    startLiveMatch(p1TeamId, guestOpponentTeamId);
+  });
+
+  function handleNetMessage(payload) {
+    if (!payload || !payload.t) return;
+
+    if (netRole === 'host') {
+      if (payload.t === 'join') {
+        guestOpponentTeamId = payload.teamId;
+        const guestName = payload.name || 'Away';
+        const clubName = FB_TEAMS[guestOpponentTeamId] ? FB_TEAMS[guestOpponentTeamId].name : 'their club';
+        setLiveStatus('🎉 ' + guestName + ' connected with ' + clubName + '! tap Kick off when ready.');
+        liveStartBtn.style.display = 'block';
+        sendNet({ t: 'ack', name: myLiveName, teamId: p1TeamId });
+      } else if (payload.t === 'ctrl') {
+        if ('up' in payload) ctrlP2.up = payload.up;
+        if ('down' in payload) ctrlP2.down = payload.down;
+        if ('left' in payload) ctrlP2.left = payload.left;
+        if ('right' in payload) ctrlP2.right = payload.right;
+      } else if (payload.t === 'shoot') {
+        attemptPlayerShoot('p2', payload.shotType);
+      } else if (payload.t === 'switch') {
+        switchPlayer('p2'); playSwitchBlip();
+      } else if (payload.t === 'rematchRequest') {
+        doRematch();
+      }
+      return;
+    }
+
+    if (netRole === 'guest') {
+      if (payload.t === 'ack') {
+        if (joinRetryTimer) { clearInterval(joinRetryTimer); joinRetryTimer = null; }
+        setLiveStatus('Connected! waiting for the host to kick off...');
+      } else if (payload.t === 'go') {
+        startLiveMatch(payload.hostTeamId, payload.guestTeamId);
+      } else if (payload.t === 'state') {
+        applyNetState(payload);
+      } else if (payload.t === 'goal') {
+        showGoalFx(payload);
+      } else if (payload.t === 'kickoff') {
+        playWhistle();
+      } else if (payload.t === 'rematchGo') {
+        matchOver = false; guestMatchOverShown = false;
+        resultScreen.classList.remove('show');
+        msgOverlay.classList.remove('show');
+        showMsg('Kick off! ⚽', 1200);
+      } else if (payload.t === 'msg') {
+        showMsg(payload.text, payload.hideAfter);
+      }
+    }
+  }
+
+  function startLiveMatch(hostTeamId, guestTeamId) {
+    // Host simulates BOTH teams locally, exactly like same-phone 2P — team B
+    // just happens to be driven by ctrlP2 values arriving over the network
+    // instead of local button presses. Guest never simulates at all (its
+    // update() bails out early), but still marks teamB as "human" so its own
+    // controlled-player highlight and charge ring render correctly.
+    teamA = buildTeam(hostTeamId, 'a', netRole === 'guest' ? null : 'p1');
+    teamB = buildTeam(guestTeamId, 'b', 'p2');
+    score = { a: 0, b: 0 };
+    matchTimeLeft = MATCH_SECONDS;
+    matchOver = false;
+    goalPause = 0;
+    guestMatchOverShown = false;
+    kickingSide = Math.random() < 0.5 ? 'a' : 'b';
+    if (netRole === 'host') kickoff();
+    updateHud();
+    updateHudTimer();
+    clusterP1.style.display = netRole === 'host' ? 'flex' : 'none';
+    clusterP2.style.display = netRole === 'guest' ? 'flex' : 'none';
+    setupEl.style.display = 'none';
+    arenaEl.style.display = 'block';
+    resultScreen.classList.remove('show');
+    fitCanvas();
+    showMsg('Kick off! ⚽', 1200);
+    startLoop();
+  }
+
+  function snapshotTeamPositions(team) {
+    return team.players.map(p => [Math.round(p.x * 10) / 10, Math.round(p.y * 10) / 10]);
+  }
+  function broadcastState() {
+    sendNet({
+      t: 'state',
+      a: snapshotTeamPositions(teamA),
+      b: snapshotTeamPositions(teamB),
+      ball: { x: Math.round(ball.x * 10) / 10, y: Math.round(ball.y * 10) / 10 },
+      score, matchTimeLeft, matchOver, goalPause
+    });
+  }
+
+  function applyNetState(payload) {
+    if (!teamA || !teamB) return;
+    payload.a.forEach((pos, i) => { if (teamA.players[i]) { teamA.players[i].x = pos[0]; teamA.players[i].y = pos[1]; } });
+    payload.b.forEach((pos, i) => { if (teamB.players[i]) { teamB.players[i].x = pos[0]; teamB.players[i].y = pos[1]; } });
+    ball.x = payload.ball.x; ball.y = payload.ball.y;
+    score = payload.score;
+    matchTimeLeft = payload.matchTimeLeft;
+    goalPause = payload.goalPause;
+    updateHud();
+    updateHudTimer();
+    const wasOver = matchOver;
+    matchOver = payload.matchOver;
+    if (matchOver && !guestMatchOverShown) {
+      guestMatchOverShown = true;
+      const title = score.a === score.b ? "It's a draw! 🤝" : ((score.a > score.b ? teamA.name : teamB.name) + ' wins! 🏆');
+      resultTitle.textContent = title;
+      resultSub.textContent = score.a + ' – ' + score.b;
+      resultScreen.classList.add('show');
+    } else if (!matchOver && wasOver) {
+      guestMatchOverShown = false;
+      resultScreen.classList.remove('show');
+    }
+  }
+
+  function showGoalFx(payload) {
+    const scoringTeam = payload.who === 'a' ? teamA : teamB;
+    if (!scoringTeam) return;
+    msgMain.textContent = payload.scorerName ? ('⚽ ' + payload.scorerName + '!') : (scoringTeam.name + ' scores! ⚽');
+    if (payload.shotType === 'trivela') { msgSub.textContent = 'TRIVELA — outside-of-the-boot screamer' + (payload.scorerNum ? ' (#' + payload.scorerNum + ')' : ''); msgSub.style.display = 'inline-block'; }
+    else if (payload.shotType === 'finesse') { msgSub.textContent = 'Finesse finish, top corner' + (payload.scorerNum ? ' (#' + payload.scorerNum + ')' : ''); msgSub.style.display = 'inline-block'; }
+    else { msgSub.textContent = scoringTeam.name; msgSub.style.display = 'inline-block'; }
+    msgOverlay.classList.add('goal', 'show');
+    setTimeout(() => { msgOverlay.classList.remove('goal', 'show'); msgSub.style.display = 'none'; }, 1600);
+    const netX = payload.who === 'a' ? FIELD_RIGHT + 4 : FIELD_LEFT - 4;
+    spawnParticles(netX, ball.y, scoringTeam.color, 28);
+    spawnParticles(netX, ball.y, '#ffd54a', 14);
+    triggerShake(payload.shotType === 'trivela' ? 9 : 6, 320);
+    flashEl.style.background = scoringTeam.color;
+    flashEl.classList.remove('pop'); void flashEl.offsetWidth; flashEl.classList.add('pop');
+    playGoalFanfare();
+  }
 
   // ---------------- match engine ----------------
   const W = 400, H = 250;
@@ -9765,6 +10312,7 @@ async function loadTwoLocations() {
     resetKickoff(teamB, kickingSide === 'b');
     kickCooldown = 0;
     playWhistle();
+    if (mode === 'live' && netRole === 'host') sendNet({ t: 'kickoff' });
   }
 
   function getHumanTeam(side) {
@@ -9986,6 +10534,10 @@ async function loadTwoLocations() {
     flashEl.classList.remove('pop'); void flashEl.offsetWidth; flashEl.classList.add('pop');
     playGoalFanfare();
 
+    if (mode === 'live' && netRole === 'host') {
+      sendNet({ t: 'goal', who, scorerName, scorerNum, shotType, score });
+    }
+
     lastShotBy = null;
     goalPause = 1500;
     kickingSide = who === 'a' ? 'b' : 'a'; // the team that conceded restarts play
@@ -9997,6 +10549,9 @@ async function loadTwoLocations() {
     ballTrail.forEach(t => t.life -= dt);
     ballTrail = ballTrail.filter(t => t.life > 0);
     if (shakeT > 0) { shakeT = Math.max(0, shakeT - dt); if (shakeT === 0) shakeMag = 0; }
+    // guest never simulates — positions, score, and timer all come from the
+    // host's broadcasts; only fx (particles/shake/trail) stay local here.
+    if (mode === 'live' && netRole === 'guest') return;
     if (matchOver) return;
     if (goalPause > 0) { goalPause = Math.max(0, goalPause - dt); return; }
     const allOutfield = [...outfieldOf(teamA), ...outfieldOf(teamB)];
@@ -10045,6 +10600,7 @@ async function loadTwoLocations() {
   }
 
   startBtn.addEventListener('click', () => {
+    netRole = null;
     teamA = buildTeam(p1TeamId, 'a', 'p1');
     teamB = buildTeam(p2TeamId, 'b', mode === 'local' ? 'p2' : null);
     score = { a: 0, b: 0 };
@@ -10065,11 +10621,13 @@ async function loadTwoLocations() {
     startLoop();
   });
 
-  rematchBtn.addEventListener('click', () => {
+  // shared by ai/local rematch AND the host's side of a live rematch
+  function doRematch() {
     score = { a: 0, b: 0 };
     matchTimeLeft = MATCH_SECONDS;
     matchOver = false;
     goalPause = 0;
+    guestMatchOverShown = false;
     kickingSide = Math.random() < 0.5 ? 'a' : 'b';
     kickoff();
     updateHud();
@@ -10077,55 +10635,84 @@ async function loadTwoLocations() {
     resultScreen.classList.remove('show');
     msgOverlay.classList.remove('show');
     showMsg('Kick off! ⚽', 1200);
+    if (mode === 'live' && netRole === 'host') sendNet({ t: 'rematchGo' });
+  }
+
+  rematchBtn.addEventListener('click', () => {
+    if (mode === 'live' && netRole === 'guest') { sendNet({ t: 'rematchRequest' }); return; }
+    doRematch();
   });
   menuBtn.addEventListener('click', () => {
     stopLoop();
     resultScreen.classList.remove('show');
     arenaEl.style.display = 'none';
     setupEl.style.display = 'block';
+    resetLivePicker();
   });
 
   // ---------------- input ----------------
   // Shoot is a hold-to-charge control: tap = normal shot, short hold =
   // finesse (curled into the far corner), long hold = trivela (big swerving
   // power strike). Switch instantly hands control to the next-nearest teammate.
+  //
+  // In live mode (two separate phones), each device only ever touches its
+  // OWN side (host = p1, guest = p2). The host applies input locally same as
+  // ai/local mode. The guest never simulates — it sends every input over the
+  // network and lets the host's broadcasts drive what actually happens; the
+  // charge-up ring is still tracked locally purely for the guest's own visual.
   function shootDown(side) {
     if (chargeStart[side]) return;
     chargeStart[side] = performance.now();
   }
-  function shootUp(side) {
-    if (!chargeStart[side]) return;
+  function releaseChargeType(side) {
+    if (!chargeStart[side]) return null;
     const held = performance.now() - chargeStart[side];
     chargeStart[side] = null;
-    attemptPlayerShoot(side, shotTypeForHold(held));
+    return shotTypeForHold(held);
+  }
+  function shootUp(side) {
+    const type = releaseChargeType(side);
+    if (type) attemptPlayerShoot(side, type);
+  }
+
+  function fbDown(side, kind) {
+    getAudioCtx();
+    if (mode === 'live') {
+      if (side !== myLiveSide()) return; // not my side on this device
+      if (netRole === 'guest') {
+        if (kind === 'shoot') { shootDown(side); return; }
+        if (kind === 'switch') { sendNet({ t: 'switch' }); playSwitchBlip(); return; }
+        sendNet({ t: 'ctrl', [kind]: true });
+        return;
+      }
+    }
+    if (kind === 'shoot') { shootDown(side); return; }
+    if (kind === 'switch') { switchPlayer(side); playSwitchBlip(); return; }
+    (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = true;
+  }
+  function fbUp(side, kind) {
+    if (kind === 'switch') return; // discrete, nothing to release
+    if (mode === 'live') {
+      if (side !== myLiveSide()) return;
+      if (netRole === 'guest') {
+        if (kind === 'shoot') { const type = releaseChargeType(side); if (type) sendNet({ t: 'shoot', shotType: type }); return; }
+        sendNet({ t: 'ctrl', [kind]: false });
+        return;
+      }
+    }
+    if (kind === 'shoot') { shootUp(side); return; }
+    (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = false;
   }
 
   document.querySelectorAll('#view-football [data-fb]').forEach(btn => {
     const parts = btn.dataset.fb.split('-');
     const side = parts[0], kind = parts[1];
-    const ctrl = side === 'p1' ? ctrlP1 : ctrlP2;
-    if (kind === 'shoot') {
-      const down = (e) => { e.preventDefault(); getAudioCtx(); shootDown(side); btn.classList.add('active'); };
-      const up = (e) => { if (e) e.preventDefault(); shootUp(side); btn.classList.remove('active'); };
-      btn.addEventListener('pointerdown', down);
-      btn.addEventListener('pointerup', up);
-      btn.addEventListener('pointerleave', up);
-      btn.addEventListener('pointercancel', up);
-    } else if (kind === 'switch') {
-      const down = (e) => { e.preventDefault(); getAudioCtx(); switchPlayer(side); playSwitchBlip(); btn.classList.add('active'); };
-      const up = (e) => { if (e) e.preventDefault(); btn.classList.remove('active'); };
-      btn.addEventListener('pointerdown', down);
-      btn.addEventListener('pointerup', up);
-      btn.addEventListener('pointerleave', up);
-      btn.addEventListener('pointercancel', up);
-    } else {
-      const down = (e) => { e.preventDefault(); ctrl[kind] = true; btn.classList.add('active'); };
-      const up = (e) => { if (e) e.preventDefault(); ctrl[kind] = false; btn.classList.remove('active'); };
-      btn.addEventListener('pointerdown', down);
-      btn.addEventListener('pointerup', up);
-      btn.addEventListener('pointerleave', up);
-      btn.addEventListener('pointercancel', up);
-    }
+    const down = (e) => { e.preventDefault(); fbDown(side, kind); btn.classList.add('active'); };
+    const up = (e) => { if (e) e.preventDefault(); btn.classList.remove('active'); fbUp(side, kind); };
+    btn.addEventListener('pointerdown', down);
+    btn.addEventListener('pointerup', up);
+    btn.addEventListener('pointerleave', up);
+    btn.addEventListener('pointercancel', up);
   });
 
   const FB_KEY_MAP = {
@@ -10141,17 +10728,14 @@ async function loadTwoLocations() {
     if (!map) return;
     e.preventDefault();
     const side = map[0], kind = map[1];
-    if (kind === 'shoot') { if (!e.repeat) { getAudioCtx(); shootDown(side); } }
-    else if (kind === 'switch') { if (!e.repeat) { getAudioCtx(); switchPlayer(side); playSwitchBlip(); } }
-    else (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = true;
+    if ((kind === 'shoot' || kind === 'switch') && e.repeat) return;
+    fbDown(side, kind);
   });
   window.addEventListener('keyup', (e) => {
     const key = e.key === ' ' ? ' ' : e.key.toLowerCase();
     const map = FB_KEY_MAP[key];
     if (!map) return;
-    const side = map[0], kind = map[1];
-    if (kind === 'shoot') shootUp(side);
-    else if (kind !== 'switch') (side === 'p1' ? ctrlP1 : ctrlP2)[kind] = false;
+    fbUp(map[0], map[1]);
   });
 
 
@@ -10289,8 +10873,12 @@ async function loadTwoLocations() {
     const dt = Math.min(50, t - (lastT || t));
     lastT = t;
     update(dt);
-    tickTimer(dt);
+    if (!(mode === 'live' && netRole === 'guest')) tickTimer(dt);
     render();
+    if (mode === 'live' && netRole === 'host') {
+      netBroadcastAccum += dt;
+      if (netBroadcastAccum >= STATE_BROADCAST_MS) { netBroadcastAccum = 0; broadcastState(); }
+    }
     rafId = requestAnimationFrame(frame);
   }
 
@@ -10472,6 +11060,200 @@ async function loadTwoLocations() {
   // already granted before — this never shows a prompt on page load, so
   // returning visitors stay subscribed without needing to tap Miss You again
   if (getName()) ensurePushSubscribed(false);
+})();
+
+// ---------- JARVIS / MARVEL CORNER ----------
+(function () {
+  const rootEl = document.getElementById('view-jarvis');
+  if (!rootEl) return;
+  const cfg = CONFIG.jarvis || {};
+  const facts = cfg.facts || { ironman: [], spiderman: [] };
+  const sb = getSb();
+
+  const heroToggle = document.getElementById('jarvis-hero-toggle');
+  const factTag = document.getElementById('jarvis-fact-tag');
+  const factText = document.getElementById('jarvis-fact-text');
+  const factBtn = document.getElementById('jarvis-fact-btn');
+  const statusLine = document.getElementById('jarvis-status-line');
+  const messagesEl = document.getElementById('jarvis-chat-messages');
+  const typingRowEl = document.getElementById('jarvis-typing-row');
+  const formEl = document.getElementById('jarvis-input-row');
+  const inputEl = document.getElementById('jarvis-input');
+  const sendBtn = document.getElementById('jarvis-send-btn');
+
+  let currentHero = 'both';
+  let lastFactIdx = -1;
+  let fileCounter = 100 + Math.floor(Math.random() * 300);
+  let typeTimer = null;
+  let tickerTimer = null;
+  let greeted = false;
+  const history = []; // { role: 'user'|'jarvis', text }
+
+  function combinedFacts(hero) {
+    if (hero === 'ironman') return facts.ironman.map(t => ({ t, hero: 'ironman' }));
+    if (hero === 'spiderman') return facts.spiderman.map(t => ({ t, hero: 'spiderman' }));
+    return facts.ironman.map(t => ({ t, hero: 'ironman' })).concat(facts.spiderman.map(t => ({ t, hero: 'spiderman' })));
+  }
+
+  function heroLabel(h) { return h === 'ironman' ? 'IRON MAN' : h === 'spiderman' ? 'SPIDER-MAN' : 'ARCHIVE'; }
+
+  function typeInto(el, text) {
+    clearInterval(typeTimer);
+    el.textContent = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'jv-cursor';
+    el.appendChild(cursor);
+    let i = 0;
+    typeTimer = setInterval(() => {
+      i++;
+      el.textContent = text.slice(0, i);
+      el.appendChild(cursor);
+      if (i >= text.length) { clearInterval(typeTimer); cursor.remove(); }
+    }, 14);
+  }
+
+  function pullFile() {
+    const pool = combinedFacts(currentHero);
+    if (!pool.length) return;
+    let idx = Math.floor(Math.random() * pool.length);
+    if (pool.length > 1 && idx === lastFactIdx) idx = (idx + 1) % pool.length;
+    lastFactIdx = idx;
+    const pick = pool[idx];
+    fileCounter++;
+    factTag.textContent = `FILE #${fileCounter} \u00b7 ${heroLabel(pick.hero)}`;
+    typeInto(factText, pick.t);
+    return pick;
+  }
+
+  heroToggle.addEventListener('click', (e) => {
+    const btn = e.target.closest('.jarvis-hero-btn');
+    if (!btn) return;
+    currentHero = btn.dataset.hero;
+    rootEl.dataset.hero = currentHero;
+    heroToggle.querySelectorAll('.jarvis-hero-btn').forEach(b => b.classList.toggle('active', b === btn));
+    pullFile();
+  });
+  factBtn.addEventListener('click', pullFile);
+
+  // tap a suit badge (arc reactor / web-shooter) for a quick 3D spin
+  document.querySelectorAll('#view-jarvis [data-tap-spin]').forEach(scene => {
+    scene.addEventListener('click', () => {
+      if (scene.classList.contains('spin')) return;
+      scene.classList.add('spin');
+      setTimeout(() => scene.classList.remove('spin'), 820);
+    });
+  });
+
+  // ---- diagnostics ticker (flavor text, only runs while tab is open) ----
+  const tickerLines = {
+    both: ["Scanning perimeter... all clear.", "Power levels: nominal.", "Spidey-sense: not tingling.", "Repulsors on standby.", "Web fluid reserves: full.", "Systems nominal."],
+    ironman: ["Suit diagnostics: green across the board.", "Arc reactor output: stable.", "Repulsors on standby.", "Flight systems check: passed."],
+    spiderman: ["Spidey-sense: not tingling.", "Web fluid reserves: full.", "Perimeter of Queens: quiet.", "Tracer signal: clean."]
+  };
+  function tick() {
+    const pool = tickerLines[currentHero] || tickerLines.both;
+    statusLine.textContent = pool[Math.floor(Math.random() * pool.length)];
+  }
+  function startTicker() { stopTicker(); tick(); tickerTimer = setInterval(tick, 4200); }
+  function stopTicker() { if (tickerTimer) clearInterval(tickerTimer); tickerTimer = null; }
+
+  // ---- chat ----
+  function addMessage(role, text) {
+    history.push({ role, text });
+    if (history.length > 20) history.shift();
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-msg ' + (role === 'user' ? 'mine' : 'theirs');
+    wrap.innerHTML = `<div class="chat-bubble"></div>`;
+    wrap.querySelector('.chat-bubble').textContent = text;
+    messagesEl.appendChild(wrap);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping(show) {
+    typingRowEl.classList.toggle('show', show);
+    typingRowEl.innerHTML = show ? '<div class="chat-typing-bubble"><span></span><span></span><span></span></div>' : '';
+  }
+
+  // local fallback: keyword-matches the question against the fact bank so
+  // JARVIS always has something relevant (and fun) to say, with zero setup.
+  function localReply(raw) {
+    const q = raw.toLowerCase();
+    if (/\b(hi|hello|hey|sup)\b/.test(q)) return "Good day. How can I be of assistance?";
+    if (/thank/.test(q)) return "Always a pleasure. Anything else, sir?";
+    if (/who are you|what are you/.test(q)) return "J.A.R.V.I.S. \u2014 Just A Rather Very Intelligent System. Currently moonlighting as your Marvel trivia archive.";
+    if (/spider[\s-]?man|peter|parker|web|spidey/.test(q) && facts.spiderman.length) {
+      const t = facts.spiderman[Math.floor(Math.random() * facts.spiderman.length)];
+      return "Pulling the Spider-Man file: " + t;
+    }
+    if (/iron\s?man|tony|stark|arc reactor|jarvis/.test(q) && facts.ironman.length) {
+      const t = facts.ironman[Math.floor(Math.random() * facts.ironman.length)];
+      return "Pulling the Iron Man file: " + t;
+    }
+    const pool = combinedFacts('both');
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    return "I don't have a direct file on that, but here's something from the archive: " + pick.t;
+  }
+
+  async function aiReply(question) {
+    const url = `${(CONFIG.supabase || {}).url}/functions/v1/${cfg.edgeFunctionPath}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': CONFIG.supabase.anonKey,
+        'Authorization': 'Bearer ' + CONFIG.supabase.anonKey
+      },
+      body: JSON.stringify({ message: question, history: history.slice(-8) })
+    });
+    if (!res.ok) throw new Error('edge function error');
+    const data = await res.json();
+    if (!data || !data.reply) throw new Error('bad response shape');
+    return data.reply;
+  }
+
+  async function respondTo(question) {
+    showTyping(true);
+    const start = Date.now();
+    let reply;
+    try {
+      if (cfg.useAI && sb) {
+        reply = await aiReply(question);
+      } else {
+        reply = localReply(question);
+      }
+    } catch (err) {
+      console.warn('jarvis AI reply failed, falling back to local:', err);
+      reply = localReply(question);
+    }
+    const elapsed = Date.now() - start;
+    const minDelay = 450 + Math.random() * 500;
+    setTimeout(() => {
+      showTyping(false);
+      addMessage('jarvis', reply);
+    }, Math.max(0, minDelay - elapsed));
+  }
+
+  formEl.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = inputEl.value.trim();
+    if (!text) return;
+    addMessage('user', text);
+    inputEl.value = '';
+    respondTo(text);
+  });
+
+  window.addEventListener('viewchange', (e) => {
+    if (e.detail.id === 'view-jarvis') {
+      startTicker();
+      if (!greeted) {
+        greeted = true;
+        showTyping(true);
+        setTimeout(() => { showTyping(false); addMessage('jarvis', cfg.greeting || "Systems online."); }, 700);
+      }
+    } else {
+      stopTicker();
+    }
+  });
 })();
 
 </script>
